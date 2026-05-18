@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voucher Labonetta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:  #1B7F72;
+      --terra: #C0623A;
+      --dark:  #1a1a1a;
+      --text:  #333;
+      --light: #f5f0eb;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--light);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--dark);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      color: white;
+      font-size: 13px;
+      letter-spacing: 5px;
+      font-weight: 700;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-sub {
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--dark);
+      padding: 60px 40px 80px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 300;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--terra); font-weight: 700; }
+    .hero p {
+      color: rgba(255,255,255,0.55);
+      font-size: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 640px;
+      margin: -40px auto 80px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+
+    /* VOUCHER SELECTION */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 16px;
+    }
+
+    .voucher-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .voucher-option {
+      border: 2px solid #e8e0d8;
+      border-radius: 10px;
+      padding: 24px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      position: relative;
+    }
+    .voucher-option:hover {
+      border-color: var(--teal);
+    }
+    .voucher-option.selected {
+      border-color: var(--teal);
+      background: #f0faf8;
+    }
+    .voucher-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .voucher-amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .voucher-label {
+      font-size: 12px;
+      color: #999;
+    }
+    .voucher-option.selected .voucher-amount { color: var(--teal); }
+
+    /* EMAIL */
+    .form-group { margin-bottom: 24px; }
+    label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e8e0d8;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="email"]:focus { border-color: var(--teal); }
+    input[type="email"].error { border-color: var(--terra); }
+
+    .error-msg {
+      font-size: 12px;
+      color: var(--terra);
+      margin-top: 6px;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    /* SUBMIT */
+    .btn-pay {
+      width: 100%;
+      padding: 18px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-pay:hover { background: #16706  4; }
+    .btn-pay:active { transform: scale(0.99); }
+    .btn-pay:disabled { background: #ccc; cursor: not-allowed; }
+
+    .btn-pay .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+    .btn-pay.loading .btn-text { display: none; }
+    .btn-pay.loading .spinner { display: inline-block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* INFO */
+    .info-list {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid #f0ebe4;
+      list-style: none;
+    }
+    .info-list li {
+      font-size: 13px;
+      color: #888;
+      padding: 5px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .info-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 12px;
+      color: #bbb;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://labonetta.cz">Labonetta</a>
+  <span class="nav-sub">Pizza jako z Neapole</span>
+</nav>
+
+<div class="hero">
+  <h1>Darujte zážitek<br><span>z pravé pizzy</span></h1>
+  <p>Voucher na pizzu, antipasti, víno nebo kávu. Ideální dárek pro každého milovníka italské kuchyně.</p>
+</div>
+
+<main>
+  <div class="card">
+
+    <p class="section-label">Vyberte hodnotu voucheru</p>
+
+    <div class="voucher-options">
+      <label class="voucher-option selected" id="opt-500">
+        <input type="radio" name="amount" value="500" checked>
+        <span class="voucher-amount">500 Kč</span>
+        <span class="voucher-label">Voucher</span>
+      </label>
+      <label class="voucher-option" id="opt-1000">
+        <input type="radio" name="amount" value="1000">
+        <span class="voucher-amount">1 000 Kč</span>
+        <span class="voucher-label">Voucher</span>
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email pro zaslání voucheru</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="vas@email.cz"
+        autocomplete="email"
+      >
+      <p class="error-msg" id="email-error">Zadejte prosím platný email.</p>
+    </div>
+
+    <button class="btn-pay" id="btn-pay" onclick="handlePay()">
+      <span class="btn-text">Zaplatit a získat voucher</span>
+      <span class="spinner"></span>
+    </button>
+
+    <ul class="info-list">
+      <li>Voucher obdržíte okamžitě na email jako PDF</li>
+      <li>Platí 1 rok od data zakoupení</li>
+      <li>Uplatníte osobně na naší provozovně Prosek</li>
+      <li>Platí na veškerou útratu — jídlo, pití i kávu</li>
+    </ul>
+
+  </div>
+</main>
+
+<footer>
+  &copy; 2025 Labonetta · <a href="https://prosek.labonetta.cz" style="color:#bbb;">prosek.labonetta.cz</a>
+</footer>
+
+<script>
+  // Voucher option selection
+  document.querySelectorAll('.voucher-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.voucher-option').forEach(o => o.classList.remove('selected'))
+      opt.classList.add('selected')
+    })
+  })
+
+  async function handlePay() {
+    const email = document.getElementById('email').value.trim()
+    const amount = document.querySelector('input[name="amount"]:checked').value
+    const emailInput = document.getElementById('email')
+    const emailError = document.getElementById('email-error')
+    const btn = document.getElementById('btn-pay')
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      emailInput.classList.add('error')
+      emailError.classList.add('visible')
+      emailInput.focus()
+      return
+    }
+    emailInput.classList.remove('error')
+    emailError.classList.remove('visible')
+
+    // Loading state
+    btn.disabled = true
+    btn.classList.add('loading')
+
+    try {
+      const res = await fetch('/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: Number(amount), email })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        alert(data.error || 'Chyba při vytváření platby. Zkuste to prosím znovu.')
+        btn.disabled = false
+        btn.classList.remove('loading')
+        return
+      }
+
+      // Redirect to GoPay payment gateway
+      window.location.href = data.gw_url
+
+    } catch (err) {
+      console.error(err)
+      alert('Nepodařilo se spojit se serverem. Zkuste to prosím znovu.')
+      btn.disabled = false
+      btn.classList.remove('loading')
+    }
+  }
+</script>
+
+</body>
+</html>

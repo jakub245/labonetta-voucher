@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Vouchery Labonetta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --teal: #1B7F72; --terra: #C0623A; --dark: #1a1a1a; --light: #f5f0eb; }
+
+    body { font-family: 'Lato', sans-serif; background: var(--light); color: #333; }
+
+    /* LOGIN */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: white;
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .login-card h1 { font-size: 20px; color: var(--dark); margin-bottom: 8px; }
+    .login-card p { font-size: 13px; color: #999; margin-bottom: 28px; }
+    .login-card input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e8e0d8;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 12px;
+      text-align: center;
+      letter-spacing: 3px;
+    }
+    .login-card input:focus { border-color: var(--teal); }
+    .login-card button {
+      width: 100%;
+      padding: 14px;
+      background: var(--dark);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+    .login-error { color: var(--terra); font-size: 13px; margin-top: 10px; display: none; }
+
+    /* ADMIN */
+    #admin-screen { display: none; }
+
+    nav {
+      background: var(--dark);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-title { color: white; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; }
+    .nav-logout {
+      color: rgba(255,255,255,0.4);
+      font-size: 12px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+    }
+    .nav-logout:hover { color: white; }
+
+    .admin-main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .stat-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--dark); }
+    .stat-value.teal { color: var(--teal); }
+    .stat-value.terra { color: var(--terra); }
+
+    /* FILTERS */
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 2px solid #e8e0d8;
+      background: white;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn.active { border-color: var(--dark); background: var(--dark); color: white; }
+
+    /* TABLE */
+    .table-wrap {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left;
+      padding: 14px 20px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #999;
+      border-bottom: 1px solid #f0ebe4;
+      background: #faf8f5;
+    }
+    td {
+      padding: 14px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid #f5f0eb;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fdfcfb; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .badge-paid     { background: #e8f5f3; color: var(--teal); }
+    .badge-pending  { background: #fff3ee; color: var(--terra); }
+    .badge-redeemed { background: #f0f0f0; color: #888; }
+
+    .code { font-family: monospace; font-weight: 700; font-size: 13px; letter-spacing: 1px; }
+
+    .btn-redeem {
+      padding: 6px 14px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-redeem:hover { background: #166a5f; }
+    .btn-redeem:disabled { background: #ccc; cursor: not-allowed; }
+
+    .amount-500  { color: var(--terra); font-weight: 700; }
+    .amount-1000 { color: var(--teal);  font-weight: 700; }
+
+    .empty { text-align: center; padding: 48px; color: #bbb; font-size: 14px; }
+    .loading-row { text-align: center; padding: 48px; color: #ccc; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>Admin přístup</h1>
+    <p>Vouchery Labonetta</p>
+    <input type="password" id="pw-input" placeholder="Heslo" onkeydown="if(event.key==='Enter') login()">
+    <button onclick="login()">Přihlásit se</button>
+    <p class="login-error" id="login-error">Nesprávné heslo.</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen">
+  <nav>
+    <span class="nav-title">Labonetta · Vouchery</span>
+    <button class="nav-logout" onclick="logout()">Odhlásit</button>
+  </nav>
+
+  <div class="admin-main">
+
+    <!-- Stats -->
+    <div class="stats" id="stats">
+      <div class="stat-card">
+        <div class="stat-label">Celkem prodáno</div>
+        <div class="stat-value" id="stat-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Obrat celkem</div>
+        <div class="stat-value teal" id="stat-revenue">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Nezaplacené</div>
+        <div class="stat-value terra" id="stat-pending">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Uplatněné</div>
+        <div class="stat-value" id="stat-redeemed">—</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('all', this)">Vše</button>
+      <button class="filter-btn" onclick="setFilter('paid', this)">Zaplacené</button>
+      <button class="filter-btn" onclick="setFilter('pending', this)">Čeká na platbu</button>
+      <button class="filter-btn" onclick="setFilter('redeemed', this)">Uplatněné</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kód</th>
+            <th>Hodnota</th>
+            <th>Email</th>
+            <th>Stav</th>
+            <th>Zakoupeno</th>
+            <th>Platí do</th>
+            <th>Akce</th>
+          </tr>
+        </thead>
+        <tbody id="voucher-table">
+          <tr><td colspan="7" class="loading-row">Načítám…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let password = ''
+  let allVouchers = []
+  let currentFilter = 'all'
+
+  function login() {
+    const pw = document.getElementById('pw-input').value
+    if (!pw) return
+    password = pw
+    loadVouchers()
+  }
+
+  function logout() {
+    password = ''
+    document.getElementById('admin-screen').style.display = 'none'
+    document.getElementById('login-screen').style.display = 'flex'
+    document.getElementById('pw-input').value = ''
+  }
+
+  async function loadVouchers() {
+    const res = await fetch('/api/vouchers', {
+      headers: { 'Authorization': `Bearer ${password}` }
+    })
+
+    if (res.status === 401) {
+      document.getElementById('login-error').style.display = 'block'
+      return
+    }
+
+    document.getElementById('login-error').style.display = 'none'
+    document.getElementById('login-screen').style.display = 'none'
+    document.getElementById('admin-screen').style.display = 'block'
+
+    allVouchers = await res.json()
+    updateStats()
+    renderTable()
+  }
+
+  function updateStats() {
+    const paid = allVouchers.filter(v => v.status === 'paid' || v.status === 'redeemed')
+    const revenue = paid.reduce((sum, v) => sum + v.amount, 0)
+    const pending = allVouchers.filter(v => v.status === 'pending').length
+    const redeemed = allVouchers.filter(v => v.status === 'redeemed').length
+
+    document.getElementById('stat-total').textContent = paid.length
+    document.getElementById('stat-revenue').textContent = revenue.toLocaleString('cs') + ' Kč'
+    document.getElementById('stat-pending').textContent = pending
+    document.getElementById('stat-redeemed').textContent = redeemed
+  }
+
+  function setFilter(filter, btn) {
+    currentFilter = filter
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+    btn.classList.add('active')
+    renderTable()
+  }
+
+  function renderTable() {
+    const filtered = currentFilter === 'all'
+      ? allVouchers
+      : allVouchers.filter(v => v.status === currentFilter)
+
+    const tbody = document.getElementById('voucher-table')
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty">Žádné vouchery</td></tr>'
+      return
+    }
+
+    tbody.innerHTML = filtered.map(v => {
+      const created = new Date(v.created_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      const expires = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      const badgeClass = { paid: 'badge-paid', pending: 'badge-pending', redeemed: 'badge-redeemed' }[v.status] || ''
+      const badgeLabel = { paid: 'Zaplaceno', pending: 'Čeká', redeemed: 'Uplatněno' }[v.status] || v.status
+      const amountClass = v.amount === 500 ? 'amount-500' : 'amount-1000'
+      const amountStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
+
+      const actionBtn = v.status === 'paid'
+        ? `<button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>`
+        : '—'
+
+      return `
+        <tr>
+          <td><span class="code">${v.code}</span></td>
+          <td><span class="${amountClass}">${amountStr}</span></td>
+          <td>${v.email}</td>
+          <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+          <td>${created}</td>
+          <td>${expires}</td>
+          <td>${actionBtn}</td>
+        </tr>
+      `
+    }).join('')
+  }
+
+  async function redeem(id, btn) {
+    if (!confirm('Opravdu označit voucher jako uplatněný?')) return
+
+    btn.disabled = true
+    btn.textContent = '…'
+
+    const res = await fetch('/api/vouchers', {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${password}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id })
+    })
+
+    if (res.ok) {
+      // Update local data and re-render
+      const updated = await res.json()
+      const idx = allVouchers.findIndex(v => v.id === id)
+      if (idx !== -1) allVouchers[idx] = updated
+      updateStats()
+      renderTable()
+    } else {
+      alert('Chyba při uplatňování voucheru.')
+      btn.disabled = false
+      btn.textContent = 'Uplatnit'
+    }
+  }
+</script>
+
+</body>
+</html>

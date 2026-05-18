@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platba zrušena · Labonetta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --teal: #1B7F72; --terra: #C0623A; --light: #f5f0eb; }
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 56px 48px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+    .icon {
+      width: 72px; height: 72px;
+      background: #fff5f0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+    h1 { font-size: 28px; font-weight: 700; color: var(--terra); margin-bottom: 12px; }
+    p { font-size: 15px; color: #666; line-height: 1.7; }
+    .btn {
+      display: inline-block;
+      margin-top: 32px;
+      padding: 14px 28px;
+      background: var(--terra);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+    .logo { margin-bottom: 32px; font-size: 11px; letter-spacing: 5px; color: #ccc; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Labonetta</div>
+    <div class="icon">✕</div>
+    <h1>Platba zrušena</h1>
+    <p>Platba nebyla dokončena. Žádná částka nebyla stržena.</p>
+    <a class="btn" href="/">Zkusit znovu →</a>
+  </div>
+</body>
+</html>
