@@ -4,7 +4,6 @@ import { generateVoucherPdf } from '../lib/pdf.js'
 import { sendVoucherEmail } from '../lib/mailer.js'
 
 export default async function handler(req, res) {
-  // GoPay sends GET with ?id=payment_id
   const paymentId = req.query.id
 
   if (!paymentId) {
@@ -12,50 +11,51 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get payment status from GoPay
+    // Check payment status with GoPay
     const payment = await getPaymentStatus(paymentId)
 
     if (payment.state !== 'PAID') {
-      // Not paid yet — GoPay will retry notification
       return res.status(200).json({ status: payment.state })
     }
 
-    // Find voucher by gopay_id
-    const { data: voucher, error: findError } = await supabase
+    // Find all vouchers for this payment
+    const { data: vouchers, error: findError } = await supabase
       .from('vouchers')
       .select('*')
       .eq('gopay_id', Number(paymentId))
-      .single()
 
-    if (findError || !voucher) {
-      console.error('Voucher not found for gopay_id:', paymentId)
-      return res.status(404).json({ error: 'Voucher not found' })
+    if (findError || !vouchers || vouchers.length === 0) {
+      console.error('Vouchers not found for gopay_id:', paymentId)
+      return res.status(404).json({ error: 'Vouchers not found' })
     }
 
     // Idempotency — already processed
-    if (voucher.status === 'paid') {
+    if (vouchers.every(v => v.status === 'paid')) {
       return res.status(200).json({ status: 'already_processed' })
     }
 
-    // Mark as paid
+    // Mark all as paid
     await supabase
       .from('vouchers')
-      .update({
-        status: 'paid',
-        paid_at: new Date().toISOString()
+      .update({ status: 'paid', paid_at: new Date().toISOString() })
+      .eq('gopay_id', Number(paymentId))
+
+    // Generate PDF for each voucher
+    const attachments = []
+    for (const voucher of vouchers) {
+      const pdfBuffer = await generateVoucherPdf(voucher.amount, voucher.code)
+      const amountStr = voucher.amount === 1000 ? '1000' : '500'
+      attachments.push({
+        filename: `voucher-labonetta-${amountStr}kc-${voucher.code}.pdf`,
+        content: pdfBuffer.toString('base64'),
+        code: voucher.code,
+        amount: voucher.amount
       })
-      .eq('id', voucher.id)
+    }
 
-    // Generate PDF voucher
-    const pdfBuffer = await generateVoucherPdf(voucher.amount, voucher.code)
-
-    // Send email with PDF
-    await sendVoucherEmail({
-      to: voucher.email,
-      amount: voucher.amount,
-      voucherCode: voucher.code,
-      pdfBuffer
-    })
+    // Send single email with all PDFs attached
+    const email = vouchers[0].email
+    await sendVoucherEmail({ to: email, vouchers, attachments })
 
     return res.status(200).json({ status: 'ok' })
 

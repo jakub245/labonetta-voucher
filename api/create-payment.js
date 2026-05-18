@@ -7,73 +7,85 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { amount, email } = req.body
+  const { items, email } = req.body
+  // items = [{ amount: 500, qty: 2 }, { amount: 1000, qty: 1 }]
 
-  // Validate
-  if (![500, 1000].includes(Number(amount))) {
-    return res.status(400).json({ error: 'Neplatná hodnota voucheru' })
-  }
-
+  // Validate email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!email || !emailRegex.test(email)) {
     return res.status(400).json({ error: 'Neplatný email' })
   }
 
-  try {
-    // Generate unique voucher code (retry if collision)
-    let code
-    let attempts = 0
-    while (attempts < 5) {
-      code = generateVoucherCode()
-      const { data } = await supabase
-        .from('vouchers')
-        .select('id')
-        .eq('code', code)
-        .single()
-      if (!data) break // code is unique
-      attempts++
-    }
+  // Validate items
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ error: 'Prázdný košík' })
+  }
 
+  const validAmounts = [500, 1000]
+  const filteredItems = items.filter(i => validAmounts.includes(Number(i.amount)) && Number(i.qty) > 0)
+  if (filteredItems.length === 0) {
+    return res.status(400).json({ error: 'Neplatné položky košíku' })
+  }
+
+  const totalAmount = filteredItems.reduce((sum, i) => sum + Number(i.amount) * Number(i.qty), 0)
+
+  try {
+    // Generate voucher codes for all items
+    const voucherRecords = []
     const expiresAt = new Date()
     expiresAt.setFullYear(expiresAt.getFullYear() + 1)
 
-    // Save pending voucher to Supabase
-    const { data: voucher, error: dbError } = await supabase
+    for (const item of filteredItems) {
+      for (let i = 0; i < Number(item.qty); i++) {
+        // Generate unique code
+        let code
+        let attempts = 0
+        while (attempts < 5) {
+          code = generateVoucherCode()
+          const { data } = await supabase.from('vouchers').select('id').eq('code', code).single()
+          if (!data) break
+          attempts++
+        }
+        voucherRecords.push({
+          code,
+          amount: Number(item.amount),
+          email,
+          status: 'pending',
+          expires_at: expiresAt.toISOString()
+        })
+      }
+    }
+
+    // Save all vouchers as pending
+    const { data: vouchers, error: dbError } = await supabase
       .from('vouchers')
-      .insert({
-        code,
-        amount: Number(amount),
-        email,
-        status: 'pending',
-        expires_at: expiresAt.toISOString()
-      })
+      .insert(voucherRecords)
       .select()
-      .single()
 
     if (dbError) throw dbError
 
+    // Use first voucher ID as order reference
+    const orderRef = `LAB-${Date.now()}`
+    const voucherIds = vouchers.map(v => v.id).join(',')
+
     const baseUrl = process.env.NEXT_PUBLIC_URL || `https://${req.headers.host}`
 
-    // Create GoPay payment
+    // Create GoPay payment for total amount
     const payment = await createPayment({
-      amount: Number(amount),
+      amount: totalAmount,
       email,
-      voucherCode: code,
-      returnUrl: `${baseUrl}/success.html?id=${voucher.id}`,
+      voucherCode: orderRef,
+      returnUrl: `${baseUrl}/success.html`,
       notifyUrl: `${baseUrl}/api/payment-notify`
     })
 
-    // Save GoPay payment ID
+    // Save GoPay ID to all vouchers in this order
     await supabase
       .from('vouchers')
       .update({ gopay_id: payment.id })
-      .eq('id', voucher.id)
+      .in('id', vouchers.map(v => v.id))
 
-    // Return GoPay gateway URL for redirect
-    return res.status(200).json({
-      gw_url: payment.gw_url,
-      voucher_id: voucher.id
-    })
+    return res.status(200).json({ gw_url: payment.gw_url })
 
   } catch (err) {
     console.error('create-payment error:', err)

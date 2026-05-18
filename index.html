@@ -10,65 +10,100 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --teal:       #1B7F72;
-      --teal-dark:  #12574d;
-      --terra:      #C0623A;
-      --cream:      #F7F3EE;
-      --dark:       #0f0f0f;
-      --mid:        #3a3a3a;
-      --border:     rgba(0,0,0,0.10);
+      --teal:      #1B7F72;
+      --teal-dark: #12574d;
+      --terra:     #C0623A;
+      --cream:     #F7F3EE;
+      --dark:      #0f0f0f;
+      --mid:       #3a3a3a;
+      --border:    rgba(0,0,0,0.10);
     }
-
-    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--cream);
       color: var(--dark);
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
     /* ── NAVBAR ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 200;
       padding: 18px 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      mix-blend-mode: normal;
-      background: transparent;
-      transition: background 0.4s;
+      transition: background 0.4s, border-color 0.4s;
+      border-bottom: 1px solid transparent;
     }
     nav.scrolled {
-      background: rgba(247,243,238,0.95);
+      background: rgba(247,243,238,0.96);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      border-bottom-color: var(--border);
     }
-
     .nav-logo {
       height: 40px;
-      width: auto;
       filter: brightness(0) invert(1);
       transition: filter 0.4s;
     }
-    nav.scrolled .nav-logo {
-      filter: none;
+    nav.scrolled .nav-logo { filter: none; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
     }
 
     .nav-back {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.75);
+      color: rgba(255,255,255,0.7);
       text-decoration: none;
       transition: color 0.2s;
     }
     nav.scrolled .nav-back { color: var(--mid); }
     .nav-back:hover { color: var(--teal); }
+
+    /* Cart badge in nav */
+    .nav-cart {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+    nav.scrolled .nav-cart {
+      background: var(--dark);
+      color: white;
+    }
+    .nav-cart:hover { background: var(--teal); }
+    .nav-cart-count {
+      background: var(--terra);
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+    .nav-cart-count.visible { display: flex; }
 
     /* ── HERO ── */
     .hero {
@@ -78,30 +113,21 @@
       max-height: 800px;
       overflow: hidden;
     }
-
     .hero-img {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       object-position: center 20%;
       transform: scale(1.05);
       animation: heroZoom 12s ease-out forwards;
     }
-    @keyframes heroZoom {
-      to { transform: scale(1); }
-    }
+    @keyframes heroZoom { to { transform: scale(1); } }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        160deg,
-        rgba(0,0,0,0.15) 0%,
-        rgba(0,0,0,0.5) 50%,
-        rgba(0,0,0,0.8) 100%
-      );
+      background: linear-gradient(160deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%);
     }
 
     .hero-content {
@@ -109,7 +135,6 @@
       bottom: 80px;
       left: 0; right: 0;
       padding: 0 48px;
-      max-width: 900px;
       animation: heroFade 1s ease-out 0.3s both;
     }
     @keyframes heroFade {
@@ -118,15 +143,22 @@
     }
 
     .hero-tag {
-      display: inline-block;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.55);
+      color: rgba(255,255,255,0.5);
       margin-bottom: 20px;
-      border-left: 2px solid var(--terra);
-      padding-left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 24px;
+      height: 2px;
+      background: var(--terra);
+      display: inline-block;
     }
 
     .hero h1 {
@@ -135,14 +167,9 @@
       font-weight: 900;
       color: white;
       line-height: 1.0;
-      margin-bottom: 24px;
-      text-shadow: 0 4px 40px rgba(0,0,0,0.2);
+      margin-bottom: 28px;
     }
-
-    .hero h1 em {
-      font-style: italic;
-      color: rgba(255,255,255,0.75);
-    }
+    .hero h1 em { font-style: italic; color: rgba(255,255,255,0.7); }
 
     .hero-cta {
       display: inline-flex;
@@ -150,311 +177,318 @@
       gap: 10px;
       background: var(--terra);
       color: white;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       padding: 16px 32px;
-      text-decoration: none;
-      transition: background 0.2s, gap 0.2s;
-      cursor: pointer;
       border: none;
       font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, gap 0.2s;
     }
     .hero-cta:hover { background: #a8522f; gap: 16px; }
-    .hero-cta-arrow { font-size: 18px; line-height: 1; }
 
-    /* Scroll indicator */
     .scroll-hint {
       position: absolute;
-      bottom: 32px;
-      right: 48px;
+      bottom: 32px; right: 48px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      color: rgba(255,255,255,0.4);
-      font-size: 10px;
+      color: rgba(255,255,255,0.35);
+      font-size: 9px;
       letter-spacing: 3px;
       text-transform: uppercase;
     }
     .scroll-line {
-      width: 1px;
-      height: 48px;
-      background: rgba(255,255,255,0.2);
-      position: relative;
+      width: 1px; height: 40px;
+      background: rgba(255,255,255,0.15);
       overflow: hidden;
+      position: relative;
     }
     .scroll-line::after {
       content: '';
       position: absolute;
-      top: -100%;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255,255,255,0.6);
+      top: -100%; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.5);
       animation: scrollDrop 2s ease-in-out infinite;
     }
-    @keyframes scrollDrop {
-      to { top: 200%; }
-    }
+    @keyframes scrollDrop { to { top: 200%; } }
 
-    /* ── VOUCHER SECTION ── */
-    .section {
-      padding: 80px 48px;
+    /* ── MAIN LAYOUT ── */
+    .main-layout {
       max-width: 1100px;
       margin: 0 auto;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 48px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(28px, 3vw, 42px);
-      font-weight: 700;
-      color: var(--dark);
-      line-height: 1.15;
-    }
-
-    .section-sub {
-      font-size: 13px;
-      color: #888;
-      font-weight: 300;
-      max-width: 240px;
-      text-align: right;
-      line-height: 1.6;
-    }
-
-    /* ── VOUCHER TILES ── */
-    .tiles {
+      padding: 80px 48px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 56px;
+      grid-template-columns: 1fr 360px;
+      gap: 56px;
+      align-items: start;
     }
 
-    @media (max-width: 640px) {
-      .tiles { grid-template-columns: 1fr; }
-      .section { padding: 56px 24px; }
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; padding: 56px 24px; }
       nav { padding: 16px 24px; }
       .hero-content { padding: 0 24px; }
       .scroll-hint { display: none; }
     }
 
-    .tile {
-      background: white;
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-      overflow: hidden;
-    }
-    .tile::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border: 2px solid transparent;
-      transition: border-color 0.2s;
-      pointer-events: none;
-      z-index: 2;
-    }
-    .tile:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
-    }
-    .tile.selected::before { border-color: var(--teal); }
-    .tile.selected { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(27,127,114,0.15); }
+    /* ── LEFT: TILES ── */
+    .tiles-col {}
 
-    .tile-img {
-      width: 100%;
-      aspect-ratio: 2 / 1;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.5s ease;
+    .col-header {
+      margin-bottom: 36px;
     }
-    .tile:hover .tile-img { transform: scale(1.03); }
-
-    .tile-body {
-      padding: 24px 28px 28px;
-      position: relative;
-    }
-
-    /* Selected checkmark */
-    .tile-check {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--teal);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: scale(0.5);
-      transition: opacity 0.2s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .tile.selected .tile-check { opacity: 1; transform: scale(1); }
-    .tile-check svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
-    .tile-label {
+    .col-eyebrow {
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--terra);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .col-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(26px, 3vw, 36px);
+      font-weight: 700;
+      line-height: 1.15;
     }
 
+    .tiles {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tile {
+      background: white;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .tile:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      transform: translateY(-2px);
+    }
+
+    .tile-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .tile-body {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .tile-top {}
+    .tile-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
     .tile-amount {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 36px;
+      font-size: 32px;
       font-weight: 900;
       color: var(--dark);
-      margin-bottom: 6px;
-      transition: color 0.2s;
+      margin-bottom: 4px;
     }
-    .tile.selected .tile-amount { color: var(--teal); }
-
     .tile-desc {
-      font-size: 13px;
-      color: #888;
+      font-size: 12px;
+      color: #999;
       font-weight: 300;
-      margin-bottom: 22px;
       line-height: 1.5;
     }
 
-    .btn-tile {
+    .btn-add {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      margin-top: 20px;
+      padding: 12px 20px;
       background: var(--dark);
       color: white;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 2px;
       text-transform: uppercase;
-      padding: 13px 24px;
       border: none;
       font-family: inherit;
       cursor: pointer;
-      transition: background 0.2s, gap 0.2s;
+      transition: background 0.2s;
       width: 100%;
-      justify-content: center;
     }
-    .btn-tile:hover { background: var(--teal); gap: 14px; }
-    .tile.selected .btn-tile { background: var(--teal); }
+    .btn-add:hover { background: var(--teal); }
 
-    /* ── CHECKOUT ── */
-    .checkout {
-      display: none;
-      border-top: 1px solid var(--border);
-      padding-top: 48px;
-      animation: fadeUp 0.4s ease both;
-    }
-    .checkout.visible { display: block; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* Added state */
+    .btn-add.in-cart { background: var(--teal); }
+
+    @media (max-width: 540px) {
+      .tile { grid-template-columns: 1fr; }
+      .tile-img { height: 160px; }
     }
 
-    .checkout-grid {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 48px;
-      align-items: start;
+    /* ── RIGHT: CART ── */
+    .cart-col {
+      position: sticky;
+      top: 90px;
     }
 
-    @media (max-width: 800px) {
-      .checkout-grid { grid-template-columns: 1fr; }
-    }
-
-    .checkout-summary {
-      border: 1px solid var(--border);
+    .cart-box {
       background: white;
-      padding: 32px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
     }
 
-    .checkout-label {
-      font-size: 10px;
+    .cart-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cart-title {
+      font-size: 11px;
       font-weight: 500;
       letter-spacing: 3px;
       text-transform: uppercase;
+      color: var(--dark);
+    }
+    .cart-items-count {
+      font-size: 11px;
       color: #aaa;
-      margin-bottom: 20px;
     }
 
-    .summary-item {
+    /* Empty state */
+    .cart-empty {
+      padding: 48px 24px;
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .cart-empty-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 16px;
+      border: 1.5px solid #ddd;
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
+      justify-content: center;
+    }
+    .cart-empty-icon svg {
+      width: 18px; height: 18px;
+      stroke: #ccc; fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+    }
+
+    /* Cart rows */
+    .cart-rows { display: none; }
+    .cart-rows.visible { display: block; }
+    .cart-empty-state { display: block; }
+    .cart-empty-state.hidden { display: none; }
+
+    .cart-row {
+      padding: 16px 24px;
       border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 12px;
+      align-items: center;
     }
 
-    .summary-thumb {
-      width: 80px;
-      height: 40px;
+    .cart-row-thumb {
+      width: 60px;
+      height: 30px;
       object-fit: cover;
-      flex-shrink: 0;
     }
 
-    .summary-info { flex: 1; }
-    .summary-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
-    .summary-sub  { font-size: 12px; color: #aaa; }
-
-    .summary-price {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 20px;
-      font-weight: 700;
+    .cart-row-info {}
+    .cart-row-name {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .cart-row-price {
+      font-size: 12px;
+      color: #aaa;
     }
 
-    .change-btn {
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--teal);
-      cursor: pointer;
+    .cart-row-qty {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--border);
+    }
+    .qty-btn {
+      width: 30px;
+      height: 30px;
       background: none;
       border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: inherit;
-      padding: 0;
-      text-decoration: underline;
-      margin-top: 4px;
-      display: block;
+      transition: background 0.15s;
+    }
+    .qty-btn:hover { background: var(--cream); }
+    .qty-num {
+      width: 30px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
     }
 
-    /* Email side */
-    .checkout-form {}
-
-    .form-title {
+    /* Cart total */
+    .cart-total {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .cart-total-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+    .cart-total-amount {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 22px;
       font-weight: 700;
-      margin-bottom: 8px;
     }
 
-    .form-sub {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 28px;
-      line-height: 1.6;
+    /* Email + pay */
+    .cart-checkout {
+      padding: 20px 24px 24px;
+      display: none;
     }
+    .cart-checkout.visible { display: block; }
 
-    .field-label {
+    .cart-field-label {
       display: block;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 500;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: #aaa;
       margin-bottom: 8px;
@@ -462,32 +496,31 @@
 
     input[type="email"] {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px 14px;
       border: 1px solid var(--border);
-      border-radius: 0;
-      font-size: 15px;
+      font-size: 14px;
       font-family: inherit;
       color: var(--dark);
       outline: none;
-      background: white;
+      background: var(--cream);
       transition: border-color 0.2s;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
-    input[type="email"]:focus { border-color: var(--teal); }
+    input[type="email"]:focus { border-color: var(--teal); background: white; }
     input[type="email"].error { border-color: var(--terra); }
     input[type="email"]::placeholder { color: #ccc; }
 
-    .field-hint { font-size: 12px; color: #bbb; margin-bottom: 28px; }
-    .error-msg  { font-size: 12px; color: var(--terra); margin-bottom: 20px; display: none; }
+    .field-hint { font-size: 11px; color: #bbb; margin-bottom: 16px; }
+    .error-msg  { font-size: 11px; color: var(--terra); margin-bottom: 12px; display: none; }
     .error-msg.visible { display: block; }
 
     .btn-pay {
       width: 100%;
-      padding: 18px;
+      padding: 16px;
       background: var(--teal);
       color: white;
       border: none;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       letter-spacing: 3px;
       text-transform: uppercase;
@@ -497,14 +530,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
     }
     .btn-pay:hover:not(:disabled) { background: var(--teal-dark); }
     .btn-pay:disabled { background: #ccc; cursor: not-allowed; }
 
     .spinner {
       display: none;
-      width: 16px; height: 16px;
+      width: 15px; height: 15px;
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
@@ -517,51 +550,47 @@
     /* ── INFO STRIP ── */
     .info-strip {
       background: var(--dark);
-      padding: 40px 48px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background-color: #333;
+      border-top: 1px solid #222;
     }
-
     .info-item {
-      background: var(--dark);
-      padding: 32px 36px;
+      padding: 36px 32px;
+      border-right: 1px solid #222;
       text-align: center;
     }
-
+    .info-item:last-child { border-right: none; }
     .info-num {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: 3px;
       color: var(--terra);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-
     .info-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: white;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
-
     .info-sub {
-      font-size: 12px;
-      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
       font-weight: 300;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     @media (max-width: 640px) {
-      .info-strip { grid-template-columns: 1fr; padding: 0; }
+      .info-strip { grid-template-columns: 1fr; }
+      .info-item { border-right: none; border-bottom: 1px solid #222; }
     }
 
     /* ── FOOTER ── */
     footer {
+      padding: 20px;
       text-align: center;
-      padding: 24px;
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: #bbb;
@@ -576,7 +605,13 @@
 <!-- NAVBAR -->
 <nav id="nav">
   <img class="nav-logo" src="assets/logo.svg" alt="Labonetta">
-  <a class="nav-back" href="https://prosek.labonetta.cz">← Zpět na web</a>
+  <div class="nav-right">
+    <a class="nav-back" href="https://prosek.labonetta.cz">← Zpět na web</a>
+    <button class="nav-cart" onclick="document.getElementById('cart-section').scrollIntoView({behavior:'smooth'})">
+      Košík
+      <span class="nav-cart-count" id="nav-cart-count">0</span>
+    </button>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -586,9 +621,8 @@
   <div class="hero-content">
     <p class="hero-tag">Dárkový voucher · Labonetta Prosek</p>
     <h1>Darujte zážitek<br><em>jako z Neapole</em></h1>
-    <button class="hero-cta" onclick="document.getElementById('vouchers').scrollIntoView({behavior:'smooth'})">
-      Vybrat voucher
-      <span class="hero-cta-arrow">→</span>
+    <button class="hero-cta" onclick="document.getElementById('cart-section').scrollIntoView({behavior:'smooth'})">
+      Vybrat voucher →
     </button>
   </div>
   <div class="scroll-hint">
@@ -597,80 +631,115 @@
   </div>
 </div>
 
-<!-- VOUCHER SECTION -->
-<div class="section" id="vouchers">
+<!-- MAIN -->
+<div class="main-layout" id="cart-section">
 
-  <div class="section-header">
-    <h2 class="section-title">Vyberte voucher</h2>
-    <p class="section-sub">Platí na pizzu, antipasti, víno i kávu</p>
-  </div>
+  <!-- LEFT: Tiles -->
+  <div class="tiles-col">
+    <div class="col-header">
+      <div class="col-eyebrow">Dárkové poukazy</div>
+      <h2 class="col-title">Vyberte<br>voucher</h2>
+    </div>
 
-  <div class="tiles">
+    <div class="tiles">
 
-    <div class="tile" id="tile-500" onclick="selectVoucher(500)">
-      <div style="overflow:hidden">
+      <div class="tile">
         <img class="tile-img" src="assets/voucher-preview-500.jpg" alt="Voucher 500 Kč">
-      </div>
-      <div class="tile-body">
-        <div class="tile-check">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="tile-body">
+          <div class="tile-top">
+            <div class="tile-label">Voucher · Labonetta</div>
+            <div class="tile-amount">500 Kč</div>
+            <div class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</div>
+          </div>
+          <button class="btn-add" id="btn-add-500" onclick="addToCart(500)">
+            Přidat do košíku →
+          </button>
         </div>
-        <div class="tile-label">Voucher</div>
-        <div class="tile-amount">500 Kč</div>
-        <div class="tile-desc">Na veškerou útratu · platnost 1 rok</div>
-        <button class="btn-tile">Koupit → </button>
       </div>
-    </div>
 
-    <div class="tile" id="tile-1000" onclick="selectVoucher(1000)">
-      <div style="overflow:hidden">
+      <div class="tile">
         <img class="tile-img" src="assets/voucher-preview-1000.jpg" alt="Voucher 1 000 Kč">
-      </div>
-      <div class="tile-body">
-        <div class="tile-check">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="tile-body">
+          <div class="tile-top">
+            <div class="tile-label">Voucher · Labonetta</div>
+            <div class="tile-amount">1 000 Kč</div>
+            <div class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</div>
+          </div>
+          <button class="btn-add" id="btn-add-1000" onclick="addToCart(1000)">
+            Přidat do košíku →
+          </button>
         </div>
-        <div class="tile-label">Voucher</div>
-        <div class="tile-amount">1 000 Kč</div>
-        <div class="tile-desc">Na veškerou útratu · platnost 1 rok</div>
-        <button class="btn-tile">Koupit →</button>
       </div>
-    </div>
 
+    </div>
   </div>
 
-  <!-- CHECKOUT -->
-  <div class="checkout" id="checkout">
-    <div class="checkout-grid">
+  <!-- RIGHT: Cart -->
+  <div class="cart-col">
+    <div class="cart-box">
 
-      <!-- Form -->
-      <div class="checkout-form">
-        <h3 class="form-title">Dokončit objednávku</h3>
-        <p class="form-sub">Zadejte email a voucher obdržíte jako PDF okamžitě po zaplacení.</p>
-
-        <label class="field-label" for="email">Email</label>
-        <input type="email" id="email" placeholder="vas@email.cz" autocomplete="email">
-        <p class="field-hint">PDF voucher do pár vteřin po platbě.</p>
-        <p class="error-msg" id="email-error">Zadejte prosím platný email.</p>
-
-        <button class="btn-pay" id="btn-pay" onclick="handlePay()">
-          <span class="btn-label">Pokračovat k platbě</span>
-          <span class="spinner"></span>
-        </button>
+      <div class="cart-header">
+        <span class="cart-title">Košík</span>
+        <span class="cart-items-count" id="cart-items-count">0 položek</span>
       </div>
 
-      <!-- Summary -->
-      <div class="checkout-summary">
-        <div class="checkout-label">Shrnutí</div>
-        <div class="summary-item">
-          <img class="summary-thumb" id="summary-thumb" src="assets/voucher-preview-500.jpg" alt="">
-          <div class="summary-info">
-            <div class="summary-name">Voucher Labonetta</div>
-            <div class="summary-sub" id="summary-sub">500 Kč · platnost 1 rok</div>
+      <!-- Empty state -->
+      <div class="cart-empty-state" id="cart-empty">
+        <div class="cart-empty">
+          <div class="cart-empty-icon">
+            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
           </div>
-          <div class="summary-price" id="summary-price">500 Kč</div>
+          Váš košík je prázdný.<br>Vyberte voucher vlevo.
         </div>
-        <button class="change-btn" onclick="changeVoucher()">← Změnit voucher</button>
+      </div>
+
+      <!-- Cart rows -->
+      <div class="cart-rows" id="cart-rows">
+
+        <div class="cart-row" id="row-500" style="display:none">
+          <img class="cart-row-thumb" src="assets/voucher-preview-500.jpg" alt="">
+          <div class="cart-row-info">
+            <div class="cart-row-name">Voucher 500 Kč</div>
+            <div class="cart-row-price" id="row-500-price">500 Kč</div>
+          </div>
+          <div class="cart-row-qty">
+            <button class="qty-btn" onclick="changeQty(500, -1)">−</button>
+            <span class="qty-num" id="qty-500">1</span>
+            <button class="qty-btn" onclick="changeQty(500, +1)">+</button>
+          </div>
+        </div>
+
+        <div class="cart-row" id="row-1000" style="display:none">
+          <img class="cart-row-thumb" src="assets/voucher-preview-1000.jpg" alt="">
+          <div class="cart-row-info">
+            <div class="cart-row-name">Voucher 1 000 Kč</div>
+            <div class="cart-row-price" id="row-1000-price">1 000 Kč</div>
+          </div>
+          <div class="cart-row-qty">
+            <button class="qty-btn" onclick="changeQty(1000, -1)">−</button>
+            <span class="qty-num" id="qty-1000">1</span>
+            <button class="qty-btn" onclick="changeQty(1000, +1)">+</button>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="cart-total">
+          <span class="cart-total-label">Celkem</span>
+          <span class="cart-total-amount" id="cart-total">0 Kč</span>
+        </div>
+
+        <!-- Email + pay -->
+        <div class="cart-checkout visible" id="cart-checkout">
+          <label class="cart-field-label" for="email">Email pro zaslání voucherů</label>
+          <input type="email" id="email" placeholder="vas@email.cz" autocomplete="email">
+          <p class="field-hint">PDF vouchery obdržíte okamžitě po zaplacení.</p>
+          <p class="error-msg" id="email-error">Zadejte prosím platný email.</p>
+          <button class="btn-pay" id="btn-pay" onclick="handlePay()">
+            <span class="btn-label">Zaplatit</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+
       </div>
 
     </div>
@@ -697,49 +766,83 @@
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <a href="https://prosek.labonetta.cz">Labonetta Prosek</a> · &copy; 2025
 </footer>
 
 <script>
-  // Navbar scroll effect
+  // Navbar scroll
   const nav = document.getElementById('nav')
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 60)
   })
 
-  let selectedAmount = null
+  // Cart state
+  const cart = { 500: 0, 1000: 0 }
 
-  function selectVoucher(amount) {
-    selectedAmount = amount
-
-    document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'))
-    document.getElementById(`tile-${amount}`).classList.add('selected')
-
-    const formatted = amount === 1000 ? '1 000 Kč' : '500 Kč'
-    document.getElementById('summary-price').textContent = formatted
-    document.getElementById('summary-sub').textContent = `${formatted} · platnost 1 rok`
-    document.getElementById('summary-thumb').src =
-      `assets/voucher-preview-${amount}.jpg`
-
-    const checkout = document.getElementById('checkout')
-    checkout.classList.add('visible')
-
-    setTimeout(() => {
-      checkout.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 80)
-
-    setTimeout(() => {
-      document.getElementById('email').focus()
-    }, 500)
+  function formatPrice(amount) {
+    return amount === 1000 ? '1 000 Kč' : `${amount} Kč`
   }
 
-  function changeVoucher() {
-    document.getElementById('checkout').classList.remove('visible')
-    document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'))
-    selectedAmount = null
-    document.getElementById('vouchers').scrollIntoView({ behavior: 'smooth' })
+  function addToCart(amount) {
+    cart[amount]++
+    updateCart()
+
+    // Scroll to cart on mobile
+    if (window.innerWidth < 900) {
+      document.querySelector('.cart-col').scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  function changeQty(amount, delta) {
+    cart[amount] = Math.max(0, cart[amount] + delta)
+    updateCart()
+  }
+
+  function updateCart() {
+    const total500  = cart[500]
+    const total1000 = cart[1000]
+    const totalItems = total500 + total1000
+    const totalPrice = total500 * 500 + total1000 * 1000
+
+    // Show/hide rows
+    const row500  = document.getElementById('row-500')
+    const row1000 = document.getElementById('row-1000')
+    row500.style.display  = total500  > 0 ? 'grid' : 'none'
+    row1000.style.display = total1000 > 0 ? 'grid' : 'none'
+
+    // Update quantities
+    document.getElementById('qty-500').textContent  = total500
+    document.getElementById('qty-1000').textContent = total1000
+
+    // Update row prices
+    document.getElementById('row-500-price').textContent  = formatPrice(total500 * 500)
+    document.getElementById('row-1000-price').textContent = formatPrice(total1000 * 1000)
+
+    // Total
+    document.getElementById('cart-total').textContent = formatPrice(totalPrice)
+
+    // Items count
+    document.getElementById('cart-items-count').textContent =
+      totalItems === 0 ? '0 položek' :
+      totalItems === 1 ? '1 položka' :
+      totalItems < 5  ? `${totalItems} položky` : `${totalItems} položek`
+
+    // Nav badge
+    const badge = document.getElementById('nav-cart-count')
+    badge.textContent = totalItems
+    badge.classList.toggle('visible', totalItems > 0)
+
+    // Show/hide empty vs rows
+    const isEmpty = totalItems === 0
+    document.getElementById('cart-empty').classList.toggle('hidden', !isEmpty)
+    document.getElementById('cart-rows').classList.toggle('visible', !isEmpty)
+
+    // Add button states
+    document.getElementById('btn-add-500').classList.toggle('in-cart', total500 > 0)
+    document.getElementById('btn-add-500').textContent = total500 > 0 ? `V košíku (${total500} ks) →` : 'Přidat do košíku →'
+    document.getElementById('btn-add-1000').classList.toggle('in-cart', total1000 > 0)
+    document.getElementById('btn-add-1000').textContent = total1000 > 0 ? `V košíku (${total1000} ks) →` : 'Přidat do košíku →'
   }
 
   async function handlePay() {
@@ -748,7 +851,8 @@
     const emailError = document.getElementById('email-error')
     const btn = document.getElementById('btn-pay')
 
-    if (!selectedAmount) return
+    const totalItems = cart[500] + cart[1000]
+    if (totalItems === 0) return
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
@@ -767,7 +871,13 @@
       const res = await fetch('/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: selectedAmount, email })
+        body: JSON.stringify({
+          items: [
+            { amount: 500,  qty: cart[500] },
+            { amount: 1000, qty: cart[1000] }
+          ],
+          email
+        })
       })
       const data = await res.json()
       if (!res.ok) {
