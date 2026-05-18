@@ -3,297 +3,479 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voucher Labonetta</title>
+  <title>Dárkový voucher · Labonetta</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --teal:  #1B7F72;
-      --terra: #C0623A;
-      --dark:  #1a1a1a;
-      --text:  #333;
-      --light: #f5f0eb;
+      --teal:      #1B7F72;
+      --teal-dark: #166a5f;
+      --border:    #e5e7eb;
+      --bg:        #f9fafb;
+      --gray:      #6b7280;
+      --dark:      #111827;
     }
 
     body {
-      font-family: 'Lato', sans-serif;
-      background: var(--light);
-      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      background: white;
+      color: var(--dark);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* NAV */
-    nav {
-      background: var(--dark);
-      padding: 18px 40px;
+    /* ── TOP BAR ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .nav-logo {
-      color: white;
-      font-size: 13px;
-      letter-spacing: 5px;
-      font-weight: 700;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       text-decoration: none;
-      text-transform: uppercase;
+      color: var(--dark);
     }
-    .nav-sub {
-      color: rgba(255,255,255,0.4);
-      font-size: 11px;
-      letter-spacing: 2px;
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      background: var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+    .brand-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
     }
 
-    /* HERO */
-    .hero {
-      background: var(--dark);
-      padding: 60px 40px 80px;
+    .back-link {
+      font-size: 13px;
+      color: var(--gray);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--teal); }
+
+    /* ── PROGRESS ── */
+    .progress {
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+    }
+
+    .progress-steps {
+      display: flex;
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .step {
+      flex: 1;
       text-align: center;
+      padding: 14px 0 12px;
+      font-size: 13px;
+      color: var(--gray);
+      border-bottom: 2px solid transparent;
+      font-weight: 400;
     }
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 56px);
-      font-weight: 300;
-      color: white;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-    .hero h1 span { color: var(--terra); font-weight: 700; }
-    .hero p {
-      color: rgba(255,255,255,0.55);
-      font-size: 16px;
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.7;
+    .step.active {
+      color: var(--teal);
+      border-bottom-color: var(--teal);
+      font-weight: 600;
     }
 
-    /* MAIN */
+    /* ── MAIN ── */
     main {
-      max-width: 640px;
-      margin: -40px auto 80px;
-      padding: 0 20px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px 60px;
     }
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 40px;
-      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    .container {
+      width: 100%;
+      max-width: 560px;
     }
 
-    /* VOUCHER SELECTION */
-    .section-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #999;
-      margin-bottom: 16px;
-    }
-
-    .voucher-options {
+    /* ── TABLE-STYLE VOUCHER ROWS ── */
+    .table-header {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: 1fr auto auto;
+      gap: 16px;
+      padding: 0 0 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--gray);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .table-header .col-price { text-align: right; }
+
+    .voucher-rows {
       margin-bottom: 32px;
     }
 
-    .voucher-option {
-      border: 2px solid #e8e0d8;
-      border-radius: 10px;
-      padding: 24px 20px;
+    .voucher-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
       cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      position: relative;
+      transition: background 0.15s;
+      border-radius: 4px;
+      margin: 0 -8px;
+      padding-left: 8px;
+      padding-right: 8px;
     }
-    .voucher-option:hover {
-      border-color: var(--teal);
-    }
-    .voucher-option.selected {
-      border-color: var(--teal);
-      background: #f0faf8;
-    }
-    .voucher-option input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .voucher-amount {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--dark);
-      display: block;
-      margin-bottom: 4px;
-    }
-    .voucher-label {
-      font-size: 12px;
-      color: #999;
-    }
-    .voucher-option.selected .voucher-amount { color: var(--teal); }
+    .voucher-row:hover { background: var(--bg); }
+    .voucher-row.selected { background: #f0faf8; }
+    .voucher-row input[type="radio"] { display: none; }
 
-    /* EMAIL */
-    .form-group { margin-bottom: 24px; }
-    label {
-      display: block;
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #999;
-      margin-bottom: 8px;
+    .row-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
+
+    /* Thumbnail */
+    .row-thumb {
+      width: 80px;
+      height: 40px;
+      border-radius: 6px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    .row-info {}
+    .row-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+    .row-sub {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    /* Radio circle */
+    .row-select {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .radio-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
+    .voucher-row.selected .radio-circle {
+      border-color: var(--teal);
+      background: var(--teal);
+    }
+    .radio-circle::after {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .voucher-row.selected .radio-circle::after { opacity: 1; }
+
+    .row-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* ── EMAIL FIELD ── */
+    .field-group {
+      margin-bottom: 12px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
     input[type="email"] {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e8e0d8;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 15px;
       font-family: inherit;
+      color: var(--dark);
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: white;
     }
-    input[type="email"]:focus { border-color: var(--teal); }
-    input[type="email"].error { border-color: var(--terra); }
+    input[type="email"]::placeholder { color: #9ca3af; }
+    input[type="email"]:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(27,127,114,0.08);
+    }
+    input[type="email"].error { border-color: #ef4444; }
 
-    .error-msg {
-      font-size: 12px;
-      color: var(--terra);
-      margin-top: 6px;
-      display: none;
-    }
+    .field-hint { font-size: 12px; color: var(--gray); margin-top: 5px; }
+    .error-msg  { font-size: 12px; color: #ef4444; margin-top: 5px; display: none; }
     .error-msg.visible { display: block; }
 
-    /* SUBMIT */
+    /* ── BOTTOM BAR ── */
+    .bottom-bar {
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 24px;
+      background: white;
+      position: sticky;
+      bottom: 0;
+    }
+
+    .total {
+      text-align: right;
+    }
+    .total-label {
+      font-size: 12px;
+      color: var(--gray);
+    }
+    .total-amount {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
     .btn-pay {
-      width: 100%;
-      padding: 18px;
+      padding: 13px 28px;
       background: var(--teal);
       color: white;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       font-family: inherit;
-      letter-spacing: 1px;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
     }
-    .btn-pay:hover { background: #16706  4; }
-    .btn-pay:active { transform: scale(0.99); }
-    .btn-pay:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-pay:hover:not(:disabled) { background: var(--teal-dark); }
+    .btn-pay:disabled { background: #9ca3af; cursor: not-allowed; }
+    .btn-pay svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
-    .btn-pay .spinner {
+    .spinner {
       display: none;
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto;
+      animation: spin 0.7s linear infinite;
     }
-    .btn-pay.loading .btn-text { display: none; }
-    .btn-pay.loading .spinner { display: inline-block; }
-
+    .btn-pay.loading .btn-label { display: none; }
+    .btn-pay.loading svg { display: none; }
+    .btn-pay.loading .spinner { display: block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* INFO */
-    .info-list {
+    /* ── INFO ── */
+    .info-row {
+      display: flex;
+      gap: 20px;
       margin-top: 28px;
       padding-top: 24px;
-      border-top: 1px solid #f0ebe4;
-      list-style: none;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
     }
-    .info-list li {
-      font-size: 13px;
-      color: #888;
-      padding: 5px 0;
-      padding-left: 20px;
-      position: relative;
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      flex: 1;
+      min-width: 160px;
     }
-    .info-list li::before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: var(--teal);
-      font-weight: 700;
+    .info-icon {
+      width: 32px;
+      height: 32px;
+      background: #f0faf8;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 15px;
     }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 32px;
+    .info-text {
       font-size: 12px;
-      color: #bbb;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+    .info-text strong { display: block; color: var(--dark); font-weight: 500; font-size: 13px; }
+
+    @media (max-width: 560px) {
+      header { padding: 0 20px; }
+      .bottom-bar { padding: 16px 20px; }
+      .table-header { display: none; }
     }
   </style>
 </head>
 <body>
 
-<nav>
-  <a class="nav-logo" href="https://labonetta.cz">Labonetta</a>
-  <span class="nav-sub">Pizza jako z Neapole</span>
-</nav>
+<!-- HEADER -->
+<header>
+  <a class="brand" href="https://labonetta.cz">
+    <div class="brand-logo">🍕</div>
+    <span class="brand-name">Labonetta</span>
+  </a>
+  <a class="back-link" href="https://prosek.labonetta.cz">← Zpět na web</a>
+</header>
 
-<div class="hero">
-  <h1>Darujte zážitek<br><span>z pravé pizzy</span></h1>
-  <p>Voucher na pizzu, antipasti, víno nebo kávu. Ideální dárek pro každého milovníka italské kuchyně.</p>
+<!-- PROGRESS -->
+<div class="progress">
+  <div class="progress-steps">
+    <div class="step active">1. Výběr a platba</div>
+    <div class="step">2. Hotovo</div>
+  </div>
 </div>
 
+<!-- MAIN -->
 <main>
-  <div class="card">
+  <div class="container">
 
-    <p class="section-label">Vyberte hodnotu voucheru</p>
-
-    <div class="voucher-options">
-      <label class="voucher-option selected" id="opt-500">
-        <input type="radio" name="amount" value="500" checked>
-        <span class="voucher-amount">500 Kč</span>
-        <span class="voucher-label">Voucher</span>
-      </label>
-      <label class="voucher-option" id="opt-1000">
-        <input type="radio" name="amount" value="1000">
-        <span class="voucher-amount">1 000 Kč</span>
-        <span class="voucher-label">Voucher</span>
-      </label>
+    <!-- Table header -->
+    <div class="table-header">
+      <span>Voucher</span>
+      <span></span>
+      <span class="col-price">Hodnota</span>
     </div>
 
-    <div class="form-group">
-      <label for="email">Email pro zaslání voucheru</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="vas@email.cz"
-        autocomplete="email"
-      >
+    <!-- Voucher rows -->
+    <div class="voucher-rows" id="voucher-rows">
+
+      <label class="voucher-row selected" data-value="500">
+        <input type="radio" name="amount" value="500" checked>
+        <div class="row-main">
+          <img class="row-thumb" src="assets/voucher-preview-500.jpg" alt="">
+          <div class="row-info">
+            <div class="row-title">Voucher Labonetta</div>
+            <div class="row-sub">Platí na veškerou útratu · 1 rok</div>
+          </div>
+        </div>
+        <div class="row-select">
+          <div class="radio-circle"></div>
+        </div>
+        <div class="row-price">500 Kč</div>
+      </label>
+
+      <label class="voucher-row" data-value="1000">
+        <input type="radio" name="amount" value="1000">
+        <div class="row-main">
+          <img class="row-thumb" src="assets/voucher-preview-1000.jpg" alt="">
+          <div class="row-info">
+            <div class="row-title">Voucher Labonetta</div>
+            <div class="row-sub">Platí na veškerou útratu · 1 rok</div>
+          </div>
+        </div>
+        <div class="row-select">
+          <div class="radio-circle"></div>
+        </div>
+        <div class="row-price">1 000 Kč</div>
+      </label>
+
+    </div>
+
+    <!-- Email -->
+    <div class="field-group">
+      <label class="field-label" for="email">Email pro zaslání voucheru</label>
+      <input type="email" id="email" placeholder="vas@email.cz" autocomplete="email">
+      <p class="field-hint">PDF voucher obdržíte okamžitě po zaplacení.</p>
       <p class="error-msg" id="email-error">Zadejte prosím platný email.</p>
     </div>
 
-    <button class="btn-pay" id="btn-pay" onclick="handlePay()">
-      <span class="btn-text">Zaplatit a získat voucher</span>
-      <span class="spinner"></span>
-    </button>
-
-    <ul class="info-list">
-      <li>Voucher obdržíte okamžitě na email jako PDF</li>
-      <li>Platí 1 rok od data zakoupení</li>
-      <li>Uplatníte osobně na naší provozovně Prosek</li>
-      <li>Platí na veškerou útratu — jídlo, pití i kávu</li>
-    </ul>
+    <!-- Info -->
+    <div class="info-row">
+      <div class="info-item">
+        <div class="info-icon">📧</div>
+        <div class="info-text">
+          <strong>Ihned na email</strong>
+          PDF voucher do pár vteřin
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📅</div>
+        <div class="info-text">
+          <strong>Platnost 1 rok</strong>
+          Od data zakoupení
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div class="info-text">
+          <strong>Osobně na Proseku</strong>
+          Ukažte PDF obsluze
+        </div>
+      </div>
+    </div>
 
   </div>
 </main>
 
-<footer>
-  &copy; 2025 Labonetta · <a href="https://prosek.labonetta.cz" style="color:#bbb;">prosek.labonetta.cz</a>
-</footer>
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="total">
+    <div class="total-label">Celková cena</div>
+    <div class="total-amount" id="total-display">500 Kč</div>
+  </div>
+  <button class="btn-pay" id="btn-pay" onclick="handlePay()">
+    <span class="btn-label">Pokračovat k platbě</span>
+    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    <span class="spinner"></span>
+  </button>
+</div>
 
 <script>
-  // Voucher option selection
-  document.querySelectorAll('.voucher-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      document.querySelectorAll('.voucher-option').forEach(o => o.classList.remove('selected'))
-      opt.classList.add('selected')
+  const rows = document.querySelectorAll('.voucher-row')
+
+  rows.forEach(row => {
+    row.addEventListener('click', () => {
+      rows.forEach(r => r.classList.remove('selected'))
+      row.classList.add('selected')
+      row.querySelector('input').checked = true
+      const val = row.dataset.value
+      document.getElementById('total-display').textContent =
+        val === '1000' ? '1 000 Kč' : '500 Kč'
     })
   })
 
@@ -304,7 +486,6 @@
     const emailError = document.getElementById('email-error')
     const btn = document.getElementById('btn-pay')
 
-    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       emailInput.classList.add('error')
@@ -315,7 +496,6 @@
     emailInput.classList.remove('error')
     emailError.classList.remove('visible')
 
-    // Loading state
     btn.disabled = true
     btn.classList.add('loading')
 
@@ -325,22 +505,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: Number(amount), email })
       })
-
       const data = await res.json()
-
       if (!res.ok) {
-        alert(data.error || 'Chyba při vytváření platby. Zkuste to prosím znovu.')
+        alert(data.error || 'Chyba při vytváření platby.')
         btn.disabled = false
         btn.classList.remove('loading')
         return
       }
-
-      // Redirect to GoPay payment gateway
       window.location.href = data.gw_url
-
-    } catch (err) {
-      console.error(err)
-      alert('Nepodařilo se spojit se serverem. Zkuste to prosím znovu.')
+    } catch {
+      alert('Nepodařilo se spojit se serverem.')
       btn.disabled = false
       btn.classList.remove('loading')
     }
