@@ -2,7 +2,7 @@
   "name": "labonetta-voucher",
   "version": "1.0.0",
   "description": "Voucher system for Labonetta pizza bistro",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod"
@@ -14,6 +14,6 @@
     "uuid": "^9.0.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20.x"
   }
 }
