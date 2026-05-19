@@ -323,6 +323,7 @@
     }
     .btn-add:hover { background: var(--teal-dark); }
     .btn-add:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+    .btn-add svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; flex-shrink: 0; }
 
     .tile.in-cart .btn-add { display: none; }
 
@@ -835,6 +836,7 @@
       aria-label="Přejít na výběr voucherů"
     >
       Vybrat voucher
+      <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </button>
   </div>
 </section>
@@ -844,7 +846,7 @@
   <div class="section-header">
     <p class="section-eyebrow" aria-hidden="true">Dárkové poukazy</p>
     <h2 class="section-title" id="vouchers-title">Vyberte voucher</h2>
-    <p class="section-sub">Platí na veškerou útratu — pizzu, antipasti, víno i kávu.<br>Uplatníte na Proseku i na Kobylisích.</p>
+    <p class="section-sub">Voucher platí osobně na veškerou útratu na Proseku i Kobylisích.</p>
   </div>
 
   <div class="tiles" role="list">
@@ -857,7 +859,7 @@
       <div class="tile-body">
         <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
         <p class="tile-amount">500 Kč</p>
-        <p class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
+        <p class="tile-desc">Platí osobně na veškerou útratu · 1 rok</p>
         <div class="tile-actions">
           <button
             class="btn-add"
@@ -887,7 +889,7 @@
       <div class="tile-body">
         <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
         <p class="tile-amount">1 000 Kč</p>
-        <p class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
+        <p class="tile-desc">Platí osobně na veškerou útratu · 1 rok</p>
         <div class="tile-actions">
           <button
             class="btn-add"
@@ -954,7 +956,7 @@
 
       <button class="btn-pay" id="btn-pay" onclick="handlePay()" aria-live="polite">
         <span class="btn-label">Zaplatit kartou</span>
-        <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         <span class="spinner" aria-hidden="true"></span>
       </button>
     </div>
