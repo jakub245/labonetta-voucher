@@ -115,17 +115,11 @@
       );
     }
 
-    /* Container inside hero — same max-width as sections */
+    /* Hero content — flush to viewport edge with padding */
     .hero-content {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      padding-bottom: 80px;
-    }
-
-    .hero-content-inner {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 0 48px;
+      padding: 0 48px 80px;
     }
 
     .hero-eyebrow {
@@ -172,12 +166,12 @@
       font-family: 'Bai Jamjuree', sans-serif;
       font-size: 14px;
       font-weight: 600;
-      padding: 14px 28px;
+      padding: 16px 32px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.2s;
-      min-height: 48px;
+      min-height: 52px;
       touch-action: manipulation;
       letter-spacing: 0.3px;
     }
@@ -709,16 +703,10 @@
       border-top: 1px solid var(--border);
     }
 
-    .info-section-header {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 48px 48px 32px;
-    }
-
     .info-inner {
       max-width: 1040px;
       margin: 0 auto;
-      padding: 0 48px 48px;
+      padding: 48px 48px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0;
@@ -799,14 +787,13 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 800px) {
       nav { padding: 16px 24px; }
-      .hero-content-inner { padding: 0 24px; }
+      .hero-content { padding: 0 24px 56px; }
       .section { padding: 56px 20px 40px; }
       .tiles { grid-template-columns: 1fr; gap: 16px; }
       .sticky-bar-inner { padding: 12px 20px; flex-wrap: wrap; }
       .checkout-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 32px; }
       .checkout-summary { order: -1; }
-      .info-section-header { padding: 40px 20px 24px; }
-      .info-inner { grid-template-columns: 1fr; padding: 0 20px 40px; gap: 24px; }
+      .info-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 24px; }
       .info-item { border-right: none !important; padding: 0 !important; flex-direction: row; align-items: flex-start; gap: 14px; }
       .info-icon-wrap { flex-shrink: 0; }
       footer { padding: 20px; flex-direction: column; align-items: flex-start; }
@@ -840,18 +827,15 @@
   <img class="hero-img" src="assets/hero-interior.jpg" alt="Interiér restaurace Labonetta s neonovým nápisem a srdíčkovými dekoracemi">
   <div class="hero-overlay" aria-hidden="true"></div>
   <div class="hero-content">
-    <div class="hero-content-inner">
-      <p class="hero-eyebrow" aria-hidden="true">Dárkový voucher · Labonetta</p>
-      <h1>Darujte zážitek<br><em>jako z Neapole</em></h1>
-      <button
-        class="hero-cta"
-        onclick="document.getElementById('vouchers').scrollIntoView({behavior:'smooth'})"
-        aria-label="Přejít na výběr voucherů"
-      >
-        Vybrat voucher
-        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </div>
+    <p class="hero-eyebrow" aria-hidden="true">Dárkový voucher · Labonetta</p>
+    <h1>Darujte zážitek<br><em>jako z Neapole</em></h1>
+    <button
+      class="hero-cta"
+      onclick="document.getElementById('vouchers').scrollIntoView({behavior:'smooth'})"
+      aria-label="Přejít na výběr voucherů"
+    >
+      Vybrat voucher
+    </button>
   </div>
 </section>
 
@@ -992,11 +976,7 @@
 </section>
 
 <!-- INFO SECTION -->
-<section class="info-section" aria-labelledby="info-title">
-  <div class="info-section-header">
-    <p class="section-eyebrow">Jak to funguje</p>
-    <h2 class="section-title" id="info-title">Vše jednoduše</h2>
-  </div>
+<section class="info-section" aria-label="Proč koupit voucher">
   <div class="info-inner">
 
     <div class="info-item">
