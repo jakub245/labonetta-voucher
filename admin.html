@@ -4,207 +4,471 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin · Vouchery Labonetta</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --teal: #1B7F72; --terra: #C0623A; --dark: #1a1a1a; --light: #f5f0eb; }
 
-    body { font-family: 'Lato', sans-serif; background: var(--light); color: #333; }
+    :root {
+      --teal:      #1B7F72;
+      --teal-dark: #12574d;
+      --teal-bg:   #e8f5f3;
+      --terra:     #C0623A;
+      --terra-bg:  #fdf0eb;
+      --dark:      #1a1a1a;
+      --mid:       #4a4a4a;
+      --gray:      #6b7280;
+      --light:     #f3f4f6;
+      --border:    #e5e7eb;
+      --white:     #ffffff;
+    }
 
-    /* LOGIN */
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Bai Jamjuree', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; }
+
+    /* ── LOGIN ── */
     #login-screen {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-    }
-    .login-card {
-      background: white;
-      border-radius: 12px;
-      padding: 48px 40px;
-      max-width: 380px;
-      width: 100%;
-      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
-      text-align: center;
-    }
-    .login-card h1 { font-size: 20px; color: var(--dark); margin-bottom: 8px; }
-    .login-card p { font-size: 13px; color: #999; margin-bottom: 28px; }
-    .login-card input {
-      width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e8e0d8;
-      border-radius: 8px;
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-      margin-bottom: 12px;
-      text-align: center;
-      letter-spacing: 3px;
-    }
-    .login-card input:focus { border-color: var(--teal); }
-    .login-card button {
-      width: 100%;
-      padding: 14px;
+      padding: 24px;
       background: var(--dark);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 1px;
     }
-    .login-error { color: var(--terra); font-size: 13px; margin-top: 10px; display: none; }
 
-    /* ADMIN */
-    #admin-screen { display: none; }
-
-    nav {
-      background: var(--dark);
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .login-wrap {
+      width: 100%;
+      max-width: 400px;
     }
-    .nav-title { color: white; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; }
-    .nav-logout {
-      color: rgba(255,255,255,0.4);
-      font-size: 12px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-family: inherit;
-    }
-    .nav-logout:hover { color: white; }
 
-    .admin-main { padding: 32px; max-width: 1100px; margin: 0 auto; }
-
-    /* STATS */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
+    .login-logo {
+      text-align: center;
       margin-bottom: 32px;
     }
-    .stat-card {
-      background: white;
-      border-radius: 10px;
-      padding: 20px 24px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    .login-logo-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px; height: 56px;
+      background: var(--terra);
+      border-radius: 14px;
+      margin-bottom: 16px;
     }
-    .stat-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
-    .stat-value { font-size: 28px; font-weight: 700; color: var(--dark); }
-    .stat-value.teal { color: var(--teal); }
-    .stat-value.terra { color: var(--terra); }
+    .login-logo-mark svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .login-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
 
-    /* FILTERS */
-    .filters {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+    .login-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 36px 32px;
     }
-    .filter-btn {
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: 2px solid #e8e0d8;
-      background: white;
-      font-size: 12px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .filter-btn.active { border-color: var(--dark); background: var(--dark); color: white; }
 
-    /* TABLE */
-    .table-wrap {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    .login-card h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 4px;
     }
-    table { width: 100%; border-collapse: collapse; }
-    th {
-      text-align: left;
-      padding: 14px 20px;
-      font-size: 10px;
+    .login-card p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
+
+    .login-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #999;
-      border-bottom: 1px solid #f0ebe4;
-      background: #faf8f5;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 8px;
     }
-    td {
-      padding: 14px 20px;
-      font-size: 14px;
-      border-bottom: 1px solid #f5f0eb;
+
+    .login-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: inherit;
+      color: white;
+      outline: none;
+      letter-spacing: 3px;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+      text-align: center;
     }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #fdfcfb; }
+    .login-input:focus { border-color: var(--teal); }
+    .login-input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 1px; }
 
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .badge-paid     { background: #e8f5f3; color: var(--teal); }
-    .badge-pending  { background: #fff3ee; color: var(--terra); }
-    .badge-redeemed { background: #f0f0f0; color: #888; }
-
-    .code { font-family: monospace; font-weight: 700; font-size: 13px; letter-spacing: 1px; }
-
-    .btn-redeem {
-      padding: 6px 14px;
+    .login-btn {
+      width: 100%;
+      padding: 15px;
       background: var(--teal);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 50px;
+    }
+    .login-btn:hover { background: var(--teal-dark); }
+
+    .login-error {
+      color: #fc8181;
+      font-size: 13px;
+      margin-top: 12px;
+      text-align: center;
+      display: none;
+    }
+    .login-error.visible { display: block; }
+
+    /* ── ADMIN ── */
+    #admin-screen { display: none; }
+
+    /* Nav */
+    .admin-nav {
+      background: var(--dark);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-nav-dot {
+      width: 8px; height: 8px;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+    .admin-nav-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .admin-nav-right { display: flex; align-items: center; gap: 20px; }
+
+    .btn-refresh {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.5);
       font-size: 12px;
       font-family: inherit;
-      font-weight: 700;
+      font-weight: 500;
+      padding: 7px 14px;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.15s;
     }
-    .btn-redeem:hover { background: #166a5f; }
-    .btn-redeem:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-refresh:hover { border-color: rgba(255,255,255,0.3); color: white; }
+    .btn-refresh svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    .btn-logout {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.3);
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .btn-logout:hover { color: white; }
+
+    /* Main */
+    .admin-main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 40px 64px;
+    }
+
+    .admin-page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .admin-page-sub {
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 300;
+      margin-bottom: 32px;
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1;
+    }
+    .stat-value.teal  { color: var(--teal); }
+    .stat-value.terra { color: var(--terra); }
+
+    /* Filters + table header */
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 100px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--dark); color: var(--dark); }
+    .filter-btn.active { border-color: var(--dark); background: var(--dark); color: white; }
+
+    .table-count {
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+    .table-count strong { color: var(--dark); font-weight: 600; }
+
+    /* Table */
+    .table-wrap {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      text-align: left;
+      padding: 12px 20px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      border-bottom: 1px solid var(--border);
+      background: #f9fafb;
+    }
+
+    td {
+      padding: 14px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid #f3f4f6;
+      color: var(--dark);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+
+    .code {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: var(--dark);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .badge-paid     { background: var(--teal-bg); color: var(--teal); }
+    .badge-paid::before { background: var(--teal); }
+    .badge-pending  { background: var(--terra-bg); color: var(--terra); }
+    .badge-pending::before { background: var(--terra); }
+    .badge-redeemed { background: #f3f4f6; color: #6b7280; }
+    .badge-redeemed::before { background: #9ca3af; }
 
     .amount-500  { color: var(--terra); font-weight: 700; }
     .amount-1000 { color: var(--teal);  font-weight: 700; }
 
-    .empty { text-align: center; padding: 48px; color: #bbb; font-size: 14px; }
-    .loading-row { text-align: center; padding: 48px; color: #ccc; }
+    .email-cell { color: var(--gray); font-size: 13px; font-weight: 400; }
+    .date-cell  { color: var(--gray); font-size: 13px; }
+
+    .btn-redeem {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-redeem:hover { background: var(--teal-dark); }
+    .btn-redeem:disabled { background: #d1d5db; cursor: not-allowed; }
+
+    .action-done {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+      color: #9ca3af;
+    }
+    .empty-state svg { width: 40px; height: 40px; stroke: #d1d5db; fill: none; stroke-width: 1.5; margin-bottom: 16px; }
+    .empty-state p { font-size: 14px; }
+
+    .loading-state {
+      text-align: center;
+      padding: 48px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .admin-nav { padding: 0 20px; }
+      .admin-main { padding: 24px 20px 48px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 680px; }
+    }
   </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-card">
-    <h1>Admin přístup</h1>
-    <p>Vouchery Labonetta</p>
-    <input type="password" id="pw-input" placeholder="Heslo" onkeydown="if(event.key==='Enter') login()">
-    <button onclick="login()">Přihlásit se</button>
-    <p class="login-error" id="login-error">Nesprávné heslo.</p>
+  <div class="login-wrap">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <p class="login-title">Labonetta · Admin</p>
+    </div>
+
+    <div class="login-card">
+      <h1>Přihlásit se</h1>
+      <p>Správa dárkových voucherů</p>
+      <label class="login-label" for="pw-input">Přístupové heslo</label>
+      <input
+        class="login-input"
+        type="password"
+        id="pw-input"
+        placeholder="••••••••"
+        onkeydown="if(event.key==='Enter') login()"
+        autocomplete="current-password"
+      >
+      <button class="login-btn" onclick="login()">
+        Přihlásit se
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <p class="login-error" id="login-error">Nesprávné heslo, zkuste to znovu.</p>
+    </div>
   </div>
 </div>
 
 <!-- ADMIN -->
 <div id="admin-screen">
-  <nav>
-    <span class="nav-title">Labonetta · Vouchery</span>
-    <button class="nav-logout" onclick="logout()">Odhlásit</button>
+
+  <nav class="admin-nav">
+    <div class="admin-nav-brand">
+      <div class="admin-nav-dot"></div>
+      <span class="admin-nav-title">Vouchery · Labonetta</span>
+    </div>
+    <div class="admin-nav-right">
+      <button class="btn-refresh" onclick="loadVouchers()">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Obnovit
+      </button>
+      <button class="btn-logout" onclick="logout()">Odhlásit</button>
+    </div>
   </nav>
 
   <div class="admin-main">
 
+    <h1 class="admin-page-title">Přehled voucherů</h1>
+    <p class="admin-page-sub" id="admin-date">Načítám data…</p>
+
     <!-- Stats -->
-    <div class="stats" id="stats">
+    <div class="stats">
       <div class="stat-card">
         <div class="stat-label">Celkem prodáno</div>
         <div class="stat-value" id="stat-total">—</div>
@@ -223,12 +487,15 @@
       </div>
     </div>
 
-    <!-- Filters -->
-    <div class="filters">
-      <button class="filter-btn active" onclick="setFilter('all', this)">Vše</button>
-      <button class="filter-btn" onclick="setFilter('paid', this)">Zaplacené</button>
-      <button class="filter-btn" onclick="setFilter('pending', this)">Čeká na platbu</button>
-      <button class="filter-btn" onclick="setFilter('redeemed', this)">Uplatněné</button>
+    <!-- Table header -->
+    <div class="table-header">
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('all', this)">Vše</button>
+        <button class="filter-btn" onclick="setFilter('paid', this)">Zaplacené</button>
+        <button class="filter-btn" onclick="setFilter('pending', this)">Čeká na platbu</button>
+        <button class="filter-btn" onclick="setFilter('redeemed', this)">Uplatněné</button>
+      </div>
+      <span class="table-count" id="table-count"></span>
     </div>
 
     <!-- Table -->
@@ -246,7 +513,7 @@
           </tr>
         </thead>
         <tbody id="voucher-table">
-          <tr><td colspan="7" class="loading-row">Načítám…</td></tr>
+          <tr><td colspan="7" class="loading-state">Načítám…</td></tr>
         </tbody>
       </table>
     </div>
@@ -271,6 +538,7 @@
     document.getElementById('admin-screen').style.display = 'none'
     document.getElementById('login-screen').style.display = 'flex'
     document.getElementById('pw-input').value = ''
+    document.getElementById('login-error').classList.remove('visible')
   }
 
   async function loadVouchers() {
@@ -279,15 +547,19 @@
     })
 
     if (res.status === 401) {
-      document.getElementById('login-error').style.display = 'block'
+      document.getElementById('login-error').classList.add('visible')
       return
     }
 
-    document.getElementById('login-error').style.display = 'none'
+    document.getElementById('login-error').classList.remove('visible')
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('admin-screen').style.display = 'block'
 
     allVouchers = await res.json()
+
+    const now = new Date().toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    document.getElementById('admin-date').textContent = `Aktualizováno: ${now}`
+
     updateStats()
     renderTable()
   }
@@ -316,42 +588,50 @@
       ? allVouchers
       : allVouchers.filter(v => v.status === currentFilter)
 
+    const count = document.getElementById('table-count')
+    count.innerHTML = `<strong>${filtered.length}</strong> voucher${filtered.length === 1 ? '' : 'ů'}`
+
     const tbody = document.getElementById('voucher-table')
 
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty">Žádné vouchery</td></tr>'
+      tbody.innerHTML = `
+        <tr><td colspan="7">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <p>Žádné vouchery v této kategorii</p>
+          </div>
+        </td></tr>`
       return
     }
 
     tbody.innerHTML = filtered.map(v => {
       const created = new Date(v.created_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
       const expires = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+
       const badgeClass = { paid: 'badge-paid', pending: 'badge-pending', redeemed: 'badge-redeemed' }[v.status] || ''
       const badgeLabel = { paid: 'Zaplaceno', pending: 'Čeká', redeemed: 'Uplatněno' }[v.status] || v.status
       const amountClass = v.amount === 500 ? 'amount-500' : 'amount-1000'
       const amountStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
 
-      const actionBtn = v.status === 'paid'
+      const actionCell = v.status === 'paid'
         ? `<button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>`
-        : '—'
+        : `<span class="action-done">${v.status === 'redeemed' ? 'Uplatněno' : '—'}</span>`
 
       return `
         <tr>
           <td><span class="code">${v.code}</span></td>
           <td><span class="${amountClass}">${amountStr}</span></td>
-          <td>${v.email}</td>
+          <td class="email-cell">${v.email}</td>
           <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
-          <td>${created}</td>
-          <td>${expires}</td>
-          <td>${actionBtn}</td>
-        </tr>
-      `
+          <td class="date-cell">${created}</td>
+          <td class="date-cell">${expires}</td>
+          <td>${actionCell}</td>
+        </tr>`
     }).join('')
   }
 
   async function redeem(id, btn) {
-    if (!confirm('Opravdu označit voucher jako uplatněný?')) return
-
+    if (!confirm('Označit voucher jako uplatněný?')) return
     btn.disabled = true
     btn.textContent = '…'
 
@@ -365,7 +645,6 @@
     })
 
     if (res.ok) {
-      // Update local data and re-render
       const updated = await res.json()
       const idx = allVouchers.findIndex(v => v.id === id)
       if (idx !== -1) allVouchers[idx] = updated
