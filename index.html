@@ -15,12 +15,12 @@
       --teal-light:  #e8f5f3;
       --terra:       #C0623A;
       --terra-light: #fdf0eb;
-      --cream:       #F7F3EE;
+      --cream:       #ffffff;
       --cream-dark:  #EDE8E1;
       --dark:        #1a1a1a;
       --mid:         #4a4a4a;
       --light-text:  #6b6b6b;
-      --border:      #d8d0c5;
+      --border:      #e0d8d0;
       --white:       #ffffff;
     }
 
@@ -28,7 +28,7 @@
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--cream);
+      background: #ffffff;
       color: var(--dark);
       min-height: 100vh;
       font-size: 16px;
@@ -52,27 +52,18 @@
 
     /* ── NAVBAR ── */
     nav {
-      position: fixed;
+      position: absolute;
       top: 0; left: 0; right: 0;
       z-index: 200;
       background: transparent;
-      padding: 0 48px;
-      height: 64px;
+      padding: 20px 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background 0.35s, border-color 0.35s;
-      border-bottom: 1px solid transparent;
-    }
-    nav.scrolled {
-      background: rgba(26,26,26,0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom-color: rgba(255,255,255,0.08);
     }
 
     .nav-logo {
-      height: 36px;
+      height: 52px;
       width: auto;
       display: block;
     }
@@ -103,7 +94,6 @@
       min-height: 560px;
       max-height: 840px;
       overflow: hidden;
-      margin-top: 64px;
     }
 
     .hero-img {
@@ -1025,12 +1015,6 @@
 </footer>
 
 <script>
-  // Navbar scroll effect
-  const navEl = document.querySelector('nav')
-  window.addEventListener('scroll', () => {
-    navEl.classList.toggle('scrolled', window.scrollY > 40)
-  }, { passive: true })
-
   const cart = { 500: 0, 1000: 0 }
 
   function fmt(n) {
