@@ -55,21 +55,25 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 200;
-      background: rgba(26,26,26,0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: transparent;
       padding: 0 48px;
       height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: background 0.35s, border-color 0.35s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(26,26,26,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: rgba(255,255,255,0.08);
     }
 
     .nav-logo {
       height: 36px;
       width: auto;
-      filter: brightness(0) invert(1);
       display: block;
     }
 
@@ -700,8 +704,8 @@
 
     /* ── INFO SECTION ── */
     .info-section {
-      background: var(--cream-dark);
-      border-top: 1px solid var(--border);
+      background: #e8f4f2;
+      border-top: 1px solid #c8e4e0;
     }
 
     .info-inner {
@@ -720,16 +724,17 @@
     }
 
     .info-icon-wrap {
-      width: 44px; height: 44px;
+      width: 48px; height: 48px;
       background: white;
-      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(27,127,114,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
     .info-icon-wrap svg {
-      width: 20px; height: 20px;
+      width: 22px; height: 22px;
       stroke: var(--teal);
       fill: none;
       stroke-width: 1.75;
@@ -1020,6 +1025,12 @@
 </footer>
 
 <script>
+  // Navbar scroll effect
+  const navEl = document.querySelector('nav')
+  window.addEventListener('scroll', () => {
+    navEl.classList.toggle('scrolled', window.scrollY > 40)
+  }, { passive: true })
+
   const cart = { 500: 0, 1000: 0 }
 
   function fmt(n) {
