@@ -24,6 +24,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Chybi email nebo items' })
   }
 
+  // DEBUG - smazat po otestovani
+  console.log('RESEND_API_KEY prefix:', process.env.RESEND_API_KEY?.substring(0, 8))
+  console.log('SUPABASE_URL:', process.env.SUPABASE_URL?.substring(0, 20))
+
   try {
     const expiresAt = new Date()
     expiresAt.setFullYear(expiresAt.getFullYear() + 1)
