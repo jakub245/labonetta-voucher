@@ -1128,6 +1128,8 @@
     const s = document.getElementById('checkout-section')
     s.classList.add('visible')
     updateSummary()
+    // Skryj sticky bar — v checkoutu není potřeba
+    document.getElementById('sticky-bar').classList.remove('visible')
     setTimeout(() => {
       s.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 60)
@@ -1136,6 +1138,9 @@
 
   function closeCheckout() {
     document.getElementById('checkout-section').classList.remove('visible')
+    // Zobraz sticky bar znovu — zákazník se vrátil ke košíku
+    const items = cart[500] + cart[1000]
+    if (items > 0) document.getElementById('sticky-bar').classList.add('visible')
     document.getElementById('vouchers').scrollIntoView({ behavior: 'smooth' })
   }
 
