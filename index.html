@@ -5,196 +5,221 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dárkový voucher · Labonetta</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --teal:      #1B7F72;
-      --teal-dark: #12574d;
-      --terra:     #C0623A;
-      --cream:     #F7F3EE;
-      --dark:      #0f0f0f;
-      --mid:       #3a3a3a;
-      --border:    rgba(0,0,0,0.10);
+      --teal:        #1B7F72;
+      --teal-dark:   #12574d;
+      --teal-light:  #e8f5f3;
+      --terra:       #C0623A;
+      --terra-light: #fdf0eb;
+      --cream:       #F7F3EE;
+      --cream-dark:  #EDE8E1;
+      --dark:        #1a1a1a;
+      --mid:         #4a4a4a;
+      --light-text:  #6b6b6b;
+      --border:      #d8d0c5;
+      --white:       #ffffff;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--cream);
       color: var(--dark);
       min-height: 100vh;
-      /* Space for sticky bar */
-      padding-bottom: 0;
+      font-size: 16px;
+      line-height: 1.5;
     }
+
+    /* ── SKIP LINK (accessibility) ── */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      background: var(--teal);
+      color: white;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 9999;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 16px; }
 
     /* ── NAVBAR ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 200;
-      padding: 18px 48px;
+      background: rgba(26,26,26,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 48px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background 0.4s, border-color 0.4s;
-      border-bottom: 1px solid transparent;
     }
-    nav.scrolled {
-      background: rgba(247,243,238,0.96);
-      backdrop-filter: blur(12px);
-      border-bottom-color: var(--border);
-    }
+
     .nav-logo {
-      height: 40px;
+      height: 36px;
+      width: auto;
       filter: brightness(0) invert(1);
-      transition: filter 0.4s;
+      display: block;
     }
-    nav.scrolled .nav-logo { filter: none; }
+
     .nav-back {
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
       color: rgba(255,255,255,0.7);
       text-decoration: none;
+      letter-spacing: 0.3px;
+      padding: 8px 0;
       transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    nav.scrolled .nav-back { color: var(--mid); }
-    .nav-back:hover { color: var(--teal); }
+    .nav-back:hover { color: white; }
+    .nav-back:focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
 
     /* ── HERO ── */
     .hero {
       position: relative;
-      height: 100vh;
-      min-height: 600px;
-      max-height: 800px;
+      height: 100svh;
+      min-height: 560px;
+      max-height: 840px;
       overflow: hidden;
+      margin-top: 64px;
     }
+
     .hero-img {
       position: absolute;
       inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      object-position: center 20%;
-      transform: scale(1.05);
-      animation: heroZoom 12s ease-out forwards;
+      object-position: center 25%;
     }
-    @keyframes heroZoom { to { transform: scale(1); } }
+
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(160deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%);
+      background: linear-gradient(
+        to bottom,
+        rgba(26,26,26,0.3) 0%,
+        rgba(26,26,26,0.45) 40%,
+        rgba(26,26,26,0.78) 100%
+      );
     }
+
     .hero-content {
       position: absolute;
-      bottom: 80px;
-      left: 0; right: 0;
-      padding: 0 48px;
-      animation: heroFade 1s ease-out 0.3s both;
+      bottom: 0; left: 0; right: 0;
+      padding: 56px 48px 64px;
     }
-    @keyframes heroFade {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .hero-tag {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 4px;
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 20px;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .hero-tag::before {
+    .hero-eyebrow::before {
       content: '';
-      width: 24px; height: 2px;
-      background: var(--terra);
       display: inline-block;
+      width: 28px; height: 2px;
+      background: var(--terra);
       flex-shrink: 0;
     }
+
     .hero h1 {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(42px, 6vw, 80px);
+      font-size: clamp(40px, 5.5vw, 72px);
       font-weight: 900;
       color: white;
-      line-height: 1.0;
-      margin-bottom: 28px;
+      line-height: 1.05;
+      margin-bottom: 32px;
+      max-width: 640px;
     }
-    .hero h1 em { font-style: italic; color: rgba(255,255,255,0.7); }
+    .hero h1 em {
+      font-style: italic;
+      color: rgba(255,255,255,0.75);
+    }
+
     .hero-cta {
       display: inline-flex;
       align-items: center;
       gap: 10px;
       background: var(--terra);
       color: white;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 600;
       padding: 16px 32px;
       border: none;
       font-family: inherit;
       cursor: pointer;
-      transition: background 0.2s, gap 0.2s;
+      transition: background 0.2s;
+      min-height: 52px;
+      touch-action: manipulation;
     }
-    .hero-cta:hover { background: #a8522f; gap: 16px; }
-    .scroll-hint {
-      position: absolute;
-      bottom: 32px; right: 48px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255,255,255,0.35);
-      font-size: 9px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+    .hero-cta:hover { background: #a8522f; }
+    .hero-cta:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 3px;
     }
-    .scroll-line {
-      width: 1px; height: 40px;
-      background: rgba(255,255,255,0.15);
-      overflow: hidden; position: relative;
+    .hero-cta svg {
+      width: 18px; height: 18px;
+      stroke: white; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+      transition: transform 0.2s;
     }
-    .scroll-line::after {
-      content: '';
-      position: absolute;
-      top: -100%; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(255,255,255,0.5);
-      animation: scrollDrop 2s ease-in-out infinite;
-    }
-    @keyframes scrollDrop { to { top: 200%; } }
+    .hero-cta:hover svg { transform: translateX(4px); }
 
     /* ── VOUCHER SECTION ── */
     .section {
-      max-width: 1000px;
+      max-width: 1040px;
       margin: 0 auto;
-      padding: 80px 48px 40px;
+      padding: 72px 48px 56px;
     }
 
     .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
       margin-bottom: 40px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
+    }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 10px;
     }
     .section-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(26px, 3vw, 38px);
+      font-size: clamp(28px, 3.5vw, 40px);
       font-weight: 700;
+      color: var(--dark);
+      line-height: 1.15;
     }
     .section-sub {
-      font-size: 12px;
-      color: #999;
-      font-weight: 300;
-      text-align: right;
+      font-size: 16px;
+      color: var(--light-text);
+      margin-top: 8px;
       line-height: 1.6;
-      max-width: 200px;
     }
 
     /* ── TILES ── */
@@ -202,132 +227,161 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
-    }
-
-    @media (max-width: 640px) {
-      .tiles { grid-template-columns: 1fr; }
-      .section { padding: 56px 24px 40px; }
-      nav { padding: 16px 24px; }
-      .hero-content { padding: 0 24px; }
-      .scroll-hint { display: none; }
-      .section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .section-sub { text-align: left; }
+      margin-bottom: 0;
     }
 
     .tile {
-      background: white;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      background: var(--white);
+      border: 1px solid var(--border);
       overflow: hidden;
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s;
       cursor: pointer;
       position: relative;
     }
     .tile:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
       box-shadow: 0 12px 40px rgba(0,0,0,0.10);
     }
     .tile.in-cart {
-      outline: 2px solid var(--teal);
-      outline-offset: 0;
+      border-color: var(--teal);
+      box-shadow: 0 0 0 2px var(--teal);
     }
 
-    .tile-img-wrap { overflow: hidden; }
+    .tile-img-wrap { overflow: hidden; position: relative; }
     .tile-img {
       width: 100%;
       aspect-ratio: 2 / 1;
       object-fit: cover;
       display: block;
-      transition: transform 0.5s ease;
+      transition: transform 0.4s ease;
     }
     .tile:hover .tile-img { transform: scale(1.03); }
 
-    .tile-body { padding: 22px 24px 24px; }
+    /* In-cart badge */
+    .tile-badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: var(--teal);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      display: none;
+    }
+    .tile.in-cart .tile-badge { display: block; }
+
+    .tile-body {
+      padding: 24px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
 
     .tile-label {
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--terra);
       margin-bottom: 6px;
     }
+
     .tile-amount {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 34px;
+      font-size: 36px;
       font-weight: 900;
       color: var(--dark);
-      margin-bottom: 4px;
-      transition: color 0.2s;
+      line-height: 1;
+      margin-bottom: 8px;
     }
     .tile.in-cart .tile-amount { color: var(--teal); }
 
     .tile-desc {
-      font-size: 12px;
-      color: #999;
-      font-weight: 300;
-      line-height: 1.5;
+      font-size: 14px;
+      color: var(--light-text);
+      line-height: 1.6;
       margin-bottom: 20px;
     }
 
-    /* Quantity controls (hidden until in cart) */
-    .tile-actions {
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
+    /* Add / qty controls */
+    .tile-actions { display: flex; align-items: stretch; gap: 0; }
 
     .btn-add {
       flex: 1;
-      padding: 13px 16px;
+      padding: 14px 20px;
       background: var(--dark);
       color: white;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       border: none;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.2s;
-      text-align: center;
+      min-height: 48px;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     .btn-add:hover { background: var(--teal); }
-    .tile.in-cart .btn-add { background: var(--teal); }
+    .btn-add:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+    .btn-add svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; transition: transform 0.2s; }
+    .btn-add:hover svg { transform: translateX(3px); }
+
+    .tile.in-cart .btn-add { display: none; }
 
     .qty-controls {
       display: none;
-      align-items: center;
-      border: 1px solid var(--border);
-      background: white;
+      align-items: stretch;
+      width: 100%;
+      border: 2px solid var(--teal);
     }
     .tile.in-cart .qty-controls { display: flex; }
-    .tile.in-cart .btn-add { display: none; }
 
     .qty-btn {
-      width: 40px; height: 46px;
+      width: 52px;
       background: none;
       border: none;
-      font-size: 18px;
-      color: var(--dark);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--teal);
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s;
       display: flex;
       align-items: center;
       justify-content: center;
+      min-height: 48px;
+      touch-action: manipulation;
     }
-    .qty-btn:hover { background: var(--cream); }
+    .qty-btn:hover { background: var(--teal-light); }
+    .qty-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+    .qty-btn[aria-label="Odebrat"] { border-right: 1px solid var(--teal); }
+    .qty-btn[aria-label="Přidat"] { border-left: 1px solid var(--teal); }
+
+    .qty-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--teal-light);
+    }
     .qty-num {
-      min-width: 48px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--teal);
+      line-height: 1;
     }
-    .qty-label {
-      font-size: 11px;
-      color: #aaa;
-      padding: 0 12px;
-      white-space: nowrap;
+    .qty-label-text {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      opacity: 0.7;
     }
 
     /* ── STICKY BAR ── */
@@ -336,52 +390,69 @@
       bottom: 0; left: 0; right: 0;
       z-index: 300;
       background: var(--dark);
-      padding: 16px 48px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 14px 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-      box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+      transform: translateY(110%);
+      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.25);
     }
     .sticky-bar.visible { transform: translateY(0); }
 
-    .sticky-summary {
+    .sticky-items {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 20px;
       flex: 1;
+      overflow: hidden;
     }
+
     .sticky-item {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0;
     }
-    .sticky-item-thumb {
-      width: 40px; height: 22px;
+    .sticky-thumb {
+      width: 44px; height: 24px;
       object-fit: cover;
-      opacity: 0.8;
+      border-radius: 2px;
+      opacity: 0.85;
     }
-    .sticky-item-info {
-      font-size: 13px;
-      color: rgba(255,255,255,0.7);
+    .sticky-item-text {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      white-space: nowrap;
     }
-    .sticky-item-info strong {
+    .sticky-item-text strong {
       color: white;
-      font-weight: 500;
+      font-weight: 600;
       display: block;
-      font-size: 13px;
+      font-size: 14px;
     }
-    .sticky-divider {
+
+    .sticky-sep {
       width: 1px; height: 32px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.12);
+      flex-shrink: 0;
     }
-    .sticky-total {
+
+    .sticky-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-shrink: 0;
+    }
+
+    .sticky-total-wrap {
       text-align: right;
     }
     .sticky-total-label {
-      font-size: 10px;
+      font-size: 11px;
+      font-weight: 500;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: rgba(255,255,255,0.4);
@@ -389,120 +460,128 @@
     }
     .sticky-total-amount {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
       color: white;
     }
 
     .btn-checkout {
-      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
       background: var(--teal);
       color: white;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       border: none;
       font-family: inherit;
       cursor: pointer;
-      transition: background 0.2s, gap 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      transition: background 0.2s;
+      min-height: 52px;
       white-space: nowrap;
+      touch-action: manipulation;
     }
-    .btn-checkout:hover { background: var(--teal-dark); gap: 14px; }
-
-    @media (max-width: 640px) {
-      .sticky-bar { padding: 14px 20px; flex-wrap: wrap; gap: 12px; }
-      .sticky-divider { display: none; }
+    .btn-checkout:hover { background: var(--teal-dark); }
+    .btn-checkout:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+    .btn-checkout svg {
+      width: 16px; height: 16px;
+      stroke: white; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+      transition: transform 0.2s;
     }
+    .btn-checkout:hover svg { transform: translateX(3px); }
 
     /* ── CHECKOUT SECTION ── */
     .checkout-section {
       display: none;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 48px 120px;
-      animation: fadeUp 0.4s ease both;
+      background: var(--white);
+      border-top: 3px solid var(--teal);
     }
     .checkout-section.visible { display: block; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
 
-    .checkout-divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin-bottom: 48px;
-    }
-
-    .checkout-grid {
+    .checkout-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 56px 48px;
       display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 48px;
+      grid-template-columns: 1fr 400px;
+      gap: 56px;
       align-items: start;
     }
 
-    @media (max-width: 800px) {
-      .checkout-grid { grid-template-columns: 1fr; }
-      .checkout-section { padding: 0 24px 120px; }
-    }
-
-    /* Form side */
+    /* Form */
     .checkout-form {}
     .form-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 700;
+      color: var(--dark);
       margin-bottom: 8px;
     }
     .form-sub {
-      font-size: 13px;
-      color: #999;
-      font-weight: 300;
+      font-size: 15px;
+      color: var(--light-text);
       line-height: 1.6;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
+
+    .field-group { margin-bottom: 24px; }
     .field-label {
       display: block;
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #aaa;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
       margin-bottom: 8px;
     }
     input[type="email"] {
       width: 100%;
       padding: 14px 16px;
-      border: 1px solid var(--border);
-      font-size: 15px;
+      border: 1.5px solid var(--border);
+      font-size: 16px;
       font-family: inherit;
       color: var(--dark);
+      background: var(--cream);
       outline: none;
-      background: white;
-      transition: border-color 0.2s;
-      margin-bottom: 5px;
+      transition: border-color 0.2s, background 0.2s;
+      border-radius: 0;
+      -webkit-appearance: none;
     }
-    input[type="email"]:focus { border-color: var(--teal); }
-    input[type="email"].error { border-color: var(--terra); }
-    input[type="email"]::placeholder { color: #ccc; }
-    .field-hint { font-size: 11px; color: #bbb; margin-bottom: 24px; }
-    .error-msg  { font-size: 12px; color: var(--terra); margin-bottom: 16px; display: none; }
-    .error-msg.visible { display: block; }
+    input[type="email"]:focus {
+      border-color: var(--teal);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(27,127,114,0.12);
+    }
+    input[type="email"].error { border-color: #c0392b; }
+    input[type="email"]::placeholder { color: #b0a89e; }
+
+    .field-hint {
+      font-size: 13px;
+      color: var(--light-text);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+    .error-msg {
+      font-size: 13px;
+      color: #c0392b;
+      font-weight: 500;
+      margin-top: 6px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+    .error-msg.visible { display: flex; }
 
     .btn-pay {
       width: 100%;
-      padding: 17px;
+      padding: 17px 24px;
       background: var(--teal);
       color: white;
       border: none;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      font-size: 15px;
+      font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.2s;
@@ -510,300 +589,447 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      min-height: 56px;
+      touch-action: manipulation;
     }
     .btn-pay:hover:not(:disabled) { background: var(--teal-dark); }
-    .btn-pay:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-pay:disabled { background: #a0bfbb; cursor: not-allowed; }
+    .btn-pay:focus-visible { outline: 3px solid var(--teal-dark); outline-offset: 3px; }
+    .btn-pay svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+
     .spinner {
       display: none;
-      width: 15px; height: 15px;
+      width: 18px; height: 18px;
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
     .btn-pay.loading .btn-label { display: none; }
+    .btn-pay.loading .btn-arrow { display: none; }
     .btn-pay.loading .spinner { display: block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Summary side */
+    /* Summary */
     .checkout-summary {
-      background: white;
+      background: var(--cream);
+      border: 1px solid var(--border);
       padding: 28px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
     }
-    .summary-label {
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 3px;
+
+    .summary-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: #aaa;
+      color: var(--light-text);
       margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
     }
 
     .summary-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 12px;
       align-items: center;
-      gap: 14px;
       padding: 12px 0;
       border-bottom: 1px solid var(--border);
     }
-    .summary-row:last-of-type { border-bottom: none; }
-
     .summary-thumb {
-      width: 64px; height: 32px;
+      width: 56px; height: 28px;
       object-fit: cover;
-      flex-shrink: 0;
+      border: 1px solid var(--border);
     }
-    .summary-info { flex: 1; }
-    .summary-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-    .summary-qty  { font-size: 11px; color: #aaa; }
+    .summary-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    .summary-qty {
+      font-size: 13px;
+      color: var(--light-text);
+      margin-top: 2px;
+    }
     .summary-price {
-      font-family: 'Playfair Display', Georgia, serif;
       font-size: 16px;
       font-weight: 700;
+      color: var(--dark);
       white-space: nowrap;
+      font-family: 'Playfair Display', Georgia, serif;
     }
 
-    .summary-total {
+    .summary-total-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: 16px;
       margin-top: 4px;
-      border-top: 1px solid var(--border);
     }
     .summary-total-label {
-      font-size: 10px;
-      letter-spacing: 2px;
+      font-size: 13px;
+      font-weight: 600;
       text-transform: uppercase;
-      color: #aaa;
+      letter-spacing: 1px;
+      color: var(--light-text);
     }
     .summary-total-amount {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 900;
+      color: var(--dark);
     }
 
-    .btn-change {
-      display: block;
+    .btn-change-cart {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       margin-top: 16px;
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 600;
       color: var(--teal);
       background: none;
       border: none;
       font-family: inherit;
       cursor: pointer;
       text-decoration: underline;
-      padding: 0;
+      text-underline-offset: 3px;
+    }
+    .btn-change-cart:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+    /* ── INFO SECTION ── */
+    .info-section {
+      background: var(--cream-dark);
+      border-top: 1px solid var(--border);
     }
 
-    /* ── INFO STRIP ── */
-    .info-strip {
-      background: var(--dark);
+    .info-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 56px 48px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
     }
-    .info-item {
-      padding: 36px 32px;
-      border-right: 1px solid #222;
-      text-align: center;
-    }
-    .info-item:last-child { border-right: none; }
-    .info-num {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: var(--terra);
-      margin-bottom: 10px;
-    }
-    .info-title { font-size: 13px; font-weight: 500; color: white; margin-bottom: 5px; }
-    .info-sub { font-size: 11px; color: rgba(255,255,255,0.3); font-weight: 300; line-height: 1.6; }
 
-    @media (max-width: 640px) {
-      .info-strip { grid-template-columns: 1fr; }
-      .info-item { border-right: none; border-bottom: 1px solid #222; }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .info-icon-wrap {
+      width: 44px; height: 44px;
+      background: white;
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .info-icon-wrap svg {
+      width: 20px; height: 20px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .info-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+
+    .info-desc {
+      font-size: 15px;
+      color: var(--mid);
+      line-height: 1.65;
     }
 
     /* ── FOOTER ── */
     footer {
-      padding: 20px;
-      text-align: center;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #bbb;
-      border-top: 1px solid var(--border);
+      background: var(--dark);
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    footer a { color: #bbb; text-decoration: none; }
-    footer a:hover { color: var(--teal); }
+    .footer-brand {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: white; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 800px) {
+      nav { padding: 0 20px; }
+      .hero-content { padding: 40px 24px 48px; }
+      .section { padding: 56px 20px 40px; }
+      .tiles { grid-template-columns: 1fr; gap: 16px; }
+      .sticky-bar { padding: 12px 20px; }
+      .sticky-items { gap: 12px; }
+      .checkout-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 32px; }
+      .checkout-summary { order: -1; }
+      .info-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 28px; }
+      .info-item { flex-direction: row; align-items: flex-start; gap: 16px; }
+      .info-icon-wrap { flex-shrink: 0; }
+      footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 540px) {
+      .sticky-sep { display: none; }
+      .sticky-item:last-of-type { display: none; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
   </style>
 </head>
 <body>
 
+<a class="skip-link" href="#vouchers">Přejít na obsah</a>
+
 <!-- NAVBAR -->
-<nav id="nav">
+<nav role="banner">
   <img class="nav-logo" src="assets/logo.svg" alt="Labonetta">
-  <a class="nav-back" href="https://prosek.labonetta.cz">← Zpět na web</a>
+  <a class="nav-back" href="https://prosek.labonetta.cz" aria-label="Zpět na hlavní web Labonetta">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    Zpět na web
+  </a>
 </nav>
 
 <!-- HERO -->
-<div class="hero">
-  <img class="hero-img" src="assets/hero-interior.jpg" alt="Labonetta interiér">
-  <div class="hero-overlay"></div>
+<section class="hero" aria-label="Labonetta interiér">
+  <img class="hero-img" src="assets/hero-interior.jpg" alt="Interiér restaurace Labonetta s neonovým nápisem a srdíčkovými dekoracemi">
+  <div class="hero-overlay" aria-hidden="true"></div>
   <div class="hero-content">
-    <p class="hero-tag">Dárkový voucher · Labonetta Prosek</p>
+    <p class="hero-eyebrow" aria-hidden="true">Dárkový voucher · Labonetta</p>
     <h1>Darujte zážitek<br><em>jako z Neapole</em></h1>
-    <button class="hero-cta" onclick="document.getElementById('vouchers').scrollIntoView({behavior:'smooth'})">
-      Vybrat voucher →
+    <button
+      class="hero-cta"
+      onclick="document.getElementById('vouchers').scrollIntoView({behavior:'smooth'})"
+      aria-label="Přejít na výběr voucherů"
+    >
+      Vybrat voucher
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </button>
   </div>
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
-  </div>
-</div>
+</section>
 
 <!-- VOUCHER SECTION -->
-<div class="section" id="vouchers">
+<section class="section" id="vouchers" aria-labelledby="vouchers-title">
   <div class="section-header">
-    <h2 class="section-title">Vyberte voucher</h2>
-    <p class="section-sub">Platí na pizzu, antipasti, víno i kávu</p>
+    <p class="section-eyebrow" aria-hidden="true">Dárkové poukazy</p>
+    <h2 class="section-title" id="vouchers-title">Vyberte voucher</h2>
+    <p class="section-sub">Platí na veškerou útratu — pizzu, antipasti, víno i kávu.<br>Uplatníte na Proseku i na Kobylisích.</p>
   </div>
 
-  <div class="tiles">
+  <div class="tiles" role="list">
 
-    <div class="tile" id="tile-500">
+    <article class="tile" id="tile-500" role="listitem">
       <div class="tile-img-wrap">
-        <img class="tile-img" src="assets/voucher-preview-500.jpg" alt="Voucher 500 Kč">
+        <img class="tile-img" src="assets/voucher-preview-500.jpg" alt="Náhled voucheru v hodnotě 500 Kč">
+        <span class="tile-badge" aria-live="polite" aria-atomic="true" id="badge-500"></span>
       </div>
       <div class="tile-body">
-        <div class="tile-label">Voucher · Labonetta</div>
-        <div class="tile-amount">500 Kč</div>
-        <div class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</div>
+        <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
+        <p class="tile-amount">500 Kč</p>
+        <p class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
         <div class="tile-actions">
-          <button class="btn-add" onclick="addToCart(500)">Přidat do košíku →</button>
-          <div class="qty-controls">
-            <button class="qty-btn" onclick="changeQty(500, -1)">−</button>
-            <span class="qty-num" id="qty-500">1</span>
-            <span class="qty-label">ks</span>
-            <button class="qty-btn" onclick="changeQty(500, +1)">+</button>
+          <button
+            class="btn-add"
+            onclick="addToCart(500)"
+            aria-label="Přidat voucher 500 Kč do košíku"
+          >
+            Přidat do košíku
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="qty-controls" role="group" aria-label="Množství voucheru 500 Kč">
+            <button class="qty-btn" onclick="changeQty(500,-1)" aria-label="Odebrat">−</button>
+            <div class="qty-info" aria-live="polite">
+              <span class="qty-num" id="qty-500">1</span>
+              <span class="qty-label-text">ks</span>
+            </div>
+            <button class="qty-btn" onclick="changeQty(500,+1)" aria-label="Přidat">+</button>
           </div>
         </div>
       </div>
-    </div>
+    </article>
 
-    <div class="tile" id="tile-1000">
+    <article class="tile" id="tile-1000" role="listitem">
       <div class="tile-img-wrap">
-        <img class="tile-img" src="assets/voucher-preview-1000.jpg" alt="Voucher 1 000 Kč">
+        <img class="tile-img" src="assets/voucher-preview-1000.jpg" alt="Náhled voucheru v hodnotě 1 000 Kč">
+        <span class="tile-badge" aria-live="polite" aria-atomic="true" id="badge-1000"></span>
       </div>
       <div class="tile-body">
-        <div class="tile-label">Voucher · Labonetta</div>
-        <div class="tile-amount">1 000 Kč</div>
-        <div class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</div>
+        <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
+        <p class="tile-amount">1 000 Kč</p>
+        <p class="tile-desc">Platí na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
         <div class="tile-actions">
-          <button class="btn-add" onclick="addToCart(1000)">Přidat do košíku →</button>
-          <div class="qty-controls">
-            <button class="qty-btn" onclick="changeQty(1000, -1)">−</button>
-            <span class="qty-num" id="qty-1000">1</span>
-            <span class="qty-label">ks</span>
-            <button class="qty-btn" onclick="changeQty(1000, +1)">+</button>
+          <button
+            class="btn-add"
+            onclick="addToCart(1000)"
+            aria-label="Přidat voucher 1 000 Kč do košíku"
+          >
+            Přidat do košíku
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="qty-controls" role="group" aria-label="Množství voucheru 1 000 Kč">
+            <button class="qty-btn" onclick="changeQty(1000,-1)" aria-label="Odebrat">−</button>
+            <div class="qty-info" aria-live="polite">
+              <span class="qty-num" id="qty-1000">1</span>
+              <span class="qty-label-text">ks</span>
+            </div>
+            <button class="qty-btn" onclick="changeQty(1000,+1)" aria-label="Přidat">+</button>
           </div>
         </div>
       </div>
-    </div>
+    </article>
 
   </div>
-</div>
+</section>
 
 <!-- STICKY BAR -->
-<div class="sticky-bar" id="sticky-bar">
-  <div class="sticky-summary" id="sticky-summary">
-    <!-- dynamicky -->
+<div class="sticky-bar" id="sticky-bar" role="region" aria-label="Košík" aria-live="polite">
+  <div class="sticky-items" id="sticky-items"></div>
+  <div class="sticky-right">
+    <div class="sticky-total-wrap">
+      <p class="sticky-total-label">Celkem</p>
+      <p class="sticky-total-amount" id="sticky-total">0 Kč</p>
+    </div>
+    <button class="btn-checkout" onclick="openCheckout()" aria-label="Pokračovat k dokončení objednávky">
+      Pokračovat
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
   </div>
-  <div class="sticky-total">
-    <div class="sticky-total-label">Celkem</div>
-    <div class="sticky-total-amount" id="sticky-total">0 Kč</div>
-  </div>
-  <button class="btn-checkout" onclick="openCheckout()">
-    Pokračovat →
-  </button>
 </div>
 
 <!-- CHECKOUT SECTION -->
-<div class="checkout-section" id="checkout-section">
-  <hr class="checkout-divider">
-  <div class="checkout-grid">
+<section class="checkout-section" id="checkout-section" aria-labelledby="checkout-title">
+  <div class="checkout-inner">
 
-    <!-- Form -->
     <div class="checkout-form">
-      <h3 class="form-title">Dokončit objednávku</h3>
-      <p class="form-sub">Zadejte email a vouchery obdržíte jako PDF okamžitě po zaplacení.</p>
-      <label class="field-label" for="email">Email</label>
-      <input type="email" id="email" placeholder="vas@email.cz" autocomplete="email">
-      <p class="field-hint">Každý voucher přijde jako samostatná PDF příloha.</p>
-      <p class="error-msg" id="email-error">Zadejte prosím platný email.</p>
-      <button class="btn-pay" id="btn-pay" onclick="handlePay()">
-        <span class="btn-label">Zaplatit</span>
-        <span class="spinner"></span>
+      <h2 class="form-title" id="checkout-title">Dokončit objednávku</h2>
+      <p class="form-sub">Zadejte email — každý voucher obdržíte jako samostatné PDF okamžitě po zaplacení.</p>
+
+      <div class="field-group">
+        <label class="field-label" for="email">Email pro zaslání voucherů</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="vas@email.cz"
+          autocomplete="email"
+          aria-describedby="email-hint email-error"
+        >
+        <p class="field-hint" id="email-hint">Každý voucher přijde jako samostatná PDF příloha.</p>
+        <p class="error-msg" id="email-error" role="alert">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Zadejte prosím platný email.
+        </p>
+      </div>
+
+      <button class="btn-pay" id="btn-pay" onclick="handlePay()" aria-live="polite">
+        <span class="btn-label">Zaplatit kartou</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <span class="spinner" aria-hidden="true"></span>
       </button>
     </div>
 
-    <!-- Summary -->
-    <div class="checkout-summary">
-      <div class="summary-label">Shrnutí objednávky</div>
-      <div id="summary-rows"><!-- dynamicky --></div>
-      <div class="summary-total">
+    <div class="checkout-summary" aria-label="Přehled objednávky">
+      <p class="summary-title">Přehled objednávky</p>
+      <div id="summary-rows"></div>
+      <div class="summary-total-row">
         <span class="summary-total-label">Celkem</span>
         <span class="summary-total-amount" id="summary-total">0 Kč</span>
       </div>
-      <button class="btn-change" onclick="closeCheckout()">← Upravit košík</button>
+      <button class="btn-change-cart" onclick="closeCheckout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        Upravit košík
+      </button>
     </div>
 
   </div>
-</div>
+</section>
 
-<!-- INFO STRIP -->
-<div class="info-strip">
-  <div class="info-item">
-    <div class="info-num">01</div>
-    <div class="info-title">Ihned na email</div>
-    <div class="info-sub">PDF vouchery do pár vteřin po zaplacení</div>
-  </div>
-  <div class="info-item">
-    <div class="info-num">02</div>
-    <div class="info-title">Platnost 1 rok</div>
-    <div class="info-sub">Od data zakoupení, bez podmínek</div>
-  </div>
-  <div class="info-item">
-    <div class="info-num">03</div>
-    <div class="info-title">Osobně na Proseku</div>
-    <div class="info-sub">Ukažte PDF obsluze, platí na vše</div>
-  </div>
-</div>
+<!-- INFO SECTION -->
+<section class="info-section" aria-labelledby="info-title">
+  <div class="info-inner">
 
-<footer>
-  <a href="https://prosek.labonetta.cz">Labonetta Prosek</a> · &copy; 2025
+    <div class="info-item">
+      <div class="info-icon-wrap" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+      </div>
+      <div>
+        <h3 class="info-title">Okamžitě na email</h3>
+        <p class="info-desc">Každý voucher dorazí jako PDF příloha do pár vteřin po zaplacení.</p>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon-wrap" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <h3 class="info-title">Platnost 1 rok</h3>
+        <p class="info-desc">Voucher platí 1 rok od data zakoupení, bez dalších podmínek.</p>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon-wrap" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div>
+        <h3 class="info-title">Prosek & Kobylisy</h3>
+        <p class="info-desc">Uplatníte osobně v obou pobočkách — stačí ukázat PDF obsluze.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <span class="footer-brand">Labonetta</span>
+  <div class="footer-links">
+    <a href="https://prosek.labonetta.cz">Prosek</a>
+    <a href="https://kobylisy.labonetta.cz">Kobylisy</a>
+  </div>
 </footer>
 
 <script>
-  // Navbar scroll
-  const nav = document.getElementById('nav')
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 60)
-  })
-
-  // Cart state
   const cart = { 500: 0, 1000: 0 }
 
   function fmt(n) {
-    if (n === 0) return '0 Kč'
-    return n === 1000 ? '1 000 Kč' : n.toLocaleString('cs') + ' Kč'
+    if (n >= 1000) return n.toLocaleString('cs') + ' Kč'
+    return n + ' Kč'
   }
 
   function addToCart(amount) {
-    cart[amount] = 1
+    if (cart[amount] === 0) cart[amount] = 1
+    else cart[amount]++
     updateCart()
   }
 
@@ -811,98 +1037,84 @@
     cart[amount] = Math.max(0, cart[amount] + delta)
     if (cart[amount] === 0) {
       document.getElementById(`tile-${amount}`).classList.remove('in-cart')
+      if (cart[500] + cart[1000] === 0) closeCheckout()
     }
     updateCart()
-    // Hide checkout if cart becomes empty
-    if (cart[500] + cart[1000] === 0) closeCheckout()
   }
 
   function updateCart() {
-    const qty500  = cart[500]
-    const qty1000 = cart[1000]
-    const total   = qty500 * 500 + qty1000 * 1000
-    const items   = qty500 + qty1000
+    const q500 = cart[500], q1000 = cart[1000]
+    const total = q500 * 500 + q1000 * 1000
+    const items = q500 + q1000
 
-    // Tile states
-    const tile500  = document.getElementById('tile-500')
-    const tile1000 = document.getElementById('tile-1000')
-    tile500.classList.toggle('in-cart',  qty500  > 0)
-    tile1000.classList.toggle('in-cart', qty1000 > 0)
+    // Tiles
+    const t500 = document.getElementById('tile-500')
+    const t1000 = document.getElementById('tile-1000')
+    t500.classList.toggle('in-cart', q500 > 0)
+    t1000.classList.toggle('in-cart', q1000 > 0)
+    document.getElementById('qty-500').textContent = q500
+    document.getElementById('qty-1000').textContent = q1000
 
-    // Qty displays
-    document.getElementById('qty-500').textContent  = qty500
-    document.getElementById('qty-1000').textContent = qty1000
+    // Badges
+    const b500 = document.getElementById('badge-500')
+    const b1000 = document.getElementById('badge-1000')
+    b500.textContent = q500 > 0 ? `${q500} ks v košíku` : ''
+    b1000.textContent = q1000 > 0 ? `${q1000} ks v košíku` : ''
 
     // Sticky bar
     const bar = document.getElementById('sticky-bar')
     bar.classList.toggle('visible', items > 0)
 
-    // Sticky summary
-    let summaryHtml = ''
-    if (qty500 > 0) {
-      summaryHtml += `
-        <div class="sticky-item">
-          <img class="sticky-item-thumb" src="assets/voucher-preview-500.jpg" alt="">
-          <div class="sticky-item-info">
-            <strong>500 Kč</strong>${qty500}× voucher
-          </div>
-        </div>`
-      if (qty1000 > 0) summaryHtml += '<div class="sticky-divider"></div>'
+    // Sticky items
+    let html = ''
+    if (q500 > 0) {
+      html += `<div class="sticky-item">
+        <img class="sticky-thumb" src="assets/voucher-preview-500.jpg" alt="Voucher 500 Kč">
+        <div class="sticky-item-text"><strong>${q500}× 500 Kč</strong>${fmt(q500 * 500)}</div>
+      </div>`
+      if (q1000 > 0) html += '<div class="sticky-sep" aria-hidden="true"></div>'
     }
-    if (qty1000 > 0) {
-      summaryHtml += `
-        <div class="sticky-item">
-          <img class="sticky-item-thumb" src="assets/voucher-preview-1000.jpg" alt="">
-          <div class="sticky-item-info">
-            <strong>1 000 Kč</strong>${qty1000}× voucher
-          </div>
-        </div>`
+    if (q1000 > 0) {
+      html += `<div class="sticky-item">
+        <img class="sticky-thumb" src="assets/voucher-preview-1000.jpg" alt="Voucher 1 000 Kč">
+        <div class="sticky-item-text"><strong>${q1000}× 1 000 Kč</strong>${fmt(q1000 * 1000)}</div>
+      </div>`
     }
-    document.getElementById('sticky-summary').innerHTML = summaryHtml
+    document.getElementById('sticky-items').innerHTML = html
     document.getElementById('sticky-total').textContent = fmt(total)
 
-    // Update summary in checkout
+    // Summary
     updateSummary()
   }
 
   function updateSummary() {
-    const qty500  = cart[500]
-    const qty1000 = cart[1000]
-    const total   = qty500 * 500 + qty1000 * 1000
-
+    const q500 = cart[500], q1000 = cart[1000]
+    const total = q500 * 500 + q1000 * 1000
     let rows = ''
-    if (qty500 > 0) rows += `
+    if (q500 > 0) rows += `
       <div class="summary-row">
         <img class="summary-thumb" src="assets/voucher-preview-500.jpg" alt="">
-        <div class="summary-info">
-          <div class="summary-name">Voucher 500 Kč</div>
-          <div class="summary-qty">${qty500} ks</div>
-        </div>
-        <div class="summary-price">${fmt(qty500 * 500)}</div>
+        <div><p class="summary-name">Voucher 500 Kč</p><p class="summary-qty">${q500} ks</p></div>
+        <p class="summary-price">${fmt(q500 * 500)}</p>
       </div>`
-    if (qty1000 > 0) rows += `
+    if (q1000 > 0) rows += `
       <div class="summary-row">
         <img class="summary-thumb" src="assets/voucher-preview-1000.jpg" alt="">
-        <div class="summary-info">
-          <div class="summary-name">Voucher 1 000 Kč</div>
-          <div class="summary-qty">${qty1000} ks</div>
-        </div>
-        <div class="summary-price">${fmt(qty1000 * 1000)}</div>
+        <div><p class="summary-name">Voucher 1 000 Kč</p><p class="summary-qty">${q1000} ks</p></div>
+        <p class="summary-price">${fmt(q1000 * 1000)}</p>
       </div>`
-
     document.getElementById('summary-rows').innerHTML = rows
     document.getElementById('summary-total').textContent = fmt(total)
   }
 
   function openCheckout() {
-    const section = document.getElementById('checkout-section')
-    section.classList.add('visible')
+    const s = document.getElementById('checkout-section')
+    s.classList.add('visible')
+    updateSummary()
     setTimeout(() => {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 80)
-    setTimeout(() => {
-      document.getElementById('email').focus()
-    }, 500)
+      s.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 60)
+    setTimeout(() => document.getElementById('email').focus(), 500)
   }
 
   function closeCheckout() {
