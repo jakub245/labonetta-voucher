@@ -2,6 +2,8 @@
 // Pouziti: POST /api/test-order s body { email, items }
 // ODSTRANIT pred nasazenim do produkce!
 
+console.log('SUPABASE_KEY prefix:', process.env.SUPABASE_SERVICE_KEY?.substring(0, 10))
+
 import supabase from '../lib/supabase.js'
 import { generateVoucherCode } from '../lib/codes.js'
 import { generateVoucherPdf } from '../lib/pdf.js'
