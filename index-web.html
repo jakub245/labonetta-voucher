@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dárkový voucher · Labonetta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1B7F72;
+      --teal-dark:  #12574d;
+      --teal-bg:    #e8f4f2;
+      --terra:      #C0623A;
+      --dark:       #1a1a1a;
+      --gray:       #6b7280;
+      --light-gray: #f3f4f6;
+      --border:     #e5e7eb;
+      --white:      #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--dark);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    /* ── NAV — matches prosek.labonetta.cz ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+    }
+
+    .nav-inner {
+      max-width: 1080px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo { height: 44px; display: block; }
+
+    .nav-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: 0.2px;
+    }
+
+    .nav-subtitle {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 1px;
+    }
+
+    .nav-back {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--teal); }
+    .nav-back svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 480px;
+      overflow: hidden;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 35%;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26, 26, 26, 0.52);
+    }
+
+    .hero-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 300;
+      margin-bottom: 32px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--teal);
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 48px;
+    }
+    .hero-cta:hover { background: var(--teal-dark); }
+    .hero-cta svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+    /* ── MAIN CONTAINER ── */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-wrap {
+      padding: 64px 0 48px;
+    }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      color: var(--gray);
+      font-weight: 400;
+    }
+
+    /* ── TILES — match prosek.labonetta.cz card style ── */
+    .tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 0;
+    }
+
+    .tile {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .tile:hover {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+      border-color: #d1d5db;
+    }
+    .tile.in-cart {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 2px var(--teal);
+    }
+
+    .tile-img-wrap { overflow: hidden; position: relative; }
+    .tile-img {
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .tile:hover .tile-img { transform: scale(1.02); }
+
+    .in-cart-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: var(--teal);
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      display: none;
+    }
+    .tile.in-cart .in-cart-badge { display: block; }
+
+    .tile-body { padding: 20px 20px 20px; }
+
+    .tile-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 4px;
+    }
+
+    .tile-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+    .tile.in-cart .tile-amount { color: var(--teal); }
+
+    .tile-desc {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    /* Tile actions */
+    .tile-actions { display: flex; }
+
+    .btn-add {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: var(--teal);
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 46px;
+    }
+    .btn-add:hover { background: var(--teal-dark); }
+    .tile.in-cart .btn-add { display: none; }
+
+    .qty-controls {
+      display: none;
+      align-items: center;
+      width: 100%;
+      border: 1.5px solid var(--teal);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--white);
+    }
+    .tile.in-cart .qty-controls { display: flex; }
+
+    .qty-btn {
+      width: 46px; height: 46px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--teal);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .qty-btn:hover { background: var(--teal-bg); }
+
+    .qty-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: var(--teal-bg);
+      height: 46px;
+    }
+    .qty-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+    .qty-unit {
+      font-size: 12px;
+      color: var(--teal);
+      opacity: 0.7;
+    }
+
+    /* ── STICKY BAR ── */
+    .sticky-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 200;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .sticky-bar.visible { transform: translateY(0); }
+
+    .sticky-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .sticky-items {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow: hidden;
+    }
+
+    .sticky-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .sticky-thumb {
+      width: 48px; height: 24px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .sticky-item-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    .sticky-item-qty {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    .sticky-sep {
+      width: 1px; height: 28px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .sticky-total-wrap { text-align: right; flex-shrink: 0; }
+    .sticky-total-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .sticky-total-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .btn-sticky {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--teal);
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 48px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .btn-sticky:hover { background: var(--teal-dark); }
+    .btn-sticky svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+    /* ── CHECKOUT ── */
+    .checkout-wrap {
+      display: none;
+      background: var(--light-gray);
+      border-top: 1px solid var(--border);
+      padding-bottom: 80px;
+    }
+    .checkout-wrap.visible { display: block; }
+
+    .checkout-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 56px 24px 0;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .checkout-form-wrap {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+    }
+
+    .checkout-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .checkout-sub {
+      font-size: 14px;
+      color: var(--gray);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 6px;
+    }
+    input[type="email"]:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(27,127,114,0.1);
+    }
+    input[type="email"].error { border-color: #ef4444; }
+    input[type="email"]::placeholder { color: #d1d5db; }
+
+    .field-hint { font-size: 12px; color: var(--gray); margin-bottom: 24px; }
+    .error-msg { font-size: 13px; color: #ef4444; font-weight: 500; margin-bottom: 16px; display: none; }
+    .error-msg.visible { display: flex; align-items: center; gap: 6px; }
+
+    .btn-pay {
+      width: 100%;
+      padding: 15px 24px;
+      background: var(--teal);
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 52px;
+    }
+    .btn-pay:hover:not(:disabled) { background: var(--teal-dark); }
+    .btn-pay:disabled { background: #9ca3af; cursor: not-allowed; }
+    .spinner { display: none; width: 17px; height: 17px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .btn-pay.loading .btn-label { display: none; }
+    .btn-pay.loading .btn-arr { display: none; }
+    .btn-pay.loading .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Summary card */
+    .checkout-summary {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .summary-head {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-thumb {
+      width: 60px; height: 30px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .summary-info { flex: 1; }
+    .summary-name { font-size: 14px; font-weight: 500; color: var(--dark); }
+    .summary-qty  { font-size: 12px; color: var(--gray); }
+    .summary-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+    }
+    .summary-total-label { font-size: 13px; color: var(--gray); font-weight: 500; }
+    .summary-total-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .btn-change {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--teal);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    /* ── INFO SECTION ── */
+    .info-section {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+    }
+
+    .info-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 56px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 0 32px 0 0;
+      border-right: 1px solid var(--border);
+    }
+    .info-item:first-child { padding-left: 0; }
+    .info-item:last-child { border-right: none; padding-right: 0; padding-left: 32px; }
+    .info-item:nth-child(2) { padding-left: 32px; }
+
+    .info-icon {
+      width: 40px; height: 40px;
+      background: var(--teal-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .info-icon svg {
+      width: 18px; height: 18px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .info-text {}
+    .info-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .info-desc {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 1px; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: white; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .tiles { grid-template-columns: 1fr; }
+      .sticky-inner { flex-wrap: wrap; gap: 12px; }
+      .sticky-sep { display: none; }
+      .checkout-inner { grid-template-columns: 1fr; }
+      .checkout-summary { position: static; order: -1; }
+      .info-inner { grid-template-columns: 1fr; gap: 24px; }
+      .info-item { border-right: none; padding: 0 !important; }
+      .hero { height: 360px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="https://labonetta.cz">
+      <img class="nav-logo" src="assets/logo.svg" alt="Labonetta">
+      <div>
+        <div class="nav-title">Labonetta – Prosek</div>
+        <div class="nav-subtitle">Dárkové vouchery</div>
+      </div>
+    </a>
+    <a class="nav-back" href="https://prosek.labonetta.cz">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      Zpět na web
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <img class="hero-img" src="assets/hero-interior.jpg" alt="Interiér restaurace Labonetta">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Dárkový voucher · Labonetta</p>
+    <h1>Darujte zážitek<br>jako z Neapole</h1>
+    <p class="hero-sub">Platí na pizzu, antipasti, víno i kávu</p>
+    <button class="hero-cta" onclick="document.getElementById('vouchers').scrollIntoView({behavior:'smooth'})">
+      Vybrat voucher
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="section-wrap" id="vouchers">
+    <p class="section-label">Dárkové poukazy</p>
+    <h2 class="section-title">Vyberte voucher</h2>
+    <p class="section-desc" style="margin-bottom:32px">Uplatníte na Proseku i na Kobylisích.</p>
+
+    <div class="tiles">
+
+      <!-- 500 Kč -->
+      <div class="tile" id="tile-500">
+        <div class="tile-img-wrap">
+          <img class="tile-img" src="assets/voucher-preview-500.jpg" alt="Voucher 500 Kč">
+          <span class="in-cart-badge" id="badge-500">V košíku</span>
+        </div>
+        <div class="tile-body">
+          <p class="tile-name">Voucher · Labonetta</p>
+          <p class="tile-amount">500 Kč</p>
+          <p class="tile-desc">Platí na veškerou útratu · platnost 1 rok</p>
+          <div class="tile-actions">
+            <button class="btn-add" onclick="addToCart(500)" aria-label="Přidat voucher 500 Kč">
+              Přidat do košíku
+            </button>
+            <div class="qty-controls" role="group" aria-label="Množství 500 Kč">
+              <button class="qty-btn" onclick="changeQty(500,-1)" aria-label="Odebrat">−</button>
+              <div class="qty-info">
+                <span class="qty-num" id="qty-500">1</span>
+                <span class="qty-unit">ks</span>
+              </div>
+              <button class="qty-btn" onclick="changeQty(500,+1)" aria-label="Přidat">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1000 Kč -->
+      <div class="tile" id="tile-1000">
+        <div class="tile-img-wrap">
+          <img class="tile-img" src="assets/voucher-preview-1000.jpg" alt="Voucher 1 000 Kč">
+          <span class="in-cart-badge" id="badge-1000">V košíku</span>
+        </div>
+        <div class="tile-body">
+          <p class="tile-name">Voucher · Labonetta</p>
+          <p class="tile-amount">1 000 Kč</p>
+          <p class="tile-desc">Platí na veškerou útratu · platnost 1 rok</p>
+          <div class="tile-actions">
+            <button class="btn-add" onclick="addToCart(1000)" aria-label="Přidat voucher 1 000 Kč">
+              Přidat do košíku
+            </button>
+            <div class="qty-controls" role="group" aria-label="Množství 1 000 Kč">
+              <button class="qty-btn" onclick="changeQty(1000,-1)" aria-label="Odebrat">−</button>
+              <div class="qty-info">
+                <span class="qty-num" id="qty-1000">1</span>
+                <span class="qty-unit">ks</span>
+              </div>
+              <button class="qty-btn" onclick="changeQty(1000,+1)" aria-label="Přidat">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- STICKY BAR -->
+<div class="sticky-bar" id="sticky-bar" role="region" aria-label="Košík" aria-live="polite">
+  <div class="sticky-inner">
+    <div class="sticky-items" id="sticky-items"></div>
+    <div class="sticky-sep" aria-hidden="true"></div>
+    <div class="sticky-total-wrap">
+      <p class="sticky-total-label">Celkem</p>
+      <p class="sticky-total-amount" id="sticky-total">0 Kč</p>
+    </div>
+    <button class="btn-sticky" onclick="openCheckout()">
+      Pokračovat
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="checkout-wrap" id="checkout-wrap">
+  <div class="checkout-inner">
+
+    <div class="checkout-form-wrap">
+      <h2 class="checkout-title">Dokončit objednávku</h2>
+      <p class="checkout-sub">Zadejte email — každý voucher obdržíte jako PDF okamžitě po zaplacení.</p>
+      <label class="field-label" for="email">Email pro zaslání voucherů</label>
+      <input type="email" id="email" placeholder="vas@email.cz" autocomplete="email" aria-describedby="email-hint email-error">
+      <p class="field-hint" id="email-hint">Každý voucher přijde jako samostatná PDF příloha.</p>
+      <p class="error-msg" id="email-error" role="alert">Zadejte prosím platný email.</p>
+      <button class="btn-pay" id="btn-pay" onclick="handlePay()">
+        <span class="btn-label">Zaplatit kartou</span>
+        <svg class="btn-arr" viewBox="0 0 24 24" width="16" height="16" style="stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="checkout-summary">
+      <p class="summary-head">Přehled objednávky</p>
+      <div id="summary-rows"></div>
+      <div class="summary-total">
+        <span class="summary-total-label">Celkem</span>
+        <span class="summary-total-amount" id="summary-total">0 Kč</span>
+      </div>
+      <button class="btn-change" onclick="closeCheckout()">← Upravit košík</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- INFO -->
+<div class="info-section">
+  <div class="info-inner">
+
+    <div class="info-item">
+      <div class="info-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+      </div>
+      <div class="info-text">
+        <p class="info-title">Okamžitě na email</p>
+        <p class="info-desc">PDF voucher do pár vteřin po zaplacení.</p>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="info-text">
+        <p class="info-title">Platnost 1 rok</p>
+        <p class="info-desc">Od data zakoupení, bez podmínek.</p>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="info-text">
+        <p class="info-title">Prosek & Kobylisy</p>
+        <p class="info-desc">Ukažte PDF obsluze v obou pobočkách.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2025 Labonetta</span>
+    <div class="footer-links">
+      <a href="https://prosek.labonetta.cz">Prosek</a>
+      <a href="https://kobylisy.labonetta.cz">Kobylisy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const cart = { 500: 0, 1000: 0 }
+
+  function fmt(n) {
+    return n >= 1000 ? n.toLocaleString('cs') + ' Kč' : n + ' Kč'
+  }
+
+  function addToCart(amount) {
+    cart[amount] = cart[amount] === 0 ? 1 : cart[amount] + 1
+    updateCart()
+  }
+
+  function changeQty(amount, delta) {
+    cart[amount] = Math.max(0, cart[amount] + delta)
+    if (cart[amount] === 0 && cart[500] + cart[1000] === 0) closeCheckout()
+    updateCart()
+  }
+
+  function updateCart() {
+    const q500 = cart[500], q1000 = cart[1000]
+    const total = q500 * 500 + q1000 * 1000
+    const items = q500 + q1000
+
+    document.getElementById('tile-500').classList.toggle('in-cart', q500 > 0)
+    document.getElementById('tile-1000').classList.toggle('in-cart', q1000 > 0)
+    document.getElementById('qty-500').textContent = q500
+    document.getElementById('qty-1000').textContent = q1000
+    document.getElementById('badge-500').textContent = q500 > 0 ? `${q500} ks v košíku` : ''
+    document.getElementById('badge-1000').textContent = q1000 > 0 ? `${q1000} ks v košíku` : ''
+
+    document.getElementById('sticky-bar').classList.toggle('visible', items > 0)
+
+    let html = ''
+    if (q500 > 0) {
+      html += `<div class="sticky-item">
+        <img class="sticky-thumb" src="assets/voucher-preview-500.jpg" alt="">
+        <div><p class="sticky-item-label">Voucher 500 Kč</p><p class="sticky-item-qty">${q500} ks</p></div>
+      </div>`
+      if (q1000 > 0) html += '<div class="sticky-sep"></div>'
+    }
+    if (q1000 > 0) {
+      html += `<div class="sticky-item">
+        <img class="sticky-thumb" src="assets/voucher-preview-1000.jpg" alt="">
+        <div><p class="sticky-item-label">Voucher 1 000 Kč</p><p class="sticky-item-qty">${q1000} ks</p></div>
+      </div>`
+    }
+    document.getElementById('sticky-items').innerHTML = html
+    document.getElementById('sticky-total').textContent = fmt(total)
+    updateSummary()
+  }
+
+  function updateSummary() {
+    const q500 = cart[500], q1000 = cart[1000]
+    const total = q500 * 500 + q1000 * 1000
+    let rows = ''
+    if (q500 > 0) rows += `
+      <div class="summary-row">
+        <img class="summary-thumb" src="assets/voucher-preview-500.jpg" alt="">
+        <div class="summary-info"><p class="summary-name">Voucher 500 Kč</p><p class="summary-qty">${q500} ks</p></div>
+        <p class="summary-price">${fmt(q500*500)}</p>
+      </div>`
+    if (q1000 > 0) rows += `
+      <div class="summary-row">
+        <img class="summary-thumb" src="assets/voucher-preview-1000.jpg" alt="">
+        <div class="summary-info"><p class="summary-name">Voucher 1 000 Kč</p><p class="summary-qty">${q1000} ks</p></div>
+        <p class="summary-price">${fmt(q1000*1000)}</p>
+      </div>`
+    document.getElementById('summary-rows').innerHTML = rows
+    document.getElementById('summary-total').textContent = fmt(total)
+  }
+
+  function openCheckout() {
+    const wrap = document.getElementById('checkout-wrap')
+    wrap.classList.add('visible')
+    updateSummary()
+    setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60)
+    setTimeout(() => document.getElementById('email').focus(), 500)
+  }
+
+  function closeCheckout() {
+    document.getElementById('checkout-wrap').classList.remove('visible')
+    document.getElementById('vouchers').scrollIntoView({ behavior: 'smooth' })
+  }
+
+  async function handlePay() {
+    const email = document.getElementById('email').value.trim()
+    const emailInput = document.getElementById('email')
+    const emailError = document.getElementById('email-error')
+    const btn = document.getElementById('btn-pay')
+    if (cart[500] + cart[1000] === 0) return
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      emailInput.classList.add('error')
+      emailError.classList.add('visible')
+      emailInput.focus()
+      return
+    }
+    emailInput.classList.remove('error')
+    emailError.classList.remove('visible')
+    btn.disabled = true
+    btn.classList.add('loading')
+    try {
+      const res = await fetch('/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ amount: 500, qty: cart[500] }, { amount: 1000, qty: cart[1000] }], email })
+      })
+      const data = await res.json()
+      if (!res.ok) { alert(data.error || 'Chyba.'); btn.disabled = false; btn.classList.remove('loading'); return; }
+      window.location.href = data.gw_url
+    } catch {
+      alert('Chyba spojení.'); btn.disabled = false; btn.classList.remove('loading')
+    }
+  }
+</script>
+</body>
+</html>
