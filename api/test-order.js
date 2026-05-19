@@ -12,9 +12,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  // Bezpecnostni pojistka - pouze v sandbox rezimu
-  if (process.env.GOPAY_SANDBOX !== 'true') {
-    return res.status(403).json({ error: 'Test endpoint disabled in production' })
+  // Bezpecnostni pojistka - pouze pokud neni nastaveno DISABLE_TEST
+  if (process.env.DISABLE_TEST === 'true') {
+    return res.status(403).json({ error: 'Test endpoint disabled' })
   }
 
   const { email, items } = req.body
