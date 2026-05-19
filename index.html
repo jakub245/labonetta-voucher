@@ -119,7 +119,7 @@
     .hero-content {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      padding-bottom: 64px;
+      padding-bottom: 80px;
     }
 
     .hero-content-inner {
@@ -172,27 +172,17 @@
       font-family: 'Bai Jamjuree', sans-serif;
       font-size: 14px;
       font-weight: 600;
-      padding: 16px 32px;
+      padding: 14px 28px;
       border: none;
+      border-radius: 8px;
       cursor: pointer;
       transition: background 0.2s;
-      min-height: 52px;
+      min-height: 48px;
       touch-action: manipulation;
       letter-spacing: 0.3px;
     }
     .hero-cta:hover { background: #a8522f; }
-    .hero-cta:focus-visible {
-      outline: 3px solid white;
-      outline-offset: 3px;
-    }
-    .hero-cta svg {
-      width: 18px; height: 18px;
-      stroke: white; fill: none;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-      flex-shrink: 0;
-      transition: transform 0.2s;
-    }
-    .hero-cta:hover svg { transform: translateX(4px); }
+    .hero-cta:focus-visible { outline: 3px solid white; outline-offset: 3px; }
 
     /* ── VOUCHER SECTION ── */
     .section {
@@ -263,16 +253,21 @@
     }
     .tile:hover .tile-img { transform: scale(1.03); }
 
-    /* In-cart badge */
+    /* In-cart badge — pill, glass, neutral */
     .tile-badge {
       position: absolute;
       top: 12px; right: 12px;
-      background: var(--teal);
-      color: white;
-      font-size: 12px;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--dark);
+      font-size: 11px;
       font-weight: 600;
       padding: 4px 12px;
+      border-radius: 100px;
       display: none;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(255,255,255,0.5);
     }
     .tile.in-cart .tile-badge { display: block; }
 
@@ -314,27 +309,26 @@
 
     .btn-add {
       flex: 1;
-      padding: 14px 20px;
-      background: var(--dark);
+      padding: 13px 20px;
+      background: var(--teal);
       color: white;
       font-size: 14px;
       font-weight: 600;
       letter-spacing: 0.3px;
       border: none;
+      border-radius: 8px;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.2s;
-      min-height: 48px;
+      min-height: 46px;
       touch-action: manipulation;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
     }
-    .btn-add:hover { background: var(--teal); }
+    .btn-add:hover { background: var(--teal-dark); }
     .btn-add:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
-    .btn-add svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; transition: transform 0.2s; }
-    .btn-add:hover svg { transform: translateX(3px); }
 
     .tile.in-cart .btn-add { display: none; }
 
@@ -342,16 +336,19 @@
       display: none;
       align-items: stretch;
       width: 100%;
-      border: 2px solid var(--teal);
+      border: 1.5px solid var(--teal);
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
     }
     .tile.in-cart .qty-controls { display: flex; }
 
     .qty-btn {
-      width: 52px;
+      width: 46px;
       background: none;
       border: none;
-      font-size: 20px;
-      font-weight: 300;
+      font-size: 18px;
+      font-weight: 400;
       color: var(--teal);
       cursor: pointer;
       font-family: inherit;
@@ -359,13 +356,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 48px;
+      min-height: 46px;
       touch-action: manipulation;
     }
     .qty-btn:hover { background: var(--teal-light); }
     .qty-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
-    .qty-btn[aria-label="Odebrat"] { border-right: 1px solid var(--teal); }
-    .qty-btn[aria-label="Přidat"] { border-left: 1px solid var(--teal); }
 
     .qty-info {
       flex: 1;
@@ -374,20 +369,20 @@
       align-items: center;
       justify-content: center;
       background: var(--teal-light);
+      border-left: 1px solid rgba(27,127,114,0.2);
+      border-right: 1px solid rgba(27,127,114,0.2);
     }
     .qty-num {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--teal);
       line-height: 1;
     }
     .qty-label-text {
       font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      font-weight: 500;
       color: var(--teal);
-      opacity: 0.7;
+      opacity: 0.65;
     }
 
     /* ── STICKY BAR ── */
@@ -499,35 +494,40 @@
     /* ── CHECKOUT SECTION ── */
     .checkout-section {
       display: none;
-      background: var(--white);
-      border-top: 3px solid var(--teal);
+      background: #f3f4f6;
+      border-top: 1px solid var(--border);
     }
     .checkout-section.visible { display: block; }
 
     .checkout-inner {
       max-width: 1040px;
       margin: 0 auto;
-      padding: 56px 48px;
+      padding: 56px 48px 64px;
       display: grid;
       grid-template-columns: 1fr 400px;
-      gap: 56px;
+      gap: 32px;
       align-items: start;
     }
 
     /* Form */
-    .checkout-form {}
+    .checkout-form {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+    }
     .form-title {
       font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--dark);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .form-sub {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--light-text);
       line-height: 1.6;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
     .field-group { margin-bottom: 24px; }
@@ -540,24 +540,24 @@
     }
     input[type="email"] {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px 16px;
       border: 1.5px solid var(--border);
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 15px;
       font-family: inherit;
       color: var(--dark);
-      background: var(--cream);
+      background: #f9fafb;
       outline: none;
-      transition: border-color 0.2s, background 0.2s;
-      border-radius: 0;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
     }
     input[type="email"]:focus {
       border-color: var(--teal);
       background: white;
-      box-shadow: 0 0 0 3px rgba(27,127,114,0.12);
+      box-shadow: 0 0 0 3px rgba(27,127,114,0.1);
     }
     input[type="email"].error { border-color: #c0392b; }
-    input[type="email"]::placeholder { color: #b0a89e; }
+    input[type="email"]::placeholder { color: #c0b8b0; }
 
     .field-hint {
       font-size: 13px;
@@ -578,12 +578,14 @@
 
     .btn-pay {
       width: 100%;
-      padding: 17px 24px;
+      padding: 15px 24px;
       background: var(--teal);
       color: white;
       border: none;
-      font-size: 15px;
+      border-radius: 8px;
+      font-size: 14px;
       font-weight: 600;
+      letter-spacing: 0.5px;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.2s;
@@ -591,17 +593,17 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      min-height: 56px;
+      min-height: 50px;
       touch-action: manipulation;
     }
     .btn-pay:hover:not(:disabled) { background: var(--teal-dark); }
     .btn-pay:disabled { background: #a0bfbb; cursor: not-allowed; }
     .btn-pay:focus-visible { outline: 3px solid var(--teal-dark); outline-offset: 3px; }
-    .btn-pay svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+    .btn-pay svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
 
     .spinner {
       display: none;
-      width: 18px; height: 18px;
+      width: 17px; height: 17px;
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
@@ -614,9 +616,10 @@
 
     /* Summary */
     .checkout-summary {
-      background: var(--cream);
+      background: white;
       border: 1px solid var(--border);
-      padding: 28px;
+      border-radius: 12px;
+      padding: 24px;
     }
 
     .summary-title {
@@ -706,10 +709,16 @@
       border-top: 1px solid var(--border);
     }
 
+    .info-section-header {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 48px 48px 32px;
+    }
+
     .info-inner {
       max-width: 1040px;
       margin: 0 auto;
-      padding: 48px 48px;
+      padding: 0 48px 48px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0;
@@ -745,16 +754,17 @@
     }
 
     .info-title {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--dark);
       line-height: 1.3;
+      margin-bottom: 4px;
     }
 
     .info-desc {
-      font-size: 15px;
+      font-size: 13px;
       color: var(--mid);
-      line-height: 1.65;
+      line-height: 1.6;
     }
 
     /* ── FOOTER ── */
@@ -795,7 +805,8 @@
       .sticky-bar-inner { padding: 12px 20px; flex-wrap: wrap; }
       .checkout-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 32px; }
       .checkout-summary { order: -1; }
-      .info-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 24px; }
+      .info-section-header { padding: 40px 20px 24px; }
+      .info-inner { grid-template-columns: 1fr; padding: 0 20px 40px; gap: 24px; }
       .info-item { border-right: none !important; padding: 0 !important; flex-direction: row; align-items: flex-start; gap: 14px; }
       .info-icon-wrap { flex-shrink: 0; }
       footer { padding: 20px; flex-direction: column; align-items: flex-start; }
@@ -982,6 +993,10 @@
 
 <!-- INFO SECTION -->
 <section class="info-section" aria-labelledby="info-title">
+  <div class="info-section-header">
+    <p class="section-eyebrow">Jak to funguje</p>
+    <h2 class="section-title" id="info-title">Vše jednoduše</h2>
+  </div>
   <div class="info-inner">
 
     <div class="info-item">
