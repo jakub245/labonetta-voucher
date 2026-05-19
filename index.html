@@ -160,7 +160,7 @@
     .hero h1 em {
       font-style: italic;
       font-weight: 300;
-      color: rgba(255,255,255,0.8);
+      color: white;
     }
 
     .hero-cta {
@@ -237,6 +237,7 @@
     .tile {
       background: var(--white);
       border: 1px solid var(--border);
+      border-radius: 12px;
       overflow: hidden;
       transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s;
       cursor: pointer;
@@ -245,6 +246,7 @@
     .tile:hover {
       transform: translateY(-4px);
       box-shadow: 0 12px 40px rgba(0,0,0,0.10);
+      border-color: #d1d5db;
     }
     .tile.in-cart {
       border-color: var(--teal);
@@ -393,23 +395,27 @@
       position: fixed;
       bottom: 0; left: 0; right: 0;
       z-index: 300;
-      background: var(--dark);
-      border-top: 1px solid rgba(255,255,255,0.08);
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    .sticky-bar.visible { transform: translateY(0); }
+
+    .sticky-bar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
       padding: 14px 48px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      transform: translateY(110%);
-      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
-      box-shadow: 0 -8px 40px rgba(0,0,0,0.25);
+      gap: 20px;
     }
-    .sticky-bar.visible { transform: translateY(0); }
 
     .sticky-items {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
       flex: 1;
       overflow: hidden;
     }
@@ -421,52 +427,42 @@
       flex-shrink: 0;
     }
     .sticky-thumb {
-      width: 44px; height: 24px;
+      width: 48px; height: 26px;
       object-fit: cover;
-      border-radius: 2px;
-      opacity: 0.85;
+      border-radius: 4px;
+      border: 1px solid var(--border);
     }
-    .sticky-item-text {
+    .sticky-item-label {
       font-size: 14px;
-      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+      color: var(--dark);
       white-space: nowrap;
     }
-    .sticky-item-text strong {
-      color: white;
-      font-weight: 600;
-      display: block;
-      font-size: 14px;
+    .sticky-item-qty {
+      font-size: 12px;
+      color: var(--light-text);
     }
 
     .sticky-sep {
-      width: 1px; height: 32px;
-      background: rgba(255,255,255,0.12);
+      width: 1px; height: 28px;
+      background: var(--border);
       flex-shrink: 0;
     }
 
-    .sticky-right {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      flex-shrink: 0;
-    }
-
-    .sticky-total-wrap {
-      text-align: right;
-    }
+    .sticky-total-wrap { text-align: right; flex-shrink: 0; }
     .sticky-total-label {
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 2px;
+      color: var(--light-text);
+      margin-bottom: 1px;
     }
     .sticky-total-amount {
       font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
-      color: white;
+      color: var(--dark);
     }
 
     .btn-checkout {
@@ -474,21 +470,23 @@
       align-items: center;
       gap: 8px;
       padding: 14px 28px;
-      background: var(--teal);
+      background: var(--terra);
       color: white;
+      font-family: 'Bai Jamjuree', sans-serif;
       font-size: 14px;
       font-weight: 600;
       letter-spacing: 0.3px;
       border: none;
-      font-family: inherit;
+      border-radius: 8px;
       cursor: pointer;
       transition: background 0.2s;
-      min-height: 52px;
+      min-height: 48px;
       white-space: nowrap;
       touch-action: manipulation;
+      flex-shrink: 0;
     }
-    .btn-checkout:hover { background: var(--teal-dark); }
-    .btn-checkout:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+    .btn-checkout:hover { background: var(--terra-dark); }
+    .btn-checkout:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; }
     .btn-checkout svg {
       width: 16px; height: 16px;
       stroke: white; fill: none;
@@ -704,40 +702,44 @@
 
     /* ── INFO SECTION ── */
     .info-section {
-      background: #e8f4f2;
-      border-top: 1px solid #c8e4e0;
+      background: var(--white);
+      border-top: 1px solid var(--border);
     }
 
     .info-inner {
       max-width: 1040px;
       margin: 0 auto;
-      padding: 56px 48px;
+      padding: 48px 48px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
+      gap: 0;
     }
 
     .info-item {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 0 32px 0 0;
+      border-right: 1px solid var(--border);
     }
+    .info-item:first-child { padding-left: 0; }
+    .info-item:last-child  { border-right: none; padding-right: 0; padding-left: 32px; }
+    .info-item:nth-child(2) { padding-left: 32px; }
 
     .info-icon-wrap {
-      width: 48px; height: 48px;
-      background: white;
+      width: 40px; height: 40px;
+      background: var(--teal-light);
       border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(27,127,114,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
     .info-icon-wrap svg {
-      width: 22px; height: 22px;
+      width: 18px; height: 18px;
       stroke: var(--teal);
       fill: none;
-      stroke-width: 1.75;
+      stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -790,19 +792,17 @@
       .hero-content-inner { padding: 0 24px; }
       .section { padding: 56px 20px 40px; }
       .tiles { grid-template-columns: 1fr; gap: 16px; }
-      .sticky-bar { padding: 12px 20px; }
-      .sticky-items { gap: 12px; }
+      .sticky-bar-inner { padding: 12px 20px; flex-wrap: wrap; }
       .checkout-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 32px; }
       .checkout-summary { order: -1; }
-      .info-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 28px; }
-      .info-item { flex-direction: row; align-items: flex-start; gap: 16px; }
+      .info-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 24px; }
+      .info-item { border-right: none !important; padding: 0 !important; flex-direction: row; align-items: flex-start; gap: 14px; }
       .info-icon-wrap { flex-shrink: 0; }
       footer { padding: 20px; flex-direction: column; align-items: flex-start; }
     }
 
     @media (max-width: 540px) {
       .sticky-sep { display: none; }
-      .sticky-item:last-of-type { display: none; }
     }
 
     /* Reduced motion */
@@ -919,15 +919,15 @@
 
 <!-- STICKY BAR -->
 <div class="sticky-bar" id="sticky-bar" role="region" aria-label="Košík" aria-live="polite">
-  <div class="sticky-items" id="sticky-items"></div>
-  <div class="sticky-right">
+  <div class="sticky-bar-inner">
+    <div class="sticky-items" id="sticky-items"></div>
+    <div class="sticky-sep" aria-hidden="true"></div>
     <div class="sticky-total-wrap">
       <p class="sticky-total-label">Celkem</p>
       <p class="sticky-total-amount" id="sticky-total">0 Kč</p>
     </div>
     <button class="btn-checkout" onclick="openCheckout()" aria-label="Pokračovat k dokončení objednávky">
-      Pokračovat
-      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      Pokračovat →
     </button>
   </div>
 </div>
@@ -1077,14 +1077,20 @@
     if (q500 > 0) {
       html += `<div class="sticky-item">
         <img class="sticky-thumb" src="assets/voucher-preview-500.jpg" alt="Voucher 500 Kč">
-        <div class="sticky-item-text"><strong>${q500}× 500 Kč</strong>${fmt(q500 * 500)}</div>
+        <div>
+          <p class="sticky-item-label">Voucher 500 Kč</p>
+          <p class="sticky-item-qty">${q500} ks · ${fmt(q500 * 500)}</p>
+        </div>
       </div>`
       if (q1000 > 0) html += '<div class="sticky-sep" aria-hidden="true"></div>'
     }
     if (q1000 > 0) {
       html += `<div class="sticky-item">
         <img class="sticky-thumb" src="assets/voucher-preview-1000.jpg" alt="Voucher 1 000 Kč">
-        <div class="sticky-item-text"><strong>${q1000}× 1 000 Kč</strong>${fmt(q1000 * 1000)}</div>
+        <div>
+          <p class="sticky-item-label">Voucher 1 000 Kč</p>
+          <p class="sticky-item-qty">${q1000} ks · ${fmt(q1000 * 1000)}</p>
+        </div>
       </div>`
     }
     document.getElementById('sticky-items').innerHTML = html
