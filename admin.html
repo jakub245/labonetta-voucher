@@ -95,18 +95,17 @@
 
     .login-input {
       width: 100%;
-      padding: 14px 16px;
+      padding: 14px 48px 14px 16px;
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(255,255,255,0.1);
       border-radius: 10px;
-      font-size: 16px;
-      font-family: inherit;
+      font-size: 15px;
+      font-family: 'Bai Jamjuree', sans-serif;
       color: white;
       outline: none;
-      letter-spacing: 3px;
       transition: border-color 0.2s;
-      margin-bottom: 12px;
-      text-align: center;
+      margin-bottom: 0;
+      text-align: left;
     }
     .login-input:focus { border-color: var(--teal); }
     .login-input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 1px; }
@@ -671,27 +670,27 @@
         const vs = v.variable_symbol || ''
         const groupTop = i === 0 && gi > 0 ? 'border-top:2px solid #e5e7eb;' : ''
 
-        // Akce — rowspan na prvním řádku skupiny
+        // Akce — dispatch s rowspan jen na prvním řádku, uplatnit na každém
         let actionCell = ''
-        if (i === 0) {
-          let action
-          if (v.status === 'pending_qr') {
-            action = `
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                  Zaplaceno → Odeslat
-                </button>
-                ${vs ? `<span style="font-size:11px;color:#9ca3af;">VS: ${vs}</span>` : ''}
-              </div>`
-          } else if (v.status === 'paid') {
-            action = `<button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>`
-          } else if (v.status === 'redeemed') {
-            action = `<span class="action-done">Uplatněno</span>`
-          } else {
-            action = `<span class="action-done">—</span>`
-          }
+        if (i === 0 && (v.status === 'pending_qr')) {
+          const vs = v.variable_symbol || ''
+          const action = `
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Zaplaceno → Odeslat
+              </button>
+              ${vs ? `<span style="font-size:11px;color:#9ca3af;">VS: ${vs}</span>` : ''}
+            </div>`
           actionCell = `<td rowspan="${rowspan}" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
+        } else if (v.status === 'pending_qr' && i > 0) {
+          actionCell = '' // pokryto rowspanem
+        } else if (v.status === 'paid') {
+          actionCell = `<td><button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button></td>`
+        } else if (v.status === 'redeemed') {
+          actionCell = `<td><span class="action-done">Uplatněno</span></td>`
+        } else {
+          actionCell = `<td><span class="action-done">—</span></td>`
         }
 
         html += `
@@ -714,6 +713,8 @@
     const icon  = document.getElementById('eye-icon')
     const show  = input.type === 'password'
     input.type  = show ? 'text' : 'password'
+    input.style.fontFamily = show ? 'monospace' : "'Bai Jamjuree', sans-serif"
+    input.style.letterSpacing = show ? '2px' : 'normal'
     icon.innerHTML = show
       ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
       : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
