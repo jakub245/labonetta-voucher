@@ -9,9 +9,10 @@ const RECIPIENT    = 'Labonetta s.r.o.'
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { email, items, customer_name, customer_phone } = req.body
-  console.log('REQ BODY:', JSON.stringify(req.body))
-  console.log('customer_name:', customer_name, '| customer_phone:', customer_phone)
+  const email        = req.body.email
+  const items        = req.body.items
+  const customer_name  = req.body.customer_name  || null
+  const customer_phone = req.body.customer_phone || null
 
   if (!email || !items) return res.status(400).json({ error: 'Chybí email nebo items' })
 
@@ -19,9 +20,7 @@ export default async function handler(req, res) {
   if (!validItems.length) return res.status(400).json({ error: 'Prázdná objednávka' })
 
   const total = validItems.reduce((sum, i) => sum + i.amount * i.qty, 0)
-
   const vs = Date.now().toString().slice(-10)
-
   const expiresAt = new Date()
   expiresAt.setFullYear(expiresAt.getFullYear() + 1)
 
@@ -39,8 +38,6 @@ export default async function handler(req, res) {
         code,
         amount: Number(item.amount),
         email,
-        customer_name:  customer_name  || null,
-        customer_phone: customer_phone || null,
         status: 'pending_qr',
         variable_symbol: vs,
         expires_at: expiresAt.toISOString()
@@ -48,8 +45,7 @@ export default async function handler(req, res) {
     }
   }
 
-  console.log('INSERT RECORDS:', JSON.stringify(voucherRecords))
-
+  // Insert bez customer fields
   const insertRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/vouchers`, {
     method: 'POST',
     headers: {
@@ -61,13 +57,23 @@ export default async function handler(req, res) {
     body: JSON.stringify(voucherRecords)
   })
 
-  const vouchers = await insertRes.json()
-  const error = insertRes.ok ? null : vouchers
-
-  if (error) {
-    console.error('Supabase error:', error)
-    return res.status(500).json({ error: error.message })
+  if (!insertRes.ok) {
+    const err = await insertRes.json()
+    return res.status(500).json({ error: err.message || 'Insert failed' })
   }
+
+  const vouchers = await insertRes.json()
+
+  // Update customer_name a customer_phone přes variable_symbol
+  await fetch(`${process.env.SUPABASE_URL}/rest/v1/vouchers?variable_symbol=eq.${vs}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': process.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
+    },
+    body: JSON.stringify({ customer_name, customer_phone })
+  })
 
   const spayd = [
     'SPD*1.0',
@@ -91,11 +97,7 @@ export default async function handler(req, res) {
     bank_account: BANK_ACCOUNT,
     recipient: RECIPIENT,
     qr_data_url: qrDataUrl,
-    vouchers: vouchers.map(v => ({ code: v.code, amount: v.amount })),
-    _debug: {
-      sent: voucherRecords[0],
-      received: vouchers[0]
-    }
+    vouchers: vouchers.map(v => ({ code: v.code, amount: v.amount }))
   })
 }
 
