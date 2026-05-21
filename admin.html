@@ -500,6 +500,111 @@
 
     .modal-body { padding: 24px 28px 28px; }
 
+    /* Confirm modal */
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 600;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .confirm-overlay.visible { display: flex; }
+    .confirm-box {
+      background: var(--white);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+    .confirm-header {
+      padding: 24px 28px 0;
+    }
+    .confirm-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0 0 8px;
+    }
+    .confirm-message {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .confirm-meta {
+      font-size: 12px;
+      font-family: monospace;
+      color: var(--teal);
+      background: var(--teal-light);
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-top: 12px;
+      display: inline-block;
+    }
+    .confirm-footer {
+      display: flex;
+      gap: 10px;
+      padding: 20px 28px 24px;
+      justify-content: flex-end;
+    }
+    .confirm-cancel {
+      padding: 10px 18px;
+      border: 1.5px solid var(--border);
+      background: white;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Bai Jamjuree', sans-serif;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .confirm-cancel:hover { border-color: var(--dark); color: var(--dark); }
+    .confirm-ok {
+      padding: 10px 18px;
+      border: none;
+      background: var(--teal);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Bai Jamjuree', sans-serif;
+      color: white;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .confirm-ok:hover { background: var(--teal-dark); }
+    .confirm-ok.danger { background: #dc2626; }
+    .confirm-ok.danger:hover { background: #b91c1c; }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--dark);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      z-index: 700;
+      opacity: 0;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.success { background: var(--teal); }
+    .toast.error { background: #dc2626; }
+
     .modal-section { margin-bottom: 24px; }
     .modal-section-title {
       font-size: 10px;
@@ -873,62 +978,105 @@
     tbody.innerHTML = html
   }
 
-  async function dispatchQr(vs, btn) {
-    if (!confirm(`Potvrdit QR platbu a odeslat vouchery zákazníkovi?\n\nVariabilní symbol: ${vs}`)) return
-    btn.disabled = true
-    btn.textContent = 'Odesílám…'
-
-    const res = await fetch('/api/dispatch-vouchers', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${password}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ vs })
+  // Custom confirm dialog
+  function showConfirm({ title, message, meta, okLabel = 'Potvrdit', danger = false, onOk }) {
+    document.getElementById('confirm-title').textContent = title
+    document.getElementById('confirm-message').textContent = message
+    const metaEl = document.getElementById('confirm-meta')
+    if (meta) { metaEl.textContent = meta; metaEl.style.display = 'inline-block' }
+    else { metaEl.style.display = 'none' }
+    const okBtn = document.getElementById('confirm-ok')
+    okBtn.textContent = okLabel
+    okBtn.className = 'confirm-ok' + (danger ? ' danger' : '')
+    document.getElementById('confirm-overlay').classList.add('visible')
+    const newOk = okBtn.cloneNode(true)
+    okBtn.parentNode.replaceChild(newOk, okBtn)
+    const cancelBtn = document.getElementById('confirm-cancel')
+    const newCancel = cancelBtn.cloneNode(true)
+    cancelBtn.parentNode.replaceChild(newCancel, cancelBtn)
+    document.getElementById('confirm-ok').addEventListener('click', () => {
+      document.getElementById('confirm-overlay').classList.remove('visible')
+      onOk()
     })
+    document.getElementById('confirm-cancel').addEventListener('click', () => {
+      document.getElementById('confirm-overlay').classList.remove('visible')
+    })
+  }
 
-    const data = await res.json()
+  // Toast notification
+  let toastTimer
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast')
+    toast.textContent = message
+    toast.className = `toast ${type} visible`
+    clearTimeout(toastTimer)
+    toastTimer = setTimeout(() => { toast.className = 'toast' }, 3500)
+  }
 
-    if (res.ok) {
-      // Aktualizuj stav voucherů v lokálním poli
-      allVouchers = allVouchers.map(v =>
-        v.variable_symbol === vs ? { ...v, status: 'paid', paid_at: new Date().toISOString() } : v
-      )
-      updateStats()
-      renderTable()
-      alert(`✓ Vouchery odeslány na ${data.sent_to}`)
-    } else {
-      alert(`Chyba: ${data.error}`)
-      btn.disabled = false
-      btn.textContent = 'Zaplaceno → Odeslat vouchery'
-    }
+  async function dispatchQr(vs, btn) {
+    showConfirm({
+      title: 'Potvrdit platbu a odeslat vouchery',
+      message: 'Zákazníkovi bude odeslán email s PDF vouchery.',
+      meta: `VS: ${vs}`,
+      okLabel: 'Odeslat vouchery',
+      onOk: async () => {
+        btn.disabled = true
+        btn.textContent = 'Odesílám…'
+        const res = await fetch('/api/dispatch-vouchers', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${password}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ vs })
+        })
+        const data = await res.json()
+        if (res.ok) {
+          allVouchers = allVouchers.map(v =>
+            v.variable_symbol === vs ? { ...v, status: 'paid', paid_at: new Date().toISOString() } : v
+          )
+          updateStats()
+          renderTable()
+          showToast(`✓ Vouchery odeslány na ${data.sent_to}`)
+        } else {
+          showToast(`Chyba: ${data.error}`, 'error')
+          btn.disabled = false
+          btn.textContent = 'Zaplaceno → Odeslat vouchery'
+        }
+      }
+    })
   }
 
   async function redeem(id, btn) {
-    if (!confirm('Označit voucher jako uplatněný?')) return
-    btn.disabled = true
-    btn.textContent = '…'
-
-    const res = await fetch('/api/vouchers', {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${password}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ id })
+    showConfirm({
+      title: 'Uplatnit voucher',
+      message: 'Voucher bude označen jako uplatněný. Tuto akci nelze vrátit.',
+      okLabel: 'Uplatnit',
+      onOk: async () => {
+        btn.disabled = true
+        btn.textContent = '…'
+        const res = await fetch('/api/vouchers', {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${password}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id })
+        })
+        if (res.ok) {
+          const updated = await res.json()
+          const idx = allVouchers.findIndex(v => v.id === id)
+          if (idx !== -1) allVouchers[idx] = updated
+          updateStats()
+          renderTable()
+          showToast('✓ Voucher uplatněn')
+        } else {
+          showToast('Chyba při uplatňování voucheru.', 'error')
+          btn.disabled = false
+          btn.textContent = 'Uplatnit'
+        }
+      }
     })
-
-    if (res.ok) {
-      const updated = await res.json()
-      const idx = allVouchers.findIndex(v => v.id === id)
-      if (idx !== -1) allVouchers[idx] = updated
-      updateStats()
-      renderTable()
-    } else {
-      alert('Chyba při uplatňování voucheru.')
-      btn.disabled = false
-      btn.textContent = 'Uplatnit'
-    }
   }
 
   function togglePw() {
@@ -995,6 +1143,24 @@
     document.body.style.overflow = ''
   }
 </script>
+
+<!-- Confirm modal -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-header">
+      <p class="confirm-title" id="confirm-title"></p>
+      <p class="confirm-message" id="confirm-message"></p>
+      <span class="confirm-meta" id="confirm-meta" style="display:none;"></span>
+    </div>
+    <div class="confirm-footer">
+      <button class="confirm-cancel" id="confirm-cancel">Zrušit</button>
+      <button class="confirm-ok" id="confirm-ok">Potvrdit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 </body>
 </html>
