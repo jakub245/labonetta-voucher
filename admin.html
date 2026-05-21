@@ -883,70 +883,6 @@
     tbody.innerHTML = html
   }
 
-  function openDetail(id) {
-    const v = allVouchers.find(x => x.id === id)
-    if (!v) return
-
-    const badgeMap = {
-      paid:       { cls: 'badge-paid',       label: 'Zaplaceno' },
-      pending:    { cls: 'badge-pending',     label: 'Čeká' },
-      pending_qr: { cls: 'badge-pending-qr', label: 'Čeká na zaplacení' },
-      redeemed:   { cls: 'badge-redeemed',   label: 'Uplatněno' },
-    }
-    const badge = badgeMap[v.status] || { cls: '', label: v.status }
-    const created  = new Date(v.created_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-    const expires  = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
-    const paidAt   = v.paid_at ? new Date(v.paid_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
-    const redeemedAt = v.redeemed_at ? new Date(v.redeemed_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
-    const vs = v.variable_symbol || '—'
-    const amtStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
-
-    document.getElementById('modal-title').textContent = `Detail · ${v.code}`
-    document.getElementById('modal-body').innerHTML = `
-      <div class="modal-section">
-        <p class="modal-section-title">Voucher</p>
-        <div class="modal-row"><span class="modal-row-label">Kód</span><span class="modal-row-value mono">${v.code}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Hodnota</span><span class="modal-row-value">${amtStr}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Stav</span><span class="badge ${badge.cls}" style="font-size:11px;">${badge.label}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Platí do</span><span class="modal-row-value">${expires}</span></div>
-        ${vs !== '—' ? `<div class="modal-row"><span class="modal-row-label">Variabilní symbol</span><span class="modal-row-value mono">${vs}</span></div>` : ''}
-      </div>
-
-      <div class="modal-section">
-        <p class="modal-section-title">Zákazník</p>
-        ${v.customer_name ? `<div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name}</span></div>` : ''}
-        <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${v.email}</span></div>
-        ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${v.customer_phone}</span></div>` : ''}
-      </div>
-
-      <div class="modal-section">
-        <p class="modal-section-title">Časová osa</p>
-        <div class="modal-row"><span class="modal-row-label">Objednáno</span><span class="modal-row-value">${created}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Zaplaceno</span><span class="modal-row-value">${paidAt}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Uplatněno</span><span class="modal-row-value">${redeemedAt}</span></div>
-      </div>
-    `
-    document.getElementById('modal-overlay').classList.add('visible')
-    document.body.style.overflow = 'hidden'
-  }
-
-  function closeModal(e) {
-    if (e.target === document.getElementById('modal-overlay')) closeModalDirect()
-  }
-
-  function closeModalDirect() {
-    document.getElementById('modal-overlay').classList.remove('visible')
-    document.body.style.overflow = ''
-  }
-    const input = document.getElementById('pw-input')
-    const icon  = document.getElementById('eye-icon')
-    const show  = input.type === 'password'
-    input.type  = show ? 'text' : 'password'
-    icon.innerHTML = show
-      ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
-      : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
-  }
-
   async function dispatchQr(vs, btn) {
     if (!confirm(`Potvrdit QR platbu a odeslat vouchery zákazníkovi?\n\nVariabilní symbol: ${vs}`)) return
     btn.disabled = true
@@ -1003,6 +939,70 @@
       btn.disabled = false
       btn.textContent = 'Uplatnit'
     }
+  }
+
+  function togglePw() {
+    const input = document.getElementById('pw-input')
+    const icon  = document.getElementById('eye-icon')
+    const show  = input.type === 'password'
+    input.type  = show ? 'text' : 'password'
+    icon.innerHTML = show
+      ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
+      : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
+  }
+
+  function openDetail(id) {
+    const v = allVouchers.find(x => x.id === id)
+    if (!v) return
+
+    const badgeMap = {
+      paid:       { cls: 'badge-paid',       label: 'Zaplaceno' },
+      pending:    { cls: 'badge-pending',     label: 'Čeká' },
+      pending_qr: { cls: 'badge-pending-qr', label: 'Čeká na zaplacení' },
+      redeemed:   { cls: 'badge-redeemed',   label: 'Uplatněno' },
+    }
+    const badge = badgeMap[v.status] || { cls: '', label: v.status }
+    const created    = new Date(v.created_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    const expires    = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    const paidAt     = v.paid_at     ? new Date(v.paid_at).toLocaleString('cs',     { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
+    const redeemedAt = v.redeemed_at ? new Date(v.redeemed_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
+    const vs     = v.variable_symbol || '—'
+    const amtStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
+
+    document.getElementById('modal-title').textContent = `Detail · ${v.code}`
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-section">
+        <p class="modal-section-title">Voucher</p>
+        <div class="modal-row"><span class="modal-row-label">Kód</span><span class="modal-row-value mono">${v.code}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Hodnota</span><span class="modal-row-value">${amtStr}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Stav</span><span class="badge ${badge.cls}" style="font-size:11px;">${badge.label}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Platí do</span><span class="modal-row-value">${expires}</span></div>
+        ${vs !== '—' ? `<div class="modal-row"><span class="modal-row-label">Variabilní symbol</span><span class="modal-row-value mono">${vs}</span></div>` : ''}
+      </div>
+      <div class="modal-section">
+        <p class="modal-section-title">Zákazník</p>
+        ${v.customer_name  ? `<div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name}</span></div>` : ''}
+        <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${v.email}</span></div>
+        ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${v.customer_phone}</span></div>` : ''}
+      </div>
+      <div class="modal-section">
+        <p class="modal-section-title">Časová osa</p>
+        <div class="modal-row"><span class="modal-row-label">Objednáno</span><span class="modal-row-value">${created}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Zaplaceno</span><span class="modal-row-value">${paidAt}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Uplatněno</span><span class="modal-row-value">${redeemedAt}</span></div>
+      </div>
+    `
+    document.getElementById('modal-overlay').classList.add('visible')
+    document.body.style.overflow = 'hidden'
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModalDirect()
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modal-overlay').classList.remove('visible')
+    document.body.style.overflow = ''
   }
 </script>
 
