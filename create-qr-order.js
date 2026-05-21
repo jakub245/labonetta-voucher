@@ -53,10 +53,18 @@ export default async function handler(req, res) {
 
   console.log('INSERT RECORDS:', JSON.stringify(voucherRecords))
 
-  const { data: vouchers, error } = await supabase
-    .from('vouchers')
-    .insert(voucherRecords)
-    .select()
+const insertRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/vouchers`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'apikey': process.env.SUPABASE_SERVICE_KEY,
+    'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+    'Prefer': 'return=representation'
+  },
+  body: JSON.stringify(voucherRecords)
+})
+const vouchers = await insertRes.json()
+const error = insertRes.ok ? null : vouchers
 
   if (error) {
     console.error('Supabase error:', error)
