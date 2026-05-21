@@ -661,7 +661,6 @@
         <button class="filter-btn active" onclick="setFilter('all', this)">Vše</button>
         <button class="filter-btn" onclick="setFilter('paid', this)">Zaplacené</button>
         <button class="filter-btn" onclick="setFilter('pending_qr', this)">Čeká na platbu</button>
-        <button class="filter-btn" onclick="setFilter('pending', this)">Čeká na platbu</button>
         <button class="filter-btn" onclick="setFilter('redeemed', this)">Uplatněné</button>
       </div>
       <span class="table-count" id="table-count"></span>
@@ -828,10 +827,13 @@
         let actionCell = ''
         if (i === 0 && v.status === 'pending_qr') {
           const action = `
-            <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Zaplaceno
-            </button>`
+            <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
+              <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Zaplaceno
+              </button>
+              <a href="#" onclick="openDetail('${v.id}');return false;" style="font-size:12px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
+            </div>`
           actionCell = `<td rowspan="${rowspan}" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
         } else if (v.status === 'pending_qr' && i > 0) {
           actionCell = ''
@@ -863,7 +865,7 @@
               <p class="email-cell" style="margin:0;">${v.email}</p>
             </td>
             <td><span class="badge ${badge.cls}">${badge.label}</span></td>
-            <td class="date-cell">${created}<br><span style="font-size:11px;color:#9ca3af;">${createdTime}</span></td>
+            <td class="date-cell">${created} <strong style="font-weight:600;color:var(--dark);">${createdTime}</strong></td>
             ${actionCell}
           </tr>`
       })
@@ -969,9 +971,9 @@
       </div>
       <div class="modal-section">
         <p class="modal-section-title">Zákazník</p>
-        ${v.customer_name  ? `<div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name}</span></div>` : ''}
+        <div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name || '<span style="color:#9ca3af;font-weight:400;">neuvedeno</span>'}</span></div>
         <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${v.email}</span></div>
-        ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${v.customer_phone}</span></div>` : ''}
+        ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${v.customer_phone}</span></div>` : `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value" style="color:#9ca3af;font-weight:400;">neuvedeno</span></div>`}
       </div>
       <div class="modal-section">
         <p class="modal-section-title">Časová osa</p>
