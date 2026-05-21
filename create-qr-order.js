@@ -63,11 +63,14 @@ export default async function handler(req, res) {
 
   const vouchers = await insertRes.json()
 
-  // Update customer fields přes Supabase SDK
-  await supabase
+  const { error: updateError } = await supabase
     .from('vouchers')
     .update({ customer_name, customer_phone })
     .eq('variable_symbol', vs)
+
+  if (updateError) {
+    return res.status(500).json({ error: 'Update failed: ' + updateError.message })
+  }
 
   const spayd = [
     'SPD*1.0',
