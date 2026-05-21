@@ -11,6 +11,8 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { email, items, customer_name, customer_phone } = req.body
+  console.log('REQ BODY:', JSON.stringify(req.body))
+  console.log('customer_name:', customer_name, '| customer_phone:', customer_phone)
   if (!email || !items) return res.status(400).json({ error: 'Chybí email nebo items' })
 
   const validItems = items.filter(i => i.qty > 0)
@@ -48,6 +50,8 @@ export default async function handler(req, res) {
       })
     }
   }
+
+  console.log('INSERT RECORDS:', JSON.stringify(voucherRecords))
 
   const { data: vouchers, error } = await supabase
     .from('vouchers')
