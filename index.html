@@ -812,11 +812,11 @@
       background: white;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 40px;
+      padding: 28px 40px 40px;
     }
 
-    .qr-title { font-size: 24px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
-    .qr-sub   { font-size: 14px; color: var(--light-text); line-height: 1.6; margin-bottom: 32px; font-weight: 300; }
+    .qr-title { font-size: 24px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .qr-sub   { font-size: 14px; color: var(--light-text); line-height: 1.6; margin-bottom: 16px; font-weight: 300; }
 
     .qr-code-wrap {
       display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 32px;
@@ -1087,13 +1087,11 @@
   <div class="qr-inner">
     <div class="qr-main">
       <h2 class="qr-title">Naskenujte QR kód</h2>
-      <p class="qr-sub">Otevřete bankovní aplikaci a naskenujte kód. Platební údaje jsou předvyplněné.</p>
+      <p class="qr-sub" style="margin-bottom:16px;">Otevřete bankovní aplikaci a naskenujte kód. Platební údaje jsou předvyplněné.</p>
 
-      <div style="display:inline-flex;align-items:center;gap:8px;background:#fff7ed;border:1px solid #fed7aa;border-radius:100px;padding:8px 16px;margin-bottom:24px;font-size:13px;color:#c2410c;font-weight:500;line-height:1.4;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        Nezavírejte okno — QR kód je vygenerován pouze zde
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#fff7ed;border:1px solid #fed7aa;border-radius:100px;padding:8px 16px;margin-bottom:24px;font-size:13px;color:#c2410c;font-weight:500;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Nezavírejte okno — QR kód je vygenerován pouze zde. Po zaplacení můžete okno zavřít.
       </div>
       <div class="qr-code-wrap">
         <img class="qr-code-img" id="qr-img" src="" alt="QR kód pro platbu">
@@ -1119,7 +1117,11 @@
       </div>
       <div class="qr-waiting">
         <div class="qr-waiting-dot"></div>
-        Čekáme na platbu — voucher zašleme na <strong id="qr-email" style="margin-left:4px;"></strong>
+        Čekáme na potvrzení platby
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--teal-light);border-radius:8px;padding:12px 16px;margin-top:10px;font-size:13px;color:var(--teal);font-weight:500;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        Voucher zašleme na <strong id="qr-email" style="margin:0 3px;"></strong> ihned po potvrzení platby.
       </div>
     </div>
 
