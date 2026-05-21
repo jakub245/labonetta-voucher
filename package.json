@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Voucher system for Labonetta pizza bistro",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod"
@@ -11,7 +12,8 @@
     "@supabase/supabase-js": "^2.39.0",
     "resend": "^3.2.0",
     "pdf-lib": "^1.17.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "qrcode": "^1.5.3"
   },
   "engines": {
     "node": ">=18.0.0"
