@@ -271,6 +271,53 @@
     .stat-value.terra { color: var(--terra); }
 
     /* Filters + table header */
+    .search-bar {
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 11px 16px 11px 42px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(27,127,114,0.1);
+    }
+    .search-input::placeholder { color: #c0b8b0; }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--gray);
+    }
+    .search-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+      padding: 4px;
+      border-radius: 4px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-clear.visible { display: flex; }
+    .search-clear:hover { color: var(--dark); }
+
     .table-header {
       display: flex;
       align-items: center;
@@ -539,8 +586,7 @@
       font-size: 13px;
       font-family: monospace;
       color: var(--teal);
-      background: var(--teal-light);
-      border: 1px solid rgba(27,127,114,0.2);
+      background: var(--teal-bg);
       border-radius: 8px;
       padding: 10px 14px;
       margin-top: 14px;
@@ -766,6 +812,17 @@
       </div>
     </div>
 
+    <!-- Search -->
+    <div class="search-bar">
+      <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="search-input" id="search-input" type="text" placeholder="Hledat voucher — kód, jméno, email…" oninput="handleSearch(this.value)">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
     <!-- Table header -->
     <div class="table-header">
       <div class="filters">
@@ -804,6 +861,7 @@
   let password = ''
   let allVouchers = []
   let currentFilter = 'all'
+  let searchQuery = ''
 
   // Obnov session po refreshi — nepředvyplňuj input, jen se tiše přihlas
   window.addEventListener('load', () => {
@@ -881,10 +939,32 @@
     renderTable()
   }
 
+  function handleSearch(val) {
+    searchQuery = val.trim().toLowerCase()
+    document.getElementById('search-clear').classList.toggle('visible', searchQuery.length > 0)
+    renderTable()
+  }
+
+  function clearSearch() {
+    searchQuery = ''
+    document.getElementById('search-input').value = ''
+    document.getElementById('search-clear').classList.remove('visible')
+    renderTable()
+  }
+
   function renderTable() {
-    const filtered = currentFilter === 'all'
+    let filtered = currentFilter === 'all'
       ? allVouchers
       : allVouchers.filter(v => v.status === currentFilter)
+
+    if (searchQuery) {
+      filtered = filtered.filter(v =>
+        v.code?.toLowerCase().includes(searchQuery) ||
+        v.email?.toLowerCase().includes(searchQuery) ||
+        v.customer_name?.toLowerCase().includes(searchQuery) ||
+        v.variable_symbol?.includes(searchQuery)
+      )
+    }
 
     const count = document.getElementById('table-count')
     count.innerHTML = `<strong>${filtered.length}</strong> voucher${filtered.length === 1 ? '' : 'ů'}`
