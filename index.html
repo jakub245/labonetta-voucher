@@ -474,7 +474,7 @@
       touch-action: manipulation;
       flex-shrink: 0;
     }
-    .btn-checkout:hover { background: var(--terra-dark); }
+    .btn-checkout:hover { background: #a8522f; }
     .btn-checkout:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; }
     .btn-checkout svg {
       width: 16px; height: 16px;
@@ -1293,14 +1293,20 @@
   }
 
   async function handleQrPay() {
-    const name       = document.getElementById('customer-name').value.trim()
-    const email      = document.getElementById('email').value.trim()
-    const phone      = document.getElementById('customer-phone').value.trim()
+    // Čteme hodnoty těsně před odesláním — autofill z Chromu nemusí triggerovat events
     const nameInput  = document.getElementById('customer-name')
-    const nameError  = document.getElementById('name-error')
     const emailInput = document.getElementById('email')
+    const phoneInput = document.getElementById('customer-phone')
+    const nameError  = document.getElementById('name-error')
     const emailError = document.getElementById('email-error')
     const btn        = document.getElementById('btn-pay')
+
+    // Malé zpoždění aby autofill stihl vyplnit hodnoty
+    await new Promise(r => setTimeout(r, 50))
+
+    const name  = nameInput.value.trim()
+    const email = emailInput.value.trim()
+    const phone = phoneInput.value.trim()
 
     if (cart[500] + cart[1000] === 0) return
 
