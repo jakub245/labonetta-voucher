@@ -525,8 +525,7 @@
     }
 
     .field-group { margin-bottom: 24px; }
-    .field-label {
-      display: block;
+    .field-group { margin-bottom: 20px; }
       font-size: 13px;
       font-weight: 600;
       color: var(--dark);
@@ -852,7 +851,7 @@
   <div class="section-header">
     <p class="section-eyebrow" aria-hidden="true">Dárkové poukazy</p>
     <h2 class="section-title" id="vouchers-title">Vyberte voucher</h2>
-    <p class="section-sub">Voucher platí osobně na veškerou útratu na Proseku i Kobylisích.</p>
+    <p class="section-sub">Voucher platí osobně na veškerou útratu na <a href="https://prosek.labonetta.cz" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Proseku</a> i <a href="https://kobylisy.labonetta.cz" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Kobylisích</a>.</p>
   </div>
 
   <div class="tiles" role="list">
@@ -865,7 +864,7 @@
       <div class="tile-body">
         <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
         <p class="tile-amount">500 Kč</p>
-        <p class="tile-desc">Platí osobně na veškerou útratu · 1 rok</p>
+        <p class="tile-desc">Platí osobně na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
         <div class="tile-actions">
           <button
             class="btn-add"
@@ -895,7 +894,7 @@
       <div class="tile-body">
         <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
         <p class="tile-amount">1 000 Kč</p>
-        <p class="tile-desc">Platí osobně na veškerou útratu · 1 rok</p>
+        <p class="tile-desc">Platí osobně na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
         <div class="tile-actions">
           <button
             class="btn-add"
@@ -942,10 +941,26 @@
 
     <div class="checkout-form">
       <h2 class="form-title" id="checkout-title">Dokončit objednávku</h2>
-      <p class="form-sub">Zadejte email — každý voucher obdržíte jako samostatné PDF okamžitě po zaplacení.</p>
+      <p class="form-sub">Voucher vám zašleme obratem jako přílohu e-mailu.</p>
 
       <div class="field-group">
-        <label class="field-label" for="email">Email pro zaslání voucherů</label>
+        <label class="field-label" for="customer-name">Jméno a příjmení</label>
+        <input
+          type="text"
+          id="customer-name"
+          name="name"
+          placeholder="Jan Novák"
+          autocomplete="name"
+          aria-describedby="name-error"
+        >
+        <p class="error-msg" id="name-error" role="alert">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Zadejte prosím jméno.
+        </p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="email">E-mail</label>
         <input
           type="email"
           id="email"
@@ -954,11 +969,25 @@
           autocomplete="email"
           aria-describedby="email-hint email-error"
         >
-        <p class="field-hint" id="email-hint">Každý voucher přijde jako samostatná PDF příloha.</p>
+        <p class="field-hint" id="email-hint">Na tento e-mail zašleme voucher.</p>
         <p class="error-msg" id="email-error" role="alert">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Zadejte prosím platný email.
+          Zadejte prosím platný e-mail.
         </p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="customer-phone">
+          Telefon
+          <span style="font-size:11px;font-weight:400;color:var(--light-text);margin-left:6px;text-transform:none;letter-spacing:0;">nepovinné</span>
+        </label>
+        <input
+          type="tel"
+          id="customer-phone"
+          name="phone"
+          placeholder="+420 123 456 789"
+          autocomplete="tel"
+        >
       </div>
 
       <button class="btn-pay" id="btn-pay" onclick="handlePay()" aria-live="polite">
@@ -993,8 +1022,8 @@
         <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
       </div>
       <div>
-        <h3 class="info-title">Okamžitě na email</h3>
-        <p class="info-desc">Každý voucher dorazí jako PDF příloha do pár vteřin po zaplacení.</p>
+        <h3 class="info-title">Voucher zasíláme na e-mail</h3>
+        <p class="info-desc">Voucher dorazí jako příloha e-mailu do pár vteřin po zaplacení.</p>
       </div>
     </div>
 
@@ -1014,7 +1043,7 @@
       </div>
       <div>
         <h3 class="info-title">Prosek & Kobylisy</h3>
-        <p class="info-desc">Uplatníte osobně v obou pobočkách — stačí ukázat PDF obsluze.</p>
+        <p class="info-desc">Uplatníte v našich pobočkách — stačí ukázat voucher z e-mailu obsluze.</p>
       </div>
     </div>
 
@@ -1133,7 +1162,7 @@
     setTimeout(() => {
       s.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 60)
-    setTimeout(() => document.getElementById('email').focus(), 500)
+    setTimeout(() => document.getElementById('customer-name').focus(), 500)
   }
 
   function closeCheckout() {
@@ -1145,22 +1174,41 @@
   }
 
   async function handlePay() {
-    const email = document.getElementById('email').value.trim()
+    const name      = document.getElementById('customer-name').value.trim()
+    const email     = document.getElementById('email').value.trim()
+    const phone     = document.getElementById('customer-phone').value.trim()
+    const nameInput  = document.getElementById('customer-name')
+    const nameError  = document.getElementById('name-error')
     const emailInput = document.getElementById('email')
     const emailError = document.getElementById('email-error')
-    const btn = document.getElementById('btn-pay')
+    const btn        = document.getElementById('btn-pay')
 
     if (cart[500] + cart[1000] === 0) return
 
+    let hasError = false
+
+    // Validace jména
+    if (!name) {
+      nameInput.classList.add('error')
+      nameError.classList.add('visible')
+      if (!hasError) { nameInput.focus(); hasError = true }
+    } else {
+      nameInput.classList.remove('error')
+      nameError.classList.remove('visible')
+    }
+
+    // Validace emailu
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       emailInput.classList.add('error')
       emailError.classList.add('visible')
-      emailInput.focus()
-      return
+      if (!hasError) { emailInput.focus(); hasError = true }
+    } else {
+      emailInput.classList.remove('error')
+      emailError.classList.remove('visible')
     }
-    emailInput.classList.remove('error')
-    emailError.classList.remove('visible')
+
+    if (hasError) return
 
     btn.disabled = true
     btn.classList.add('loading')
@@ -1171,6 +1219,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
+          customer_name: name,
+          customer_phone: phone || null,
           items: [
             { amount: 500,  qty: cart[500] },
             { amount: 1000, qty: cart[1000] }
@@ -1186,8 +1236,7 @@
         return
       }
 
-      // Zobraz success stav misto redirectu
-      showSuccess(email, data.vouchers)
+      showSuccess(name, email, data.vouchers)
 
     } catch {
       alert('Nepodařilo se spojit se serverem.')
@@ -1196,7 +1245,8 @@
     }
   }
 
-  function showSuccess(email, vouchers) {
+  function showSuccess(name, email, vouchers) {
+    const firstName = name.split(' ')[0]
     const checkout = document.getElementById('checkout-section')
     checkout.innerHTML = `
       <div style="max-width:1040px;margin:0 auto;padding:64px 48px;">
@@ -1206,9 +1256,9 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B7F72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
 
-          <h2 style="font-family:'Bai Jamjuree',sans-serif;font-size:26px;font-weight:700;color:#1a1a1a;margin:0 0 8px;">Voucher je na cestě!</h2>
+          <h2 style="font-family:'Bai Jamjuree',sans-serif;font-size:26px;font-weight:700;color:#1a1a1a;margin:0 0 8px;">Díky, ${firstName}!</h2>
           <p style="font-size:15px;color:#6b7280;margin:0 0 32px;line-height:1.6;">
-            PDF ${vouchers.length > 1 ? 'vouchery jsme odeslali' : 'voucher jsme odeslali'} na<br>
+            ${vouchers.length > 1 ? 'Vouchery jsme odeslali' : 'Voucher jsme odeslali'} na<br>
             <strong style="color:#1a1a1a;">${email}</strong>
           </p>
 
@@ -1224,7 +1274,7 @@
 
           <p style="font-size:13px;color:#9ca3af;margin:0;line-height:1.6;">
             Voucher uplatníte osobně v naší provozovně.<br>
-            Zkontrolujte prosím svou emailovou schránku.
+            Zkontrolujte prosím svou e-mailovou schránku.
           </p>
 
         </div>

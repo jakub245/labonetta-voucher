@@ -525,8 +525,7 @@
     }
 
     .field-group { margin-bottom: 24px; }
-    .field-label {
-      display: block;
+    .field-group { margin-bottom: 20px; }
       font-size: 13px;
       font-weight: 600;
       color: var(--dark);
@@ -809,102 +808,41 @@
       padding: 40px;
     }
 
-    .qr-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 6px;
-    }
-    .qr-sub {
-      font-size: 14px;
-      color: var(--light-text);
-      line-height: 1.6;
-      margin-bottom: 32px;
-      font-weight: 300;
-    }
+    .qr-title { font-size: 24px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .qr-sub   { font-size: 14px; color: var(--light-text); line-height: 1.6; margin-bottom: 32px; font-weight: 300; }
 
     .qr-code-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 32px;
     }
     .qr-code-img {
-      width: 220px;
-      height: 220px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 12px;
-      background: white;
+      width: 220px; height: 220px; border-radius: 12px;
+      border: 1px solid var(--border); padding: 12px; background: white;
     }
-    .qr-hint {
-      font-size: 13px;
-      color: var(--light-text);
-      text-align: center;
-    }
+    .qr-hint { font-size: 13px; color: var(--light-text); text-align: center; }
 
     .qr-details {
-      background: #f9fafb;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px 24px;
-      margin-bottom: 24px;
+      background: #f9fafb; border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px 24px; margin-bottom: 24px;
     }
     .qr-detail-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      gap: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border); gap: 16px;
     }
     .qr-detail-row:last-child { border-bottom: none; }
-    .qr-detail-label {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #9ca3af;
-      flex-shrink: 0;
-    }
-    .qr-detail-value {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--dark);
-      text-align: right;
-      font-family: monospace;
-      letter-spacing: 0.5px;
-    }
-    .qr-detail-value.amount {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--teal);
-      font-family: 'Bai Jamjuree', sans-serif;
-    }
+    .qr-detail-label { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9ca3af; flex-shrink: 0; }
+    .qr-detail-value { font-size: 14px; font-weight: 600; color: var(--dark); text-align: right; font-family: monospace; letter-spacing: 0.5px; }
+    .qr-detail-value.amount { font-size: 18px; font-weight: 700; color: var(--teal); font-family: 'Bai Jamjuree', sans-serif; }
 
     .qr-waiting {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--teal-light);
-      border-radius: 8px;
-      padding: 14px 18px;
-      font-size: 14px;
-      color: var(--teal);
-      font-weight: 500;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--teal-light); border-radius: 8px; padding: 14px 18px;
+      font-size: 14px; color: var(--teal); font-weight: 500;
     }
     .qr-waiting-dot {
-      width: 8px; height: 8px;
-      background: var(--teal);
-      border-radius: 50%;
-      flex-shrink: 0;
-      animation: pulse 1.5s ease-in-out infinite;
+      width: 8px; height: 8px; background: var(--teal); border-radius: 50%;
+      flex-shrink: 0; animation: pulse 1.5s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 680px) {
@@ -975,7 +913,7 @@
   <div class="section-header">
     <p class="section-eyebrow" aria-hidden="true">Dárkové poukazy</p>
     <h2 class="section-title" id="vouchers-title">Vyberte voucher</h2>
-    <p class="section-sub">Voucher platí osobně na veškerou útratu na Proseku i Kobylisích.</p>
+    <p class="section-sub">Voucher platí osobně na veškerou útratu na <a href="https://prosek.labonetta.cz" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Proseku</a> i <a href="https://kobylisy.labonetta.cz" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Kobylisích</a>.</p>
   </div>
 
   <div class="tiles" role="list">
@@ -988,7 +926,7 @@
       <div class="tile-body">
         <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
         <p class="tile-amount">500 Kč</p>
-        <p class="tile-desc">Platí osobně na veškerou útratu · 1 rok</p>
+        <p class="tile-desc">Platí osobně na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
         <div class="tile-actions">
           <button
             class="btn-add"
@@ -1018,7 +956,7 @@
       <div class="tile-body">
         <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
         <p class="tile-amount">1 000 Kč</p>
-        <p class="tile-desc">Platí osobně na veškerou útratu · 1 rok</p>
+        <p class="tile-desc">Platí osobně na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
         <div class="tile-actions">
           <button
             class="btn-add"
@@ -1065,10 +1003,26 @@
 
     <div class="checkout-form">
       <h2 class="form-title" id="checkout-title">Dokončit objednávku</h2>
-      <p class="form-sub">Zadejte email — po zaplacení QR vám vouchery odesíleme obratem jako PDF.</p>
+      <p class="form-sub">Voucher vám zašleme obratem jako přílohu e-mailu.</p>
 
       <div class="field-group">
-        <label class="field-label" for="email">Email pro zaslání voucherů</label>
+        <label class="field-label" for="customer-name">Jméno a příjmení</label>
+        <input
+          type="text"
+          id="customer-name"
+          name="name"
+          placeholder="Jan Novák"
+          autocomplete="name"
+          aria-describedby="name-error"
+        >
+        <p class="error-msg" id="name-error" role="alert">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Zadejte prosím jméno.
+        </p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="email">E-mail</label>
         <input
           type="email"
           id="email"
@@ -1077,11 +1031,25 @@
           autocomplete="email"
           aria-describedby="email-hint email-error"
         >
-        <p class="field-hint" id="email-hint">Vouchery obdržíte obratem po potvrzení platby.</p>
+        <p class="field-hint" id="email-hint">Na tento e-mail zašleme voucher.</p>
         <p class="error-msg" id="email-error" role="alert">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Zadejte prosím platný email.
+          Zadejte prosím platný e-mail.
         </p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="customer-phone">
+          Telefon
+          <span style="font-size:11px;font-weight:400;color:var(--light-text);margin-left:6px;text-transform:none;letter-spacing:0;">nepovinné</span>
+        </label>
+        <input
+          type="tel"
+          id="customer-phone"
+          name="phone"
+          placeholder="+420 123 456 789"
+          autocomplete="tel"
+        >
       </div>
 
       <button class="btn-pay" id="btn-pay" onclick="handleQrPay()" aria-live="polite">
@@ -1110,16 +1078,13 @@
 <!-- QR PLATBA SECTION -->
 <section class="qr-section" id="qr-section">
   <div class="qr-inner">
-
     <div class="qr-main">
       <h2 class="qr-title">Naskenujte QR kód</h2>
       <p class="qr-sub">Otevřete svou bankovní aplikaci a naskenujte QR kód. Platební údaje jsou předvyplněné.</p>
-
       <div class="qr-code-wrap">
         <img class="qr-code-img" id="qr-img" src="" alt="QR kód pro platbu">
         <p class="qr-hint">QR kód pro bankovní aplikaci · CZK</p>
       </div>
-
       <div class="qr-details">
         <div class="qr-detail-row">
           <span class="qr-detail-label">Částka</span>
@@ -1138,13 +1103,11 @@
           <span class="qr-detail-value">Voucher Labonetta</span>
         </div>
       </div>
-
       <div class="qr-waiting">
         <div class="qr-waiting-dot"></div>
-        Čekáme na potvrzení platby — vouchery odešleme obratem na <strong id="qr-email" style="margin-left:4px"></strong>
+        Čekáme na potvrzení platby — voucher zašleme obratem na <strong id="qr-email" style="margin-left:4px"></strong>
       </div>
     </div>
-
     <div class="checkout-summary" aria-label="Přehled objednávky">
       <p class="summary-title">Přehled objednávky</p>
       <div id="qr-summary-rows"></div>
@@ -1153,7 +1116,6 @@
         <span class="summary-total-amount" id="qr-summary-total">0 Kč</span>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -1166,8 +1128,8 @@
         <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
       </div>
       <div>
-        <h3 class="info-title">Okamžitě na email</h3>
-        <p class="info-desc">Každý voucher dorazí jako PDF příloha do pár vteřin po zaplacení.</p>
+        <h3 class="info-title">Voucher zasíláme na e-mail</h3>
+        <p class="info-desc">Voucher dorazí jako příloha e-mailu do pár vteřin po zaplacení.</p>
       </div>
     </div>
 
@@ -1187,7 +1149,7 @@
       </div>
       <div>
         <h3 class="info-title">Prosek & Kobylisy</h3>
-        <p class="info-desc">Uplatníte osobně v obou pobočkách — stačí ukázat PDF obsluze.</p>
+        <p class="info-desc">Uplatníte v našich pobočkách — stačí ukázat voucher z e-mailu obsluze.</p>
       </div>
     </div>
 
@@ -1306,7 +1268,7 @@
     setTimeout(() => {
       s.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 60)
-    setTimeout(() => document.getElementById('email').focus(), 500)
+    setTimeout(() => document.getElementById('customer-name').focus(), 500)
   }
 
   function closeCheckout() {
@@ -1318,22 +1280,32 @@
   }
 
   async function handleQrPay() {
-    const email = document.getElementById('email').value.trim()
+    const name      = document.getElementById('customer-name').value.trim()
+    const email     = document.getElementById('email').value.trim()
+    const phone     = document.getElementById('customer-phone').value.trim()
+    const nameInput  = document.getElementById('customer-name')
+    const nameError  = document.getElementById('name-error')
     const emailInput = document.getElementById('email')
     const emailError = document.getElementById('email-error')
-    const btn = document.getElementById('btn-pay')
+    const btn        = document.getElementById('btn-pay')
 
     if (cart[500] + cart[1000] === 0) return
 
+    let hasError = false
+    if (!name) {
+      nameInput.classList.add('error'); nameError.classList.add('visible')
+      if (!hasError) { nameInput.focus(); hasError = true }
+    } else {
+      nameInput.classList.remove('error'); nameError.classList.remove('visible')
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      emailInput.classList.add('error')
-      emailError.classList.add('visible')
-      emailInput.focus()
-      return
+      emailInput.classList.add('error'); emailError.classList.add('visible')
+      if (!hasError) { emailInput.focus(); hasError = true }
+    } else {
+      emailInput.classList.remove('error'); emailError.classList.remove('visible')
     }
-    emailInput.classList.remove('error')
-    emailError.classList.remove('visible')
+    if (hasError) return
 
     btn.disabled = true
     btn.classList.add('loading')
@@ -1344,6 +1316,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
+          customer_name: name,
+          customer_phone: phone || null,
           items: [
             { amount: 500,  qty: cart[500] },
             { amount: 1000, qty: cart[1000] }
@@ -1351,39 +1325,28 @@
         })
       })
       const data = await res.json()
-
       if (!res.ok) {
         alert(data.error || 'Chyba při vytváření objednávky.')
-        btn.disabled = false
-        btn.classList.remove('loading')
+        btn.disabled = false; btn.classList.remove('loading')
         return
       }
-
       showQr(email, data)
-
     } catch {
       alert('Nepodařilo se spojit se serverem.')
-      btn.disabled = false
-      btn.classList.remove('loading')
+      btn.disabled = false; btn.classList.remove('loading')
     }
   }
 
   function showQr(email, data) {
-    // Skryj checkout
     document.getElementById('checkout-section').classList.remove('visible')
-
-    // Zobraz QR sekci
     const qrSection = document.getElementById('qr-section')
     qrSection.classList.add('visible')
-
-    // Vyplň údaje
     document.getElementById('qr-img').src = data.qr_data_url
     document.getElementById('qr-amount').textContent = fmt(data.total)
     document.getElementById('qr-account').textContent = data.bank_account
     document.getElementById('qr-vs').textContent = data.vs
     document.getElementById('qr-email').textContent = email
 
-    // Summary
     let rows = ''
     if (cart[500] > 0) rows += `
       <div class="summary-row">
@@ -1399,24 +1362,29 @@
       </div>`
     document.getElementById('qr-summary-rows').innerHTML = rows
     document.getElementById('qr-summary-total').textContent = fmt(data.total)
-
     qrSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
     document.getElementById('sticky-bar').classList.remove('visible')
   }
+    }
+  }
 
-  function showSuccess(email, vouchers) {
+  function showSuccess(name, email, vouchers) {
+    const firstName = name.split(' ')[0]
     const checkout = document.getElementById('checkout-section')
     checkout.innerHTML = `
       <div style="max-width:1040px;margin:0 auto;padding:64px 48px;">
         <div style="background:white;border:1px solid #e0d8d0;border-radius:16px;padding:48px;text-align:center;max-width:560px;margin:0 auto;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+
           <div style="width:56px;height:56px;background:#e8f5f3;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B7F72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h2 style="font-family:'Bai Jamjuree',sans-serif;font-size:26px;font-weight:700;color:#1a1a1a;margin:0 0 8px;">Voucher je na cestě!</h2>
+
+          <h2 style="font-family:'Bai Jamjuree',sans-serif;font-size:26px;font-weight:700;color:#1a1a1a;margin:0 0 8px;">Díky, ${firstName}!</h2>
           <p style="font-size:15px;color:#6b7280;margin:0 0 32px;line-height:1.6;">
-            PDF ${vouchers.length > 1 ? 'vouchery jsme odeslali' : 'voucher jsme odeslali'} na<br>
+            ${vouchers.length > 1 ? 'Vouchery jsme odeslali' : 'Voucher jsme odeslali'} na<br>
             <strong style="color:#1a1a1a;">${email}</strong>
           </p>
+
           <div style="background:#f3f4f6;border-radius:10px;padding:20px 24px;margin-bottom:28px;text-align:left;">
             <p style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#9ca3af;margin:0 0 12px;">Vygenerované kódy</p>
             ${vouchers.map(v => `
@@ -1426,10 +1394,12 @@
               </div>
             `).join('')}
           </div>
+
           <p style="font-size:13px;color:#9ca3af;margin:0;line-height:1.6;">
             Voucher uplatníte osobně v naší provozovně.<br>
-            Zkontrolujte prosím svou emailovou schránku.
+            Zkontrolujte prosím svou e-mailovou schránku.
           </p>
+
         </div>
       </div>
     `

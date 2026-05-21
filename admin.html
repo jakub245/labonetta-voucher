@@ -95,7 +95,7 @@
 
     .login-input {
       width: 100%;
-      padding: 14px 48px 14px 16px;
+      padding: 14px 16px;
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(255,255,255,0.1);
       border-radius: 10px;
@@ -107,8 +107,19 @@
       margin-bottom: 0;
       text-align: left;
     }
+    /* Přebít monospace font u tečky hesla ve Firefoxu */
+    .login-input[type="password"] {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-size: 18px; /* tečky jsou menší než písmena, trochu zvětšit */
+      letter-spacing: 3px;
+    }
+    .login-input[type="text"] {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-size: 15px;
+      letter-spacing: normal;
+    }
     .login-input:focus { border-color: var(--teal); }
-    .login-input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 1px; }
+    .login-input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: normal; font-size: 15px; }
 
     .login-btn {
       width: 100%;
@@ -354,6 +365,8 @@
     .badge-paid::before { background: var(--teal); }
     .badge-pending  { background: var(--terra-bg); color: var(--terra); }
     .badge-pending::before { background: var(--terra); }
+    .badge-pending-qr { background: #fff7ed; color: #c2410c; }
+    .badge-pending-qr::before { background: #f97316; }
     .badge-redeemed { background: #f3f4f6; color: #6b7280; }
     .badge-redeemed::before { background: #9ca3af; }
 
@@ -363,36 +376,35 @@
     .email-cell { color: var(--gray); font-size: 13px; font-weight: 400; }
     .date-cell  { color: var(--gray); font-size: 13px; }
 
-    .btn-redeem {
+    /* Primární akce — fill teal */
+    .btn-primary-action {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       padding: 7px 14px;
       background: var(--teal);
       color: white;
-      border: none;
+      border: 1.5px solid var(--teal);
       border-radius: 8px;
       font-size: 12px;
       font-family: inherit;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: background 0.15s, border-color 0.15s;
       white-space: nowrap;
     }
-    .btn-redeem:hover { background: var(--teal-dark); }
-    .btn-redeem:disabled { background: #d1d5db; cursor: not-allowed; }
+    .btn-primary-action:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
+    .btn-primary-action:disabled { background: #d1d5db; border-color: #d1d5db; cursor: not-allowed; }
 
-    .badge-pending-qr { background: #eff6ff; color: #1d4ed8; }
-    .badge-pending-qr::before { background: #1d4ed8; }
-
-    .btn-dispatch {
+    /* Sekundární akce — outline teal */
+    .btn-secondary-action {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 12px;
-      background: var(--terra);
-      color: white;
-      border: none;
+      padding: 7px 14px;
+      background: transparent;
+      color: var(--teal);
+      border: 1.5px solid var(--teal);
       border-radius: 8px;
       font-size: 12px;
       font-family: inherit;
@@ -401,6 +413,17 @@
       transition: background 0.15s;
       white-space: nowrap;
     }
+    .btn-secondary-action:hover { background: var(--teal-bg); }
+    .btn-secondary-action:disabled { border-color: #d1d5db; color: #d1d5db; cursor: not-allowed; }
+
+    /* Zachovat .btn-redeem a .btn-dispatch jako aliasy */
+    .btn-redeem  { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: transparent; color: var(--teal); border: 1.5px solid var(--teal); border-radius: 8px; font-size: 12px; font-family: inherit; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+    .btn-redeem:hover { background: var(--teal-bg); }
+    .btn-redeem:disabled { border-color: #d1d5db; color: #d1d5db; cursor: not-allowed; }
+
+    .btn-dispatch { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--teal); color: white; border: 1.5px solid var(--teal); border-radius: 8px; font-size: 12px; font-family: inherit; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+    .btn-dispatch:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
+    .btn-dispatch:disabled { background: #d1d5db; border-color: #d1d5db; cursor: not-allowed; }
     .action-done {
       font-size: 12px;
       color: #9ca3af;
@@ -446,25 +469,28 @@
       <h1>Přihlásit se</h1>
       <p>Správa dárkových voucherů</p>
       <label class="login-label" for="pw-input">Přístupové heslo</label>
-      <div style="position:relative;margin-bottom:12px;">
+      <div style="display:flex;align-items:stretch;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;margin-bottom:12px;transition:border-color 0.2s;" id="pw-wrap">
         <input
           class="login-input"
           type="password"
           id="pw-input"
           placeholder="••••••••"
           onkeydown="if(event.key==='Enter') login()"
+          onfocus="document.getElementById('pw-wrap').style.borderColor='#1B7F72'"
+          onblur="document.getElementById('pw-wrap').style.borderColor='rgba(255,255,255,0.1)'"
           autocomplete="current-password"
-          style="padding-right:48px;margin-bottom:0;"
+          style="flex:1;background:none;border:none;outline:none;padding:14px 16px;margin-bottom:0;border-radius:10px 0 0 10px;"
         >
+        <div style="width:1px;background:rgba(255,255,255,0.1);margin:10px 0;flex-shrink:0;"></div>
         <button
           type="button"
           onclick="togglePw()"
-          style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:rgba(255,255,255,0.4);transition:color 0.15s;"
-          onmouseenter="this.style.color='rgba(255,255,255,0.8)'"
+          style="flex-shrink:0;width:44px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;transition:color 0.15s;border-radius:0 10px 10px 0;"
+          onmouseenter="this.style.color='rgba(255,255,255,0.9)'"
           onmouseleave="this.style.color='rgba(255,255,255,0.4)'"
           aria-label="Zobrazit/skrýt heslo"
         >
-          <svg id="eye-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg id="eye-icon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
@@ -669,7 +695,7 @@
     const badgeMap = {
       paid:       { cls: 'badge-paid',       label: 'Zaplaceno' },
       pending:    { cls: 'badge-pending',     label: 'Čeká' },
-      pending_qr: { cls: 'badge-pending-qr', label: 'Čeká na QR' },
+      pending_qr: { cls: 'badge-pending-qr', label: 'Čeká na zaplacení' },
       redeemed:   { cls: 'badge-redeemed',   label: 'Uplatněno' },
     }
 
@@ -691,15 +717,18 @@
 
         // Akce — dispatch s rowspan jen na prvním řádku, uplatnit na každém
         let actionCell = ''
-        if (i === 0 && (v.status === 'pending_qr')) {
+        if (i === 0 && v.status === 'pending_qr') {
           const vs = v.variable_symbol || ''
           const action = `
-            <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;">
               <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 Zaplaceno → Odeslat
               </button>
-              ${vs ? `<span style="font-size:11px;color:#9ca3af;">VS: ${vs}</span>` : ''}
+              <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:#9ca3af;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Odešle voucher(y) na e-mail klienta
+              </span>
             </div>`
           actionCell = `<td rowspan="${rowspan}" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
         } else if (v.status === 'pending_qr' && i > 0) {
@@ -732,9 +761,6 @@
     const icon  = document.getElementById('eye-icon')
     const show  = input.type === 'password'
     input.type  = show ? 'text' : 'password'
-    // Monospace jen při zobrazení — při skrytí back to normal
-    input.style.fontFamily    = show ? 'monospace' : ''
-    input.style.letterSpacing = show ? '2px' : ''
     icon.innerHTML = show
       ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
       : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
