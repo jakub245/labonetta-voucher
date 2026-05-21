@@ -536,15 +536,21 @@
       margin: 0;
     }
     .confirm-meta {
-      font-size: 12px;
+      font-size: 13px;
       font-family: monospace;
       color: var(--teal);
       background: var(--teal-light);
-      border-radius: 6px;
-      padding: 6px 10px;
-      margin-top: 12px;
-      display: inline-block;
+      border: 1px solid rgba(27,127,114,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
     }
+    .confirm-meta svg { flex-shrink: 0; }
     .confirm-footer {
       display: flex;
       gap: 10px;
@@ -983,7 +989,10 @@
     document.getElementById('confirm-title').textContent = title
     document.getElementById('confirm-message').textContent = message
     const metaEl = document.getElementById('confirm-meta')
-    if (meta) { metaEl.textContent = meta; metaEl.style.display = 'inline-block' }
+    if (meta) {
+      metaEl.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#1B7F72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>${meta}`
+      metaEl.style.display = 'flex'
+    }
     else { metaEl.style.display = 'none' }
     const okBtn = document.getElementById('confirm-ok')
     okBtn.textContent = okLabel
