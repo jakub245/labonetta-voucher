@@ -9,8 +9,8 @@ const RECIPIENT    = 'Labonetta s.r.o.'
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const email        = req.body.email
-  const items        = req.body.items
+  const email          = req.body.email
+  const items          = req.body.items
   const customer_name  = req.body.customer_name  || null
   const customer_phone = req.body.customer_phone || null
 
@@ -45,7 +45,6 @@ export default async function handler(req, res) {
     }
   }
 
-  // Insert bez customer fields
   const insertRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/vouchers`, {
     method: 'POST',
     headers: {
@@ -64,16 +63,11 @@ export default async function handler(req, res) {
 
   const vouchers = await insertRes.json()
 
-  // Update customer_name a customer_phone přes variable_symbol
-  await fetch(`${process.env.SUPABASE_URL}/rest/v1/vouchers?variable_symbol=eq.${vs}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': process.env.SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
-    },
-    body: JSON.stringify({ customer_name, customer_phone })
-  })
+  // Update customer fields přes Supabase SDK
+  await supabase
+    .from('vouchers')
+    .update({ customer_name, customer_phone })
+    .eq('variable_symbol', vs)
 
   const spayd = [
     'SPD*1.0',
