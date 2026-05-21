@@ -447,14 +447,30 @@
       <h1>Přihlásit se</h1>
       <p>Správa dárkových voucherů</p>
       <label class="login-label" for="pw-input">Přístupové heslo</label>
-      <input
-        class="login-input"
-        type="password"
-        id="pw-input"
-        placeholder="••••••••"
-        onkeydown="if(event.key==='Enter') login()"
-        autocomplete="current-password"
-      >
+      <div style="position:relative;margin-bottom:12px;">
+        <input
+          class="login-input"
+          type="password"
+          id="pw-input"
+          placeholder="••••••••"
+          onkeydown="if(event.key==='Enter') login()"
+          autocomplete="current-password"
+          style="text-align:left;letter-spacing:4px;padding-right:48px;margin-bottom:0;"
+        >
+        <button
+          type="button"
+          onclick="togglePw()"
+          style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:rgba(255,255,255,0.4);transition:color 0.15s;"
+          onmouseenter="this.style.color='rgba(255,255,255,0.8)'"
+          onmouseleave="this.style.color='rgba(255,255,255,0.4)'"
+          aria-label="Zobrazit/skrýt heslo"
+        >
+          <svg id="eye-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
       <button class="login-btn" onclick="login()">
         Přihlásit se
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -527,7 +543,7 @@
             <th>Hodnota</th>
             <th>Email</th>
             <th>Stav</th>
-            <th>Zakoupeno</th>
+            <th>Objednáno</th>
             <th>Platí do</th>
             <th>Akce</th>
           </tr>
@@ -610,7 +626,6 @@
 
     const count = document.getElementById('table-count')
     count.innerHTML = `<strong>${filtered.length}</strong> voucher${filtered.length === 1 ? '' : 'ů'}`
-
     const tbody = document.getElementById('voucher-table')
 
     if (filtered.length === 0) {
@@ -624,50 +639,84 @@
       return
     }
 
-    tbody.innerHTML = filtered.map(v => {
-      const created = new Date(v.created_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
-      const expires = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    // Seskupit podle variable_symbol — jedna objednávka = jeden VS
+    const groups = []
+    const vsMap = {}
+    for (const v of filtered) {
+      const key = v.variable_symbol || v.id
+      if (!vsMap[key]) { vsMap[key] = []; groups.push(key) }
+      vsMap[key].push(v)
+    }
 
-      const badgeMap = {
-        paid:        { cls: 'badge-paid',        label: 'Zaplaceno' },
-        pending:     { cls: 'badge-pending',      label: 'Čeká' },
-        pending_qr:  { cls: 'badge-pending-qr',  label: 'Čeká na QR' },
-        redeemed:    { cls: 'badge-redeemed',     label: 'Uplatněno' },
-      }
-      const badge = badgeMap[v.status] || { cls: '', label: v.status }
-      const amountClass = v.amount === 500 ? 'amount-500' : 'amount-1000'
-      const amountStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
-      const vs = v.variable_symbol || ''
+    const badgeMap = {
+      paid:       { cls: 'badge-paid',       label: 'Zaplaceno' },
+      pending:    { cls: 'badge-pending',     label: 'Čeká' },
+      pending_qr: { cls: 'badge-pending-qr', label: 'Čeká na QR' },
+      redeemed:   { cls: 'badge-redeemed',   label: 'Uplatněno' },
+    }
 
-      let actionCell
-      if (v.status === 'paid') {
-        actionCell = `<button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>`
-      } else if (v.status === 'pending_qr') {
-        actionCell = `
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Zaplaceno → Odeslat vouchery
-            </button>
-            <span style="font-size:11px;color:#9ca3af;">VS: ${vs}</span>
-          </div>`
-      } else if (v.status === 'redeemed') {
-        actionCell = `<span class="action-done">Uplatněno</span>`
-      } else {
-        actionCell = `<span class="action-done">—</span>`
-      }
+    let html = ''
+    for (const [gi, key] of groups.entries()) {
+      const group = vsMap[key]
+      const rowspan = group.length
 
-      return `
-        <tr>
-          <td><span class="code">${v.code}</span></td>
-          <td><span class="${amountClass}">${amountStr}</span></td>
-          <td class="email-cell">${v.email}</td>
-          <td><span class="badge ${badge.cls}">${badge.label}</span></td>
-          <td class="date-cell">${created}</td>
-          <td class="date-cell">${expires}</td>
-          <td>${actionCell}</td>
-        </tr>`
-    }).join('')
+      group.forEach((v, i) => {
+        const dt = new Date(v.created_at)
+        const created = dt.toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        const createdTime = dt.toLocaleTimeString('cs', { hour: '2-digit', minute: '2-digit' })
+        const expires = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        const badge = badgeMap[v.status] || { cls: '', label: v.status }
+        const amountClass = v.amount === 500 ? 'amount-500' : 'amount-1000'
+        const amountStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
+        const vs = v.variable_symbol || ''
+        const groupTop = i === 0 && gi > 0 ? 'border-top:2px solid #e5e7eb;' : ''
+
+        // Akce — rowspan na prvním řádku skupiny
+        let actionCell = ''
+        if (i === 0) {
+          let action
+          if (v.status === 'pending_qr') {
+            action = `
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  Zaplaceno → Odeslat
+                </button>
+                ${vs ? `<span style="font-size:11px;color:#9ca3af;">VS: ${vs}</span>` : ''}
+              </div>`
+          } else if (v.status === 'paid') {
+            action = `<button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>`
+          } else if (v.status === 'redeemed') {
+            action = `<span class="action-done">Uplatněno</span>`
+          } else {
+            action = `<span class="action-done">—</span>`
+          }
+          actionCell = `<td rowspan="${rowspan}" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
+        }
+
+        html += `
+          <tr style="${groupTop}">
+            <td><span class="code">${v.code}</span></td>
+            <td><span class="${amountClass}">${amountStr}</span></td>
+            <td class="email-cell">${v.email}</td>
+            <td><span class="badge ${badge.cls}">${badge.label}</span></td>
+            <td class="date-cell">${created}<br><span style="font-size:11px;color:#9ca3af;">${createdTime}</span></td>
+            <td class="date-cell">${expires}</td>
+            ${actionCell}
+          </tr>`
+      })
+    }
+    tbody.innerHTML = html
+  }
+
+  function togglePw() {
+    const input = document.getElementById('pw-input')
+    const icon  = document.getElementById('eye-icon')
+    const show  = input.type === 'password'
+    input.type  = show ? 'text' : 'password'
+    icon.innerHTML = show
+      ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
+      : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
   }
 
   async function dispatchQr(vs, btn) {
