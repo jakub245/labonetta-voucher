@@ -69,15 +69,16 @@ export default async function handler(req, res) {
     color: { dark: '#1a1a1a', light: '#ffffff' }
   })
 
-  return res.status(200).json({
-    success: true,
-    vs,
-    total,
-    bank_account: BANK_ACCOUNT,
-    recipient: RECIPIENT,
-    qr_data_url: qrDataUrl,
-    vouchers: vouchers.map(v => ({ code: v.code, amount: v.amount }))
-  })
+return res.status(200).json({
+  success: true,
+  vs,
+  total,
+  bank_account: BANK_ACCOUNT,
+  recipient: RECIPIENT,
+  qr_data_url: qrDataUrl,
+  vouchers: vouchers.map(v => ({ code: v.code, amount: v.amount })),
+  _inserted: vouchers[0]
+})
 }
 
 function IBAN_to_spayd(iban) {
