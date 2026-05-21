@@ -383,6 +383,25 @@
     .btn-redeem:hover { background: var(--teal-dark); }
     .btn-redeem:disabled { background: #d1d5db; cursor: not-allowed; }
 
+    .badge-pending-qr { background: #eff6ff; color: #1d4ed8; }
+    .badge-pending-qr::before { background: #1d4ed8; }
+
+    .btn-dispatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      background: var(--terra);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
     .action-done {
       font-size: 12px;
       color: #9ca3af;
@@ -492,6 +511,7 @@
       <div class="filters">
         <button class="filter-btn active" onclick="setFilter('all', this)">Vše</button>
         <button class="filter-btn" onclick="setFilter('paid', this)">Zaplacené</button>
+        <button class="filter-btn" onclick="setFilter('pending_qr', this)">Čeká na QR platbu</button>
         <button class="filter-btn" onclick="setFilter('pending', this)">Čeká na platbu</button>
         <button class="filter-btn" onclick="setFilter('redeemed', this)">Uplatněné</button>
       </div>
@@ -608,26 +628,77 @@
       const created = new Date(v.created_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
       const expires = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
 
-      const badgeClass = { paid: 'badge-paid', pending: 'badge-pending', redeemed: 'badge-redeemed' }[v.status] || ''
-      const badgeLabel = { paid: 'Zaplaceno', pending: 'Čeká', redeemed: 'Uplatněno' }[v.status] || v.status
+      const badgeMap = {
+        paid:        { cls: 'badge-paid',        label: 'Zaplaceno' },
+        pending:     { cls: 'badge-pending',      label: 'Čeká' },
+        pending_qr:  { cls: 'badge-pending-qr',  label: 'Čeká na QR' },
+        redeemed:    { cls: 'badge-redeemed',     label: 'Uplatněno' },
+      }
+      const badge = badgeMap[v.status] || { cls: '', label: v.status }
       const amountClass = v.amount === 500 ? 'amount-500' : 'amount-1000'
       const amountStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
+      const vs = v.variable_symbol || ''
 
-      const actionCell = v.status === 'paid'
-        ? `<button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>`
-        : `<span class="action-done">${v.status === 'redeemed' ? 'Uplatněno' : '—'}</span>`
+      let actionCell
+      if (v.status === 'paid') {
+        actionCell = `<button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>`
+      } else if (v.status === 'pending_qr') {
+        actionCell = `
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Zaplaceno → Odeslat vouchery
+            </button>
+            <span style="font-size:11px;color:#9ca3af;">VS: ${vs}</span>
+          </div>`
+      } else if (v.status === 'redeemed') {
+        actionCell = `<span class="action-done">Uplatněno</span>`
+      } else {
+        actionCell = `<span class="action-done">—</span>`
+      }
 
       return `
         <tr>
           <td><span class="code">${v.code}</span></td>
           <td><span class="${amountClass}">${amountStr}</span></td>
           <td class="email-cell">${v.email}</td>
-          <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+          <td><span class="badge ${badge.cls}">${badge.label}</span></td>
           <td class="date-cell">${created}</td>
           <td class="date-cell">${expires}</td>
           <td>${actionCell}</td>
         </tr>`
     }).join('')
+  }
+
+  async function dispatchQr(vs, btn) {
+    if (!confirm(`Potvrdit QR platbu a odeslat vouchery zákazníkovi?\n\nVariabilní symbol: ${vs}`)) return
+    btn.disabled = true
+    btn.textContent = 'Odesílám…'
+
+    const res = await fetch('/api/dispatch-vouchers', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${password}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ vs })
+    })
+
+    const data = await res.json()
+
+    if (res.ok) {
+      // Aktualizuj stav voucherů v lokálním poli
+      allVouchers = allVouchers.map(v =>
+        v.variable_symbol === vs ? { ...v, status: 'paid', paid_at: new Date().toISOString() } : v
+      )
+      updateStats()
+      renderTable()
+      alert(`✓ Vouchery odeslány na ${data.sent_to}`)
+    } else {
+      alert(`Chyba: ${data.error}`)
+      btn.disabled = false
+      btn.textContent = 'Zaplaceno → Odeslat vouchery'
+    }
   }
 
   async function redeem(id, btn) {
