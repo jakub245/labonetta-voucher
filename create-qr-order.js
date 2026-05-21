@@ -38,6 +38,8 @@ export default async function handler(req, res) {
         code,
         amount: Number(item.amount),
         email,
+        customer_name,
+        customer_phone,
         status: 'pending_qr',
         variable_symbol: vs,
         expires_at: expiresAt.toISOString()
@@ -45,32 +47,12 @@ export default async function handler(req, res) {
     }
   }
 
-  const insertRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/vouchers`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': process.env.SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
-      'Prefer': 'return=representation'
-    },
-    body: JSON.stringify(voucherRecords)
-  })
-
-  if (!insertRes.ok) {
-    const err = await insertRes.json()
-    return res.status(500).json({ error: err.message || 'Insert failed' })
-  }
-
-  const vouchers = await insertRes.json()
-
-  const { error: updateError } = await supabase
+  const { data: vouchers, error } = await supabase
     .from('vouchers')
-    .update({ customer_name, customer_phone })
-    .eq('variable_symbol', vs)
+    .insert(voucherRecords)
+    .select()
 
-  if (updateError) {
-    return res.status(500).json({ error: 'Update failed: ' + updateError.message })
-  }
+  if (error) return res.status(500).json({ error: error.message })
 
   const spayd = [
     'SPD*1.0',
