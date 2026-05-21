@@ -454,7 +454,7 @@
           placeholder="••••••••"
           onkeydown="if(event.key==='Enter') login()"
           autocomplete="current-password"
-          style="text-align:left;letter-spacing:4px;padding-right:48px;margin-bottom:0;"
+          style="padding-right:48px;margin-bottom:0;"
         >
         <button
           type="button"
@@ -561,15 +561,26 @@
   let allVouchers = []
   let currentFilter = 'all'
 
+  // Obnov session po refreshi — nepředvyplňuj input, jen se tiše přihlas
+  window.addEventListener('load', () => {
+    const saved = sessionStorage.getItem('admin_pw')
+    if (saved) {
+      password = saved
+      loadVouchers()
+    }
+  })
+
   function login() {
     const pw = document.getElementById('pw-input').value
     if (!pw) return
     password = pw
+    sessionStorage.setItem('admin_pw', pw)
     loadVouchers()
   }
 
   function logout() {
     password = ''
+    sessionStorage.removeItem('admin_pw')
     document.getElementById('admin-screen').style.display = 'none'
     document.getElementById('login-screen').style.display = 'flex'
     document.getElementById('pw-input').value = ''
@@ -582,7 +593,10 @@
     })
 
     if (res.status === 401) {
+      sessionStorage.removeItem('admin_pw')
       document.getElementById('login-error').classList.add('visible')
+      document.getElementById('admin-screen').style.display = 'none'
+      document.getElementById('login-screen').style.display = 'flex'
       return
     }
 
@@ -592,12 +606,17 @@
 
     allVouchers = await res.json()
 
-    const now = new Date().toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    const now = new Date().toLocaleTimeString('cs', { hour: '2-digit', minute: '2-digit' })
     document.getElementById('admin-date').textContent = `Aktualizováno: ${now}`
 
     updateStats()
     renderTable()
   }
+
+  // Auto-refresh každé 2 minuty
+  setInterval(() => {
+    if (password) loadVouchers()
+  }, 2 * 60 * 1000)
 
   function updateStats() {
     const paid = allVouchers.filter(v => v.status === 'paid' || v.status === 'redeemed')
@@ -713,8 +732,9 @@
     const icon  = document.getElementById('eye-icon')
     const show  = input.type === 'password'
     input.type  = show ? 'text' : 'password'
-    input.style.fontFamily = show ? 'monospace' : "'Bai Jamjuree', sans-serif"
-    input.style.letterSpacing = show ? '2px' : 'normal'
+    // Monospace jen při zobrazení — při skrytí back to normal
+    input.style.fontFamily    = show ? 'monospace' : ''
+    input.style.letterSpacing = show ? '2px' : ''
     icon.innerHTML = show
       ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
       : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
