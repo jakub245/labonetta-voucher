@@ -1010,7 +1010,7 @@
 
     <div class="checkout-form">
       <h2 class="form-title" id="checkout-title">Dokončit objednávku</h2>
-      <p class="form-sub">Voucher vám zašleme obratem jako přílohu e-mailu.</p>
+      <p class="form-sub">Po zaplacení QR kódem vám voucher zašleme na e-mail.</p>
 
       <div class="field-group">
         <label class="field-label" for="customer-name">Jméno a příjmení</label>
@@ -1038,7 +1038,7 @@
           autocomplete="email"
           aria-describedby="email-hint email-error"
         >
-        <p class="field-hint" id="email-hint">Na tento e-mail zašleme voucher.</p>
+        <p class="field-hint" id="email-hint">Voucher zašleme na tento e-mail po potvrzení platby.</p>
         <p class="error-msg" id="email-error" role="alert">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           Zadejte prosím platný e-mail.
@@ -1088,6 +1088,13 @@
     <div class="qr-main">
       <h2 class="qr-title">Naskenujte QR kód</h2>
       <p class="qr-sub">Otevřete bankovní aplikaci a naskenujte kód. Platební údaje jsou předvyplněné.</p>
+
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#fff7ed;border:1px solid #fed7aa;border-radius:100px;padding:8px 16px;margin-bottom:24px;font-size:13px;color:#c2410c;font-weight:500;line-height:1.4;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Nezavírejte okno — QR kód je vygenerován pouze zde
+      </div>
       <div class="qr-code-wrap">
         <img class="qr-code-img" id="qr-img" src="" alt="QR kód pro platbu">
         <p class="qr-hint">QR kód pro bankovní aplikaci · CZK</p>
