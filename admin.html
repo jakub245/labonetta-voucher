@@ -429,6 +429,101 @@
       color: #9ca3af;
     }
 
+    .btn-detail {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      background: transparent;
+      color: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-detail:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* Detail modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.visible { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title {
+      font-family: 'Bai Jamjuree', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .modal-close {
+      width: 32px; height: 32px;
+      background: var(--light);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray);
+      transition: background 0.15s;
+    }
+    .modal-close:hover { background: var(--border); }
+    .modal-close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    .modal-body { padding: 24px 28px 28px; }
+
+    .modal-section { margin-bottom: 24px; }
+    .modal-section-title {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      font-size: 14px;
+      gap: 16px;
+    }
+    .modal-row-label { color: var(--gray); flex-shrink: 0; }
+    .modal-row-value { font-weight: 600; color: var(--dark); text-align: right; }
+    .modal-row-value.mono { font-family: monospace; letter-spacing: 1px; font-size: 13px; }
+
     .empty-state {
       text-align: center;
       padding: 64px 24px;
@@ -505,6 +600,19 @@
   </div>
 </div>
 
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Detail objednávky</span>
+      <button class="modal-close" onclick="closeModalDirect()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
 <!-- ADMIN -->
 <div id="admin-screen">
 
@@ -564,12 +672,12 @@
       <table>
         <thead>
           <tr>
+            <th>ID</th>
             <th>Kód</th>
             <th>Hodnota</th>
-            <th>Email</th>
+            <th>Jméno / E-mail</th>
             <th>Stav</th>
             <th>Objednáno</th>
-            <th>Platí do</th>
             <th>Akce</th>
           </tr>
         </thead>
@@ -734,21 +842,40 @@
         } else if (v.status === 'pending_qr' && i > 0) {
           actionCell = '' // pokryto rowspanem
         } else if (v.status === 'paid') {
-          actionCell = `<td><button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button></td>`
+          actionCell = `<td>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;">
+              <button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>
+              <button class="btn-detail" onclick="openDetail('${v.id}')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Detail
+              </button>
+            </div>
+          </td>`
         } else if (v.status === 'redeemed') {
-          actionCell = `<td><span class="action-done">Uplatněno</span></td>`
+          actionCell = `<td>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;">
+              <span class="action-done">Uplatněno</span>
+              <button class="btn-detail" onclick="openDetail('${v.id}')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Detail
+              </button>
+            </div>
+          </td>`
         } else {
           actionCell = `<td><span class="action-done">—</span></td>`
         }
 
         html += `
           <tr style="${groupTop}">
+            <td style="font-family:monospace;font-size:12px;color:#9ca3af;white-space:nowrap;">#${vs || v.id.slice(-6)}</td>
             <td><span class="code">${v.code}</span></td>
             <td><span class="${amountClass}">${amountStr}</span></td>
-            <td class="email-cell">${v.email}</td>
+            <td>
+              ${v.customer_name ? `<p style="font-size:13px;font-weight:600;color:var(--dark);margin:0 0 2px;">${v.customer_name}</p>` : ''}
+              <p class="email-cell" style="margin:0;">${v.email}</p>
+            </td>
             <td><span class="badge ${badge.cls}">${badge.label}</span></td>
             <td class="date-cell">${created}<br><span style="font-size:11px;color:#9ca3af;">${createdTime}</span></td>
-            <td class="date-cell">${expires}</td>
             ${actionCell}
           </tr>`
       })
@@ -756,7 +883,61 @@
     tbody.innerHTML = html
   }
 
-  function togglePw() {
+  function openDetail(id) {
+    const v = allVouchers.find(x => x.id === id)
+    if (!v) return
+
+    const badgeMap = {
+      paid:       { cls: 'badge-paid',       label: 'Zaplaceno' },
+      pending:    { cls: 'badge-pending',     label: 'Čeká' },
+      pending_qr: { cls: 'badge-pending-qr', label: 'Čeká na zaplacení' },
+      redeemed:   { cls: 'badge-redeemed',   label: 'Uplatněno' },
+    }
+    const badge = badgeMap[v.status] || { cls: '', label: v.status }
+    const created  = new Date(v.created_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    const expires  = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    const paidAt   = v.paid_at ? new Date(v.paid_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
+    const redeemedAt = v.redeemed_at ? new Date(v.redeemed_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
+    const vs = v.variable_symbol || '—'
+    const amtStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
+
+    document.getElementById('modal-title').textContent = `Detail · ${v.code}`
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-section">
+        <p class="modal-section-title">Voucher</p>
+        <div class="modal-row"><span class="modal-row-label">Kód</span><span class="modal-row-value mono">${v.code}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Hodnota</span><span class="modal-row-value">${amtStr}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Stav</span><span class="badge ${badge.cls}" style="font-size:11px;">${badge.label}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Platí do</span><span class="modal-row-value">${expires}</span></div>
+        ${vs !== '—' ? `<div class="modal-row"><span class="modal-row-label">Variabilní symbol</span><span class="modal-row-value mono">${vs}</span></div>` : ''}
+      </div>
+
+      <div class="modal-section">
+        <p class="modal-section-title">Zákazník</p>
+        ${v.customer_name ? `<div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name}</span></div>` : ''}
+        <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${v.email}</span></div>
+        ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${v.customer_phone}</span></div>` : ''}
+      </div>
+
+      <div class="modal-section">
+        <p class="modal-section-title">Časová osa</p>
+        <div class="modal-row"><span class="modal-row-label">Objednáno</span><span class="modal-row-value">${created}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Zaplaceno</span><span class="modal-row-value">${paidAt}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Uplatněno</span><span class="modal-row-value">${redeemedAt}</span></div>
+      </div>
+    `
+    document.getElementById('modal-overlay').classList.add('visible')
+    document.body.style.overflow = 'hidden'
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModalDirect()
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modal-overlay').classList.remove('visible')
+    document.body.style.overflow = ''
+  }
     const input = document.getElementById('pw-input')
     const icon  = document.getElementById('eye-icon')
     const show  = input.type === 'password'
