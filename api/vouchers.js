@@ -3,18 +3,22 @@ import supabase from '../lib/supabase.js'
 // Ověří heslo a vrátí roli: 'admin' | 'staff' | null
 function getRole(req) {
   const auth = req.headers.authorization?.replace('Bearer ', '')
-  if (auth && auth === process.env.ADMIN_PASSWORD) return 'admin'
-  if (auth && process.env.STAFF_PASSWORD && auth === process.env.STAFF_PASSWORD) return 'staff'
+  if (!auth) return null
+  if (auth === process.env.ADMIN_PASSWORD) return 'admin'
+  if (process.env.STAFF_PASSWORD && auth === process.env.STAFF_PASSWORD) return 'staff'
   return null
 }
 
 export default async function handler(req, res) {
+  // Nikdy necachovat — odpověď závisí na roli (heslu)
+  res.setHeader('Cache-Control', 'no-store, max-age=0')
+
   const role = getRole(req)
   if (!role) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  // GET /api/vouchers — list vouchers
+  // GET /api/vouchers — list vouchers (role vrácena v těle odpovědi)
   if (req.method === 'GET') {
     let query = supabase
       .from('vouchers')
@@ -28,9 +32,7 @@ export default async function handler(req, res) {
 
     const { data, error } = await query
     if (error) return res.status(500).json({ error: error.message })
-    // Přidej roli do hlavičky odpovědi, ať frontend ví, co zobrazit
-    res.setHeader('X-User-Role', role)
-    return res.status(200).json(data)
+    return res.status(200).json({ role, vouchers: data })
   }
 
   // PATCH /api/vouchers — redeem a voucher (admin i staff)
