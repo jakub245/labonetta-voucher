@@ -538,9 +538,12 @@
     table { width: 100%; border-collapse: collapse; }
 
     /* Hlavní tabulka voucherů — fixní šířky sloupců, ať neskáčou při změně filtru */
-    .voucher-table-main { table-layout: fixed; min-width: 900px; }
+    .voucher-table-main { table-layout: fixed; width: 100%; }
     .voucher-table-main td { overflow: hidden; text-overflow: ellipsis; }
     .voucher-table-main .code { white-space: nowrap; }
+    .voucher-table-main .amount-500,
+    .voucher-table-main .amount-1000 { white-space: nowrap; }
+    .voucher-table-main .date-cell { white-space: nowrap; }
     .voucher-table-main .email-cell {
       white-space: nowrap;
       overflow: hidden;
@@ -924,12 +927,112 @@
       font-size: 14px;
     }
 
+    /* ── TABLET & MOBIL: karty místo tabulky ── */
+    /* Pod 1024px se řádky tabulky mění na karty, kde je vše pod sebou.
+       Nic se neskrývá, nic nescrolluje do stran. */
+    @media (max-width: 1024px) {
+      .admin-main { padding: 28px 24px 56px; }
+
+      .voucher-table-main,
+      .voucher-table-main colgroup,
+      .voucher-table-main thead,
+      .voucher-table-main tbody,
+      .voucher-table-main tr,
+      .voucher-table-main td {
+        display: block;
+        width: 100% !important;
+      }
+
+      /* Skrýt hlavičku tabulky — popisky nese data-label */
+      .voucher-table-main thead { display: none; }
+
+      .voucher-table-main { table-layout: auto; }
+
+      .table-wrap { overflow: visible; border: none; background: transparent; }
+
+      /* Každý řádek = karta */
+      .voucher-table-main tr {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 8px 4px;
+        margin-bottom: 14px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      .voucher-table-main tr:hover td { background: transparent; }
+
+      /* Sdružená objednávka — spojit karty do jednoho bloku */
+      .voucher-table-main tr[data-group-pos="first"] {
+        margin-bottom: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: none;
+      }
+      .voucher-table-main tr[data-group-pos="mid"] {
+        margin-bottom: 0;
+        border-radius: 0;
+        border-bottom: none;
+        border-top: 1px dashed var(--border);
+      }
+      .voucher-table-main tr[data-group-pos="last"] {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top: 1px dashed var(--border);
+      }
+
+      /* Každá buňka = řádek uvnitř karty s popiskem vlevo */
+      .voucher-table-main td {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 11px 18px !important;
+        border: none !important;
+        border-bottom: 1px solid #f3f4f6 !important;
+        overflow: visible;
+        white-space: normal;
+        text-align: right;
+        min-height: 0;
+      }
+      .voucher-table-main tr td:last-child { border-bottom: none !important; }
+
+      /* Popisek sloupce vlevo */
+      .voucher-table-main td::before {
+        content: attr(data-label);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #9ca3af;
+        flex-shrink: 0;
+        text-align: left;
+      }
+
+      /* Prázdné buňky (skrytý akční sloupec u sdružených pending_qr) schovat */
+      .voucher-table-main td:empty { display: none !important; }
+
+      /* Email/jméno buňka — zarovnat obsah doprava, povolit zalomení */
+      .voucher-table-main .email-cell {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        text-align: right;
+      }
+      .voucher-table-main td[data-label="Zákazník"] { flex-wrap: wrap; }
+      .voucher-table-main td[data-label="Zákazník"] > * { text-align: right; width: 100%; }
+
+      /* Akce — tlačítka zarovnat doprava, plná šíře pro pohodlný dotyk */
+      .voucher-table-main td[data-label="Akce"] { flex-direction: column; align-items: stretch; }
+      .voucher-table-main td[data-label="Akce"]::before { text-align: left; margin-bottom: 4px; }
+      .voucher-table-main td[data-label="Akce"] > div { justify-content: flex-start; }
+      .voucher-table-main td[data-label="Akce"] .btn-redeem,
+      .voucher-table-main td[data-label="Akce"] .btn-dispatch { justify-content: center; }
+    }
+
     @media (max-width: 768px) {
       .admin-nav { padding: 0 20px; }
-      .admin-main { padding: 24px 20px 48px; }
+      .admin-main { padding: 24px 16px 48px; }
       .stats { grid-template-columns: 1fr 1fr; }
-      .table-wrap { overflow-x: auto; }
-      table { min-width: 680px; }
     }
   </style>
 </head>
@@ -1132,13 +1235,13 @@
     <div class="table-wrap">
       <table class="voucher-table-main">
         <colgroup>
-          <col style="width:80px;">
-          <col style="width:170px;">
-          <col style="width:100px;">
+          <col style="width:70px;">
+          <col style="width:180px;">
+          <col style="width:120px;">
           <col style="width:auto;">
-          <col style="width:140px;">
-          <col style="width:160px;">
           <col style="width:150px;">
+          <col style="width:150px;">
+          <col style="width:180px;">
         </colgroup>
         <thead>
           <tr>
@@ -1422,6 +1525,8 @@
         const shortId = vs ? vs.slice(-4) : v.id.slice(-4)
         const groupTop = i === 0 && gi > 0 ? 'border-top:2px solid #e5e7eb;' : ''
         const detailKey = vs || v.id
+        const isGroupStart = i === 0
+        const isGroupMember = group.length > 1
 
         let actionCell = ''
         if (i === 0 && v.status === 'pending_qr') {
@@ -1433,38 +1538,38 @@
               </button>
               <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:14px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
             </div>`
-          actionCell = `<td rowspan="${rowspan}" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
+          actionCell = `<td rowspan="${rowspan}" data-label="Akce" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
         } else if (v.status === 'pending_qr' && i > 0) {
           actionCell = ''
         } else if (v.status === 'paid') {
-          actionCell = `<td>
+          actionCell = `<td data-label="Akce">
             <div style="display:flex;align-items:center;gap:12px;">
               <button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>
               <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:14px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
             </div>
           </td>`
         } else if (v.status === 'redeemed') {
-          actionCell = `<td>
+          actionCell = `<td data-label="Akce">
             <div style="display:flex;align-items:center;gap:12px;">
               <span class="action-done">Uplatněno</span>
               <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:14px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
             </div>
           </td>`
         } else {
-          actionCell = `<td><span class="action-done">—</span></td>`
+          actionCell = `<td data-label="Akce"><span class="action-done">—</span></td>`
         }
 
         html += `
-          <tr style="${groupTop}">
-            <td style="font-family:monospace;font-size:14px;color:#9ca3af;font-weight:600;">#${shortId}</td>
-            <td><span class="code">${v.code}</span></td>
-            <td><span class="${amountClass}">${amountStr}</span></td>
-            <td>
+          <tr style="${groupTop}" data-group="${isGroupMember ? 'yes' : 'no'}" data-group-pos="${isGroupMember ? (i === 0 ? 'first' : (i === group.length - 1 ? 'last' : 'mid')) : 'single'}">
+            <td data-label="ID" style="font-family:monospace;font-size:14px;color:#9ca3af;font-weight:600;">#${shortId}</td>
+            <td data-label="Kód"><span class="code">${v.code}</span></td>
+            <td data-label="Hodnota"><span class="${amountClass}">${amountStr}</span></td>
+            <td data-label="Zákazník">
               ${v.customer_name ? `<p style="font-size:15px;font-weight:600;color:var(--dark);margin:0 0 2px;">${v.customer_name}</p>` : ''}
               <p class="email-cell" style="margin:0;">${v.source === 'offline' ? '<span style="color:#c0b8b0;">— osobní prodej</span>' : v.email}</p>
             </td>
-            <td><span class="badge ${badge.cls}">${badge.label}</span></td>
-            <td class="date-cell">${created} <strong style="font-weight:600;color:var(--dark);">${createdTime}</strong></td>
+            <td data-label="Stav"><span class="badge ${badge.cls}">${badge.label}</span></td>
+            <td data-label="Objednáno" class="date-cell">${created} <strong style="font-weight:600;color:var(--dark);">${createdTime}</strong></td>
             ${actionCell}
           </tr>`
       })
