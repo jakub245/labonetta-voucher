@@ -107,10 +107,9 @@
       margin-bottom: 0;
       text-align: left;
     }
-    /* Přebít monospace font u tečky hesla ve Firefoxu */
     .login-input[type="password"] {
       font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 18px; /* tečky jsou menší než písmena, trochu zvětšit */
+      font-size: 18px;
       letter-spacing: 3px;
     }
     .login-input[type="text"] {
@@ -154,7 +153,6 @@
     /* ── ADMIN ── */
     #admin-screen { display: none; }
 
-    /* Nav */
     .admin-nav {
       background: var(--dark);
       border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -218,7 +216,6 @@
     }
     .btn-logout:hover { color: white; }
 
-    /* Main */
     .admin-main {
       max-width: 1400px;
       margin: 0 auto;
@@ -238,7 +235,6 @@
       margin-bottom: 32px;
     }
 
-    /* Stats */
     .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -270,7 +266,6 @@
     .stat-value.teal  { color: var(--teal); }
     .stat-value.terra { color: var(--terra); }
 
-    /* Filters + table header */
     .search-bar {
       margin-bottom: 16px;
       position: relative;
@@ -352,7 +347,6 @@
     }
     .table-count strong { color: var(--dark); font-weight: 600; }
 
-    /* Table */
     .table-wrap {
       background: var(--white);
       border: 1px solid var(--border);
@@ -423,7 +417,6 @@
     .email-cell { color: var(--gray); font-size: 13px; font-weight: 400; }
     .date-cell  { color: var(--gray); font-size: 13px; }
 
-    /* Primární akce — fill teal */
     .btn-primary-action {
       display: inline-flex;
       align-items: center;
@@ -443,7 +436,6 @@
     .btn-primary-action:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
     .btn-primary-action:disabled { background: #d1d5db; border-color: #d1d5db; cursor: not-allowed; }
 
-    /* Sekundární akce — outline teal */
     .btn-secondary-action {
       display: inline-flex;
       align-items: center;
@@ -463,7 +455,6 @@
     .btn-secondary-action:hover { background: var(--teal-bg); }
     .btn-secondary-action:disabled { border-color: #d1d5db; color: #d1d5db; cursor: not-allowed; }
 
-    /* Zachovat .btn-redeem a .btn-dispatch jako aliasy */
     .btn-redeem  { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: transparent; color: var(--teal); border: 1.5px solid var(--teal); border-radius: 8px; font-size: 12px; font-family: inherit; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
     .btn-redeem:hover { background: var(--teal-bg); }
     .btn-redeem:disabled { border-color: #d1d5db; color: #d1d5db; cursor: not-allowed; }
@@ -494,7 +485,6 @@
     }
     .btn-detail:hover { border-color: var(--teal); color: var(--teal); }
 
-    /* Detail modal */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -547,7 +537,6 @@
 
     .modal-body { padding: 24px 28px 28px; }
 
-    /* Confirm modal */
     .confirm-overlay {
       display: none;
       position: fixed;
@@ -632,7 +621,6 @@
     .confirm-ok.danger { background: #dc2626; }
     .confirm-ok.danger:hover { background: #b91c1c; }
 
-    /* Toast notification */
     .toast {
       position: fixed;
       bottom: 32px;
@@ -680,6 +668,32 @@
     .modal-row-label { color: var(--gray); flex-shrink: 0; }
     .modal-row-value { font-weight: 600; color: var(--dark); text-align: right; }
     .modal-row-value.mono { font-family: monospace; letter-spacing: 1px; font-size: 13px; }
+
+    /* Voucher list uvnitř detailu objednávky */
+    .voucher-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+    .voucher-list-item:last-child { margin-bottom: 0; }
+    .voucher-list-code {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: var(--dark);
+    }
+    .voucher-list-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .voucher-list-amount { font-weight: 700; font-size: 14px; }
 
     .empty-state {
       text-align: center;
@@ -863,7 +877,6 @@
   let currentFilter = 'all'
   let searchQuery = ''
 
-  // Obnov session po refreshi — nepředvyplňuj input, jen se tiše přihlas
   window.addEventListener('load', () => {
     const saved = sessionStorage.getItem('admin_pw')
     if (saved) {
@@ -915,7 +928,6 @@
     renderTable()
   }
 
-  // Auto-refresh každé 2 minuty
   setInterval(() => {
     if (password) loadVouchers()
   }, 2 * 60 * 1000)
@@ -923,7 +935,7 @@
   function updateStats() {
     const paid = allVouchers.filter(v => v.status === 'paid' || v.status === 'redeemed')
     const revenue = paid.reduce((sum, v) => sum + v.amount, 0)
-    const pending = allVouchers.filter(v => v.status === 'pending').length
+    const pending = allVouchers.filter(v => v.status === 'pending_qr').length
     const redeemed = allVouchers.filter(v => v.status === 'redeemed').length
 
     document.getElementById('stat-total').textContent = paid.length
@@ -981,7 +993,6 @@
       return
     }
 
-    // Seskupit podle variable_symbol — jedna objednávka = jeden VS
     const groups = []
     const vsMap = {}
     for (const v of filtered) {
@@ -1013,8 +1024,8 @@
         const vs = v.variable_symbol || ''
         const shortId = vs ? vs.slice(-4) : v.id.slice(-4)
         const groupTop = i === 0 && gi > 0 ? 'border-top:2px solid #e5e7eb;' : ''
+        const detailKey = vs || v.id
 
-        // Akce — dispatch s rowspan jen na prvním řádku, uplatnit na každém
         let actionCell = ''
         if (i === 0 && v.status === 'pending_qr') {
           const action = `
@@ -1023,7 +1034,7 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 Zaplaceno
               </button>
-              <a href="#" onclick="openDetail('${v.id}');return false;" style="font-size:12px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
+              <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:12px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
             </div>`
           actionCell = `<td rowspan="${rowspan}" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
         } else if (v.status === 'pending_qr' && i > 0) {
@@ -1032,14 +1043,14 @@
           actionCell = `<td>
             <div style="display:flex;align-items:center;gap:12px;">
               <button class="btn-redeem" onclick="redeem('${v.id}', this)">Uplatnit</button>
-              <a href="#" onclick="openDetail('${v.id}');return false;" style="font-size:12px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
+              <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:12px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
             </div>
           </td>`
         } else if (v.status === 'redeemed') {
           actionCell = `<td>
             <div style="display:flex;align-items:center;gap:12px;">
               <span class="action-done">Uplatněno</span>
-              <a href="#" onclick="openDetail('${v.id}');return false;" style="font-size:12px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
+              <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:12px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
             </div>
           </td>`
         } else {
@@ -1064,7 +1075,6 @@
     tbody.innerHTML = html
   }
 
-  // Custom confirm dialog
   function showConfirm({ title, message, meta, okLabel = 'Potvrdit', danger = false, onOk }) {
     document.getElementById('confirm-title').textContent = title
     document.getElementById('confirm-message').textContent = message
@@ -1092,7 +1102,6 @@
     })
   }
 
-  // Toast notification
   let toastTimer
   function showToast(message, type = 'success') {
     const toast = document.getElementById('toast')
@@ -1111,26 +1120,37 @@
       onOk: async () => {
         btn.disabled = true
         btn.textContent = 'Odesílám…'
-        const res = await fetch('/api/dispatch-vouchers', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${password}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ vs })
-        })
-        const data = await res.json()
-        if (res.ok) {
-          allVouchers = allVouchers.map(v =>
-            v.variable_symbol === vs ? { ...v, status: 'paid', paid_at: new Date().toISOString() } : v
-          )
-          updateStats()
-          renderTable()
-          showToast(`✓ Vouchery odeslány na ${data.sent_to}`)
-        } else {
-          showToast(`Chyba: ${data.error}`, 'error')
+        try {
+          const res = await fetch('/api/dispatch-vouchers', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${password}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ vs })
+          })
+          const data = await res.json()
+          if (res.ok) {
+            allVouchers = allVouchers.map(v =>
+              v.variable_symbol === vs ? { ...v, status: 'paid', paid_at: new Date().toISOString() } : v
+            )
+            updateStats()
+            renderTable()
+            showToast(`✓ Vouchery odeslány na ${data.sent_to}`)
+          } else {
+            if (res.status === 404) {
+              showToast('Objednávka již byla odeslána — obnovuji data.', 'error')
+              await loadVouchers()
+            } else {
+              showToast(`Chyba: ${data.error}`, 'error')
+              btn.disabled = false
+              btn.textContent = 'Zaplaceno'
+            }
+          }
+        } catch (err) {
+          showToast('Chyba spojení. Zkuste to znovu.', 'error')
           btn.disabled = false
-          btn.textContent = 'Zaplaceno → Odeslat vouchery'
+          btn.textContent = 'Zaplaceno'
         }
       }
     })
@@ -1144,23 +1164,30 @@
       onOk: async () => {
         btn.disabled = true
         btn.textContent = '…'
-        const res = await fetch('/api/vouchers', {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Bearer ${password}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ id })
-        })
-        if (res.ok) {
-          const updated = await res.json()
-          const idx = allVouchers.findIndex(v => v.id === id)
-          if (idx !== -1) allVouchers[idx] = updated
-          updateStats()
-          renderTable()
-          showToast('✓ Voucher uplatněn')
-        } else {
-          showToast('Chyba při uplatňování voucheru.', 'error')
+        try {
+          const res = await fetch('/api/vouchers', {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${password}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id })
+          })
+          if (res.ok) {
+            const updated = await res.json()
+            const idx = allVouchers.findIndex(v => v.id === id)
+            if (idx !== -1) allVouchers[idx] = updated
+            updateStats()
+            renderTable()
+            showToast('✓ Voucher uplatněn')
+          } else {
+            const data = await res.json().catch(() => ({}))
+            showToast(data.error === 'Voucher not paid' ? 'Voucher ještě není zaplacen.' : 'Chyba při uplatňování voucheru.', 'error')
+            btn.disabled = false
+            btn.textContent = 'Uplatnit'
+          }
+        } catch (err) {
+          showToast('Chyba spojení. Zkuste to znovu.', 'error')
           btn.disabled = false
           btn.textContent = 'Uplatnit'
         }
@@ -1178,9 +1205,18 @@
       : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
   }
 
-  function openDetail(id) {
-    const v = allVouchers.find(x => x.id === id)
-    if (!v) return
+  // Detail objednávky — seskupí všechny vouchery podle variable_symbol
+  function openDetail(key) {
+    // key může být variable_symbol (společné pro objednávku) nebo id (fallback)
+    let group = allVouchers.filter(v => v.variable_symbol && v.variable_symbol === key)
+    if (group.length === 0) {
+      const single = allVouchers.find(v => v.id === key)
+      if (!single) return
+      group = [single]
+    }
+
+    // Reprezentativní voucher pro data objednávky (zákazník, stav, časová osa)
+    const v = group[0]
 
     const badgeMap = {
       paid:       { cls: 'badge-paid',       label: 'Zaplaceno' },
@@ -1188,23 +1224,42 @@
       pending_qr: { cls: 'badge-pending-qr', label: 'Čeká na platbu' },
       redeemed:   { cls: 'badge-redeemed',   label: 'Uplatněno' },
     }
-    const badge = badgeMap[v.status] || { cls: '', label: v.status }
+
     const created    = new Date(v.created_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
     const expires    = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
     const paidAt     = v.paid_at     ? new Date(v.paid_at).toLocaleString('cs',     { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
-    const redeemedAt = v.redeemed_at ? new Date(v.redeemed_at).toLocaleString('cs', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'
     const vs     = v.variable_symbol || '—'
-    const amtStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
+    const totalAmount = group.reduce((sum, x) => sum + x.amount, 0)
+    const totalStr = totalAmount.toLocaleString('cs') + ' Kč'
 
-    document.getElementById('modal-title').textContent = `Detail · ${v.code}`
+    // Seznam voucherů v objednávce
+    const voucherListHtml = group.map(x => {
+      const b = badgeMap[x.status] || { cls: '', label: x.status }
+      const amtStr = x.amount === 1000 ? '1 000 Kč' : (x.amount === 500 ? '500 Kč' : x.amount.toLocaleString('cs') + ' Kč')
+      const redeemedAt = x.redeemed_at ? ' · uplatněno ' + new Date(x.redeemed_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''
+      return `
+        <div class="voucher-list-item">
+          <span class="voucher-list-code">${x.code}</span>
+          <div class="voucher-list-right">
+            <span class="badge ${b.cls}" style="font-size:10px;">${b.label}${redeemedAt}</span>
+            <span class="voucher-list-amount">${amtStr}</span>
+          </div>
+        </div>`
+    }).join('')
+
+    document.getElementById('modal-title').textContent =
+      vs !== '—' ? `Objednávka · VS ${vs}` : `Detail · ${v.code}`
+
     document.getElementById('modal-body').innerHTML = `
       <div class="modal-section">
-        <p class="modal-section-title">Voucher</p>
-        <div class="modal-row"><span class="modal-row-label">Kód</span><span class="modal-row-value mono">${v.code}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Hodnota</span><span class="modal-row-value">${amtStr}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Stav</span><span class="badge ${badge.cls}" style="font-size:11px;">${badge.label}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Platí do</span><span class="modal-row-value">${expires}</span></div>
+        <p class="modal-section-title">Objednávka — ${group.length} voucher${group.length === 1 ? '' : (group.length < 5 ? 'y' : 'ů')}</p>
+        ${voucherListHtml}
+        <div class="modal-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+          <span class="modal-row-label">Celková hodnota</span>
+          <span class="modal-row-value">${totalStr}</span>
+        </div>
         ${vs !== '—' ? `<div class="modal-row"><span class="modal-row-label">Variabilní symbol</span><span class="modal-row-value mono">${vs}</span></div>` : ''}
+        <div class="modal-row"><span class="modal-row-label">Platí do</span><span class="modal-row-value">${expires}</span></div>
       </div>
       <div class="modal-section">
         <p class="modal-section-title">Zákazník</p>
@@ -1216,7 +1271,6 @@
         <p class="modal-section-title">Časová osa</p>
         <div class="modal-row"><span class="modal-row-label">Objednáno</span><span class="modal-row-value">${created}</span></div>
         <div class="modal-row"><span class="modal-row-label">Zaplaceno</span><span class="modal-row-value">${paidAt}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Uplatněno</span><span class="modal-row-value">${redeemedAt}</span></div>
       </div>
     `
     document.getElementById('modal-overlay').classList.add('visible')
