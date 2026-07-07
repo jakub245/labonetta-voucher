@@ -4,3 +4,8 @@
     { "source": "/(.*)", "destination": "/$1" }
   ]
 }
+{
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" }
+  ]
+}
