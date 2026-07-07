@@ -1284,16 +1284,24 @@
 
   function logout() {
     password = ''
+    currentRole = 'admin'
     sessionStorage.removeItem('admin_pw')
     document.getElementById('admin-screen').style.display = 'none'
     document.getElementById('login-screen').style.display = 'flex'
     document.getElementById('pw-input').value = ''
     document.getElementById('login-error').classList.remove('visible')
+    // Vrátit skryté prvky do výchozího stavu (kdyby byl předtím staff)
+    applyRole()
   }
 
   async function loadVouchers() {
     const res = await fetch('/api/vouchers', {
-      headers: { 'Authorization': `Bearer ${password}` }
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'Authorization': `Bearer ${password}`,
+        'Cache-Control': 'no-cache'
+      }
     })
 
     if (res.status === 401) {
@@ -1308,11 +1316,16 @@
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('admin-screen').style.display = 'block'
 
-    // Zjisti roli z hlavičky odpovědi (admin / staff)
-    currentRole = res.headers.get('X-User-Role') || 'admin'
+    const payload = await res.json()
+    // Nový formát: { role, vouchers }. Fallback pro staré pole.
+    if (Array.isArray(payload)) {
+      currentRole = 'admin'
+      allVouchers = payload
+    } else {
+      currentRole = payload.role || 'admin'
+      allVouchers = payload.vouchers || []
+    }
     applyRole()
-
-    allVouchers = await res.json()
 
     const now = new Date().toLocaleTimeString('cs', { hour: '2-digit', minute: '2-digit' })
     document.getElementById('admin-date').textContent = `Aktualizováno: ${now}`
