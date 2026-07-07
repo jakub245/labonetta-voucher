@@ -1,10 +1,12 @@
 import supabase from '../lib/supabase.js'
 import { generateVoucherCode } from '../lib/codes.js'
+import { sendAdminNotification } from '../lib/mailer.js'
 import QRCode from 'qrcode'
 
 const BANK_IBAN    = process.env.BANK_IBAN
 const BANK_ACCOUNT = process.env.BANK_ACCOUNT
 const RECIPIENT    = process.env.BANK_OWNER
+const ADMIN_NOTIFY_EMAIL = process.env.ADMIN_NOTIFY_EMAIL
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -54,6 +56,23 @@ export default async function handler(req, res) {
     .select()
 
   if (error) return res.status(500).json({ error: error.message })
+
+  // Notifikace podniku o nove objednavce - nesmi shodit vytvoreni objednavky
+  if (ADMIN_NOTIFY_EMAIL) {
+    try {
+      await sendAdminNotification({
+        to: ADMIN_NOTIFY_EMAIL,
+        vouchers,
+        total,
+        vs,
+        customer_name,
+        customer_phone,
+        email
+      })
+    } catch (notifyErr) {
+      console.error('admin notification error:', notifyErr)
+    }
+  }
 
   const spayd = [
     'SPD*1.0',
