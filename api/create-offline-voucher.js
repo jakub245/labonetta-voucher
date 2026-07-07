@@ -4,9 +4,11 @@ import { generateVoucherCode } from '../lib/codes.js'
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  // Auth
+  // Auth — admin i obsluha (staff) mohou vytvořit voucher na místě
   const auth = req.headers.authorization?.replace('Bearer ', '')
-  if (auth !== process.env.ADMIN_PASSWORD) {
+  const isAdmin = auth && auth === process.env.ADMIN_PASSWORD
+  const isStaff = auth && process.env.STAFF_PASSWORD && auth === process.env.STAFF_PASSWORD
+  if (!isAdmin && !isStaff) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
