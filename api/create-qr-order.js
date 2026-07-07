@@ -2,9 +2,9 @@ import supabase from '../lib/supabase.js'
 import { generateVoucherCode } from '../lib/codes.js'
 import QRCode from 'qrcode'
 
-const BANK_IBAN    = 'CZ6508000000192000145399'
-const BANK_ACCOUNT = 'CZ65 0800 0000 19 2000 1453 99'
-const RECIPIENT    = 'Labonetta s.r.o.'
+const BANK_IBAN    = process.env.BANK_IBAN
+const BANK_ACCOUNT = process.env.BANK_ACCOUNT
+const RECIPIENT    = process.env.BANK_OWNER
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -21,6 +21,7 @@ export default async function handler(req, res) {
 
   const total = validItems.reduce((sum, i) => sum + i.amount * i.qty, 0)
   const vs = Date.now().toString().slice(-10)
+
   const expiresAt = new Date()
   expiresAt.setFullYear(expiresAt.getFullYear() + 1)
 
