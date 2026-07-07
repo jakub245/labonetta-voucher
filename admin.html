@@ -1058,6 +1058,7 @@
     <div class="admin-nav-brand">
       <div class="admin-nav-dot"></div>
       <span class="admin-nav-title">Vouchery · Labonetta</span>
+      <span id="role-badge" style="display:none;align-items:center;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:600;background:var(--teal-bg);color:var(--teal);margin-left:4px;">Manager</span>
     </div>
     <div class="admin-nav-right">
       <button class="btn-add-offline" onclick="openOfflineModal()">
@@ -1253,6 +1254,7 @@
 
 <script>
   let password = ''
+  let currentRole = 'admin'
   let allVouchers = []
   let currentFilter = 'all'
   let searchQuery = ''
@@ -1306,6 +1308,10 @@
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('admin-screen').style.display = 'block'
 
+    // Zjisti roli z hlavičky odpovědi (admin / staff)
+    currentRole = res.headers.get('X-User-Role') || 'admin'
+    applyRole()
+
     allVouchers = await res.json()
 
     const now = new Date().toLocaleTimeString('cs', { hour: '2-digit', minute: '2-digit' })
@@ -1314,6 +1320,28 @@
     updateStats()
     renderTable()
     if (currentTab === 'stats') renderStats()
+  }
+
+  // Skryje/zobrazí prvky podle role. Staff = obsluha (jen prodej + uplatnění).
+  function applyRole() {
+    const isStaff = currentRole === 'staff'
+    // Záložka Statistiky
+    const tabStats = document.getElementById('tab-stats')
+    if (tabStats) tabStats.style.display = isStaff ? 'none' : ''
+    // Statistické dlaždice (obrat atd.)
+    const statsRow = document.querySelector('#panel-vouchers .stats')
+    if (statsRow) statsRow.style.display = isStaff ? 'none' : ''
+    // Filtr "Čeká na platbu" — staff ho nepotřebuje (nevidí nezaplacené)
+    const pendingFilter = document.querySelector('.filter-btn[onclick*="pending_qr"]')
+    if (pendingFilter) pendingFilter.style.display = isStaff ? 'none' : ''
+    // Pokud je staff omylem na záložce statistik, přepni ho na vouchery
+    if (isStaff && currentTab === 'stats') switchTab('vouchers')
+    // Badge s rolí v nav liště
+    const roleBadge = document.getElementById('role-badge')
+    if (roleBadge) {
+      roleBadge.textContent = isStaff ? 'Obsluha' : 'Manager'
+      roleBadge.style.display = 'inline-flex'
+    }
   }
 
   setInterval(() => {
@@ -1416,12 +1444,14 @@
 
         let actionCell = ''
         if (i === 0 && v.status === 'pending_qr') {
-          const action = `
-            <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
+          const dispatchBtn = currentRole === 'staff' ? '' : `
               <button class="btn-dispatch" onclick="dispatchQr('${vs}', this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 Zaplaceno
-              </button>
+              </button>`
+          const action = `
+            <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
+              ${dispatchBtn}
               <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:14px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
             </div>`
           actionCell = `<td rowspan="${rowspan}" data-label="Akce" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
