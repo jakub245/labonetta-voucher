@@ -1267,7 +1267,7 @@
   let chartSource = null
 
   window.addEventListener('load', () => {
-    const saved = sessionStorage.getItem('admin_pw')
+    const saved = localStorage.getItem('admin_pw')
     if (saved) {
       password = saved
       loadVouchers()
@@ -1278,14 +1278,14 @@
     const pw = document.getElementById('pw-input').value
     if (!pw) return
     password = pw
-    sessionStorage.setItem('admin_pw', pw)
+    localStorage.setItem('admin_pw', pw)
     loadVouchers()
   }
 
   function logout() {
     password = ''
     currentRole = 'admin'
-    sessionStorage.removeItem('admin_pw')
+    localStorage.removeItem('admin_pw')
     document.getElementById('admin-screen').style.display = 'none'
     document.getElementById('login-screen').style.display = 'flex'
     document.getElementById('pw-input').value = ''
@@ -1305,7 +1305,7 @@
     })
 
     if (res.status === 401) {
-      sessionStorage.removeItem('admin_pw')
+      localStorage.removeItem('admin_pw')
       document.getElementById('login-error').classList.add('visible')
       document.getElementById('admin-screen').style.display = 'none'
       document.getElementById('login-screen').style.display = 'flex'
