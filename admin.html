@@ -155,8 +155,8 @@
     #admin-screen { display: none; }
 
     .admin-nav {
-      background: var(--dark);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
       padding: 0 40px;
       height: 60px;
       display: flex;
@@ -182,7 +182,7 @@
       font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
+      color: var(--gray);
     }
 
     .admin-nav-right { display: flex; align-items: center; gap: 20px; }
@@ -210,9 +210,9 @@
       align-items: center;
       gap: 6px;
       background: none;
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      color: rgba(255,255,255,0.5);
+      color: var(--gray);
       font-size: 12px;
       font-family: inherit;
       font-weight: 500;
@@ -220,20 +220,20 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .btn-refresh:hover { border-color: rgba(255,255,255,0.3); color: white; }
+    .btn-refresh:hover { border-color: var(--dark); color: var(--dark); }
     .btn-refresh svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
 
     .btn-logout {
       background: none;
       border: none;
-      color: rgba(255,255,255,0.3);
+      color: var(--gray);
       font-size: 13px;
       font-family: inherit;
       cursor: pointer;
       padding: 0;
       transition: color 0.15s;
     }
-    .btn-logout:hover { color: white; }
+    .btn-logout:hover { color: var(--dark); }
 
     .admin-main {
       max-width: 1400px;
@@ -314,6 +314,26 @@
       min-width: 160px;
     }
     .stats-select:focus { border-color: var(--teal); }
+
+    .stats-daterange {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .stats-date-input {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--dark);
+      outline: none;
+      cursor: pointer;
+    }
+    .stats-date-input:focus { border-color: var(--teal); }
 
     .stats-charts {
       display: grid;
@@ -1105,6 +1125,7 @@
           <div class="stats-filter-pills">
             <button class="stats-pill" onclick="setStatsPeriod('today', this)">Dnes</button>
             <button class="stats-pill" onclick="setStatsPeriod('month', this)">Tento měsíc</button>
+            <button class="stats-pill" onclick="setStatsPeriod('prevmonth', this)">Předchozí měsíc</button>
             <button class="stats-pill active" onclick="setStatsPeriod('all', this)">Vše</button>
           </div>
         </div>
@@ -1116,13 +1137,26 @@
             <button class="stats-pill" onclick="setStatsSource('offline', this)">Osobní</button>
           </div>
         </div>
-        <div class="stats-filter-group">
-          <span class="stats-filter-label">Měsíc (graf)</span>
-          <select class="stats-select" id="stats-month-select" onchange="renderStats()">
-            <option value="12">Posledních 12 měsíců</option>
-            <option value="6">Posledních 6 měsíců</option>
-          </select>
+      </div>
+
+      <!-- Vlastní rozsah datum od-do -->
+      <div class="stats-daterange" id="stats-daterange">
+        <span class="stats-filter-label">Vlastní rozsah</span>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <input type="date" class="stats-date-input" id="date-from" onchange="setStatsCustomRange()">
+          <span style="color:var(--gray);font-size:13px;">až</span>
+          <input type="date" class="stats-date-input" id="date-to" onchange="setStatsCustomRange()">
+          <button class="stats-pill" id="date-clear" onclick="clearStatsCustomRange()" style="display:none;">Zrušit rozsah</button>
         </div>
+      </div>
+
+      <!-- Rozsah grafu -->
+      <div class="stats-filter-group" style="margin-bottom:24px;">
+        <span class="stats-filter-label">Rozsah grafu</span>
+        <select class="stats-select" id="stats-month-select" onchange="renderStats()">
+          <option value="12">Posledních 12 měsíců</option>
+          <option value="6">Posledních 6 měsíců</option>
+        </select>
       </div>
 
       <!-- Souhrnné karty -->
@@ -1190,6 +1224,8 @@
   let currentTab = 'vouchers'
   let statsPeriod = 'all'
   let statsSource = 'all'
+  let statsDateFrom = null
+  let statsDateTo = null
   let chartMonthly = null
   let chartSource = null
 
@@ -1381,7 +1417,7 @@
             <td><span class="${amountClass}">${amountStr}</span></td>
             <td>
               ${v.customer_name ? `<p style="font-size:13px;font-weight:600;color:var(--dark);margin:0 0 2px;">${v.customer_name}</p>` : ''}
-              <p class="email-cell" style="margin:0;">${v.email}</p>
+              <p class="email-cell" style="margin:0;">${v.source === 'offline' ? '<span style="color:#c0b8b0;">— osobní prodej</span>' : v.email}</p>
             </td>
             <td><span class="badge ${badge.cls}">${badge.label}</span></td>
             <td class="date-cell">${created} <strong style="font-weight:600;color:var(--dark);">${createdTime}</strong></td>
@@ -1578,12 +1614,20 @@
         ${vs !== '—' ? `<div class="modal-row"><span class="modal-row-label">Variabilní symbol</span><span class="modal-row-value mono">${vs}</span></div>` : ''}
         <div class="modal-row"><span class="modal-row-label">Platí do</span><span class="modal-row-value">${expires}</span></div>
       </div>
+      ${v.source === 'offline' ? `
+      <div class="modal-section">
+        <p class="modal-section-title">Původ</p>
+        <div class="modal-row"><span class="modal-row-label">Prodej</span><span class="source-tag source-offline">Osobní prodej</span></div>
+        <div class="modal-row"><span class="modal-row-label">Zákazník</span><span class="modal-row-value" style="color:#9ca3af;font-weight:400;">—</span></div>
+      </div>
+      ` : `
       <div class="modal-section">
         <p class="modal-section-title">Zákazník</p>
         <div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name || '<span style="color:#9ca3af;font-weight:400;">neuvedeno</span>'}</span></div>
         <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${v.email}</span></div>
         ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${v.customer_phone}</span></div>` : `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value" style="color:#9ca3af;font-weight:400;">neuvedeno</span></div>`}
       </div>
+      `}
       <div class="modal-section">
         <p class="modal-section-title">Časová osa</p>
         <div class="modal-row"><span class="modal-row-label">Objednáno</span><span class="modal-row-value">${created}</span></div>
@@ -1683,8 +1727,41 @@
 
   function setStatsPeriod(period, btn) {
     statsPeriod = period
+    // Vlastní rozsah se ruší při volbě předdefinovaného období
+    statsDateFrom = null
+    statsDateTo = null
+    document.getElementById('date-from').value = ''
+    document.getElementById('date-to').value = ''
+    document.getElementById('date-clear').style.display = 'none'
     btn.parentNode.querySelectorAll('.stats-pill').forEach(b => b.classList.remove('active'))
     btn.classList.add('active')
+    renderStats()
+  }
+
+  function setStatsCustomRange() {
+    const from = document.getElementById('date-from').value
+    const to = document.getElementById('date-to').value
+    if (!from && !to) return
+    statsDateFrom = from ? new Date(from + 'T00:00:00') : null
+    statsDateTo = to ? new Date(to + 'T23:59:59') : null
+    // Vlastní rozsah přebíjí předdefinované období
+    statsPeriod = 'custom'
+    document.querySelectorAll('#panel-stats .stats-filters .stats-filter-group:first-child .stats-pill').forEach(b => b.classList.remove('active'))
+    document.getElementById('date-clear').style.display = 'inline-flex'
+    renderStats()
+  }
+
+  function clearStatsCustomRange() {
+    statsDateFrom = null
+    statsDateTo = null
+    statsPeriod = 'all'
+    document.getElementById('date-from').value = ''
+    document.getElementById('date-to').value = ''
+    document.getElementById('date-clear').style.display = 'none'
+    // Znovu aktivovat "Vše"
+    const pills = document.querySelectorAll('#panel-stats .stats-filters .stats-filter-group:first-child .stats-pill')
+    pills.forEach(b => b.classList.remove('active'))
+    if (pills.length) pills[pills.length - 1].classList.add('active')
     renderStats()
   }
 
@@ -1704,20 +1781,27 @@
       sold = sold.filter(v => (v.source || 'online') === statsSource)
     }
 
-    // Filtr období — podle data zaplacení (paid_at), fallback created_at
-    if (statsPeriod !== 'all') {
-      const now = new Date()
-      sold = sold.filter(v => {
-        const d = new Date(v.paid_at || v.created_at)
-        if (statsPeriod === 'today') {
-          return d.toDateString() === now.toDateString()
-        }
-        if (statsPeriod === 'month') {
-          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-        }
+    // Filtr období
+    const now = new Date()
+    sold = sold.filter(v => {
+      const d = new Date(v.paid_at || v.created_at)
+      if (statsPeriod === 'today') {
+        return d.toDateString() === now.toDateString()
+      }
+      if (statsPeriod === 'month') {
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
+      }
+      if (statsPeriod === 'prevmonth') {
+        const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+        return d.getMonth() === prev.getMonth() && d.getFullYear() === prev.getFullYear()
+      }
+      if (statsPeriod === 'custom') {
+        if (statsDateFrom && d < statsDateFrom) return false
+        if (statsDateTo && d > statsDateTo) return false
         return true
-      })
-    }
+      }
+      return true
+    })
     return sold
   }
 
