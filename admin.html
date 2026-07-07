@@ -533,6 +533,15 @@
 
     table { width: 100%; border-collapse: collapse; }
 
+    /* Hlavní tabulka voucherů — fixní šířky sloupců, ať neskáčou při změně filtru */
+    .voucher-table-main { table-layout: fixed; }
+    .voucher-table-main td { overflow: hidden; text-overflow: ellipsis; }
+    .voucher-table-main .email-cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     th {
       text-align: left;
       padding: 12px 20px;
@@ -1115,7 +1124,16 @@
 
     <!-- Table -->
     <div class="table-wrap">
-      <table>
+      <table class="voucher-table-main">
+        <colgroup>
+          <col style="width:90px;">
+          <col style="width:150px;">
+          <col style="width:110px;">
+          <col style="width:auto;">
+          <col style="width:150px;">
+          <col style="width:170px;">
+          <col style="width:170px;">
+        </colgroup>
         <thead>
           <tr>
             <th>ID</th>
