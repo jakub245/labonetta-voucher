@@ -1,6 +1,6 @@
 import supabase from '../lib/supabase.js'
 import { generateVoucherCode } from '../lib/codes.js'
-import { sendAdminNotification } from '../lib/mailer.js'
+import { sendAdminNotification, sendOrderConfirmation } from '../lib/mailer.js'
 import QRCode from 'qrcode'
 
 const BANK_IBAN    = process.env.BANK_IBAN
@@ -57,7 +57,38 @@ export default async function handler(req, res) {
 
   if (error) return res.status(500).json({ error: error.message })
 
-  // Notifikace podniku o nove objednavce - nesmi shodit vytvoreni objednavky
+  // Generuj QR PLATBU (potrebuje ji i potvrzovaci mail zakaznikovi)
+  const spayd = [
+    'SPD*1.0',
+    `ACC:${IBAN_to_spayd(BANK_IBAN)}`,
+    `AM:${total}.00`,
+    `CC:CZK`,
+    `MSG:Voucher Labonetta`,
+    `X-VS:${vs}`
+  ].join('*')
+
+  const qrDataUrl = await QRCode.toDataURL(spayd, {
+    width: 300,
+    margin: 2,
+    color: { dark: '#1a1a1a', light: '#ffffff' }
+  })
+
+  // Potvrzovaci mail zakaznikovi (s QR a platebnimi udaji) - nesmi shodit objednavku
+  try {
+    await sendOrderConfirmation({
+      to: email,
+      vouchers,
+      total,
+      vs,
+      bank_account: BANK_ACCOUNT,
+      recipient: RECIPIENT,
+      qr_data_url: qrDataUrl
+    })
+  } catch (confirmErr) {
+    console.error('order confirmation error:', confirmErr)
+  }
+
+  // Notifikace podniku o nove objednavce - nesmi shodit objednavku
   if (ADMIN_NOTIFY_EMAIL) {
     try {
       await sendAdminNotification({
@@ -73,21 +104,6 @@ export default async function handler(req, res) {
       console.error('admin notification error:', notifyErr)
     }
   }
-
-  const spayd = [
-    'SPD*1.0',
-    `ACC:${IBAN_to_spayd(BANK_IBAN)}`,
-    `AM:${total}.00`,
-    `CC:CZK`,
-    `MSG:Voucher Labonetta`,
-    `X-VS:${vs}`
-  ].join('*')
-
-  const qrDataUrl = await QRCode.toDataURL(spayd, {
-    width: 300,
-    margin: 2,
-    color: { dark: '#1a1a1a', light: '#ffffff' }
-  })
 
   return res.status(200).json({
     success: true,
