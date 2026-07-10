@@ -1267,6 +1267,16 @@
   let chartSource = null
 
   window.addEventListener('load', () => {
+    // 1) Přihlašovací token z URL (?token=...) — pro tablet obsluhy.
+    // Odkaz uložený na ploše iPadu přihlásí obsluhu i po smazání localStorage iOSem.
+    const urlToken = new URLSearchParams(window.location.search).get('token')
+    if (urlToken) {
+      password = urlToken
+      localStorage.setItem('admin_pw', urlToken)
+      loadVouchers()
+      return
+    }
+    // 2) Uložené přihlášení z localStorage
     const saved = localStorage.getItem('admin_pw')
     if (saved) {
       password = saved
