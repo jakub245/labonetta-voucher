@@ -211,9 +211,9 @@
       align-items: center;
       gap: 7px;
       background: var(--white);
-      border: 1px solid #7c3aed;
+      border: 1px solid var(--terra);
       border-radius: 8px;
-      color: #7c3aed;
+      color: var(--terra);
       font-size: 14px;
       font-family: inherit;
       font-weight: 600;
@@ -222,7 +222,7 @@
       transition: all 0.15s;
       min-height: 42px;
     }
-    .btn-add-comp:hover { background: #ede9fe; }
+    .btn-add-comp:hover { background: var(--terra-bg); }
     .btn-add-comp svg { stroke: currentColor; fill: none; width: 15px; height: 15px; }
 
     .btn-refresh {
@@ -416,7 +416,7 @@
     }
     .source-online  { background: var(--teal-bg); color: var(--teal); }
     .source-offline { background: #fef3c7; color: #92400e; }
-    .source-comp    { background: #ede9fe; color: #6d28d9; }
+    .source-comp    { background: transparent; border: 1.5px solid var(--terra); color: var(--terra); padding: 3.5px 10.5px; }
 
     @media (max-width: 900px) {
       .stats-charts { grid-template-columns: 1fr; }
@@ -465,7 +465,7 @@
     }
     .stat-value.teal  { color: var(--teal); }
     .stat-value.terra { color: var(--terra); }
-    .stat-value.comp  { color: #7c3aed; }
+    .stat-value.comp  { color: var(--terra); }
 
     .stats-5 { grid-template-columns: repeat(5, 1fr); }
 
@@ -622,6 +622,8 @@
     .badge-pending-qr::before { background: #f97316; }
     .badge-redeemed { background: #f3f4f6; color: #6b7280; }
     .badge-redeemed::before { background: #9ca3af; }
+    .badge-comp     { background: transparent; border: 1.5px solid var(--terra); color: var(--terra); padding: 4.5px 10.5px; }
+    .badge-comp::before { background: var(--terra); }
 
     .amount-500  { color: var(--terra); font-weight: 700; }
     .amount-1000 { color: var(--teal);  font-weight: 700; }
@@ -1106,28 +1108,28 @@
           oninput="updateCompBtn()"
           autocomplete="off"
           style="width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;color:var(--dark);background:var(--white);outline:none;transition:border-color 0.2s;"
-          onfocus="this.style.borderColor='#7c3aed'"
+          onfocus="this.style.borderColor='#C0623A'"
           onblur="this.style.borderColor='var(--border)'"
         >
-        <button class="btn-dispatch" id="comp-create-btn" style="width:100%;justify-content:center;min-height:46px;margin-top:20px;background:#7c3aed;border-color:#7c3aed;" onclick="createCompVoucher()" disabled>
+        <button class="btn-dispatch" id="comp-create-btn" style="width:100%;justify-content:center;min-height:46px;margin-top:20px;background:#C0623A;border-color:#C0623A;" onclick="createCompVoucher()" disabled>
           Odeslat kompenzaci
         </button>
       </div>
 
       <!-- Krok 2: potvrzení odeslání -->
       <div id="comp-step-result" style="display:none;text-align:center;">
-        <div style="width:56px;height:56px;background:#ede9fe;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#6d28d9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <div style="width:56px;height:56px;background:#fdf0eb;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#C0623A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <p style="font-size:15px;color:var(--dark);font-weight:600;margin-bottom:4px;">Voucher odeslán na <span id="comp-result-email"></span></p>
         <p style="font-size:13px;color:var(--gray);margin-bottom:16px;">Hodnota <strong id="comp-result-amount" style="color:var(--dark);"></strong> · evidováno mimo obrat</p>
-        <div style="background:#ede9fe;border:2px dashed #7c3aed;border-radius:12px;padding:20px;margin-bottom:24px;">
-          <p style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#6d28d9;margin-bottom:8px;">Kód voucheru</p>
+        <div style="background:#fdf0eb;border:2px dashed #C0623A;border-radius:12px;padding:20px;margin-bottom:24px;">
+          <p style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#C0623A;margin-bottom:8px;">Kód voucheru</p>
           <p id="comp-result-code" style="font-family:monospace;font-size:26px;font-weight:700;letter-spacing:2px;color:var(--dark);"></p>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="confirm-cancel" style="flex:1;" onclick="closeCompModalDirect()">Zavřít</button>
-          <button class="btn-dispatch" style="flex:1;justify-content:center;background:#7c3aed;border-color:#7c3aed;" onclick="resetCompModal()">Přidat další</button>
+          <button class="btn-dispatch" style="flex:1;justify-content:center;background:#C0623A;border-color:#C0623A;" onclick="resetCompModal()">Přidat další</button>
         </div>
       </div>
 
@@ -1452,6 +1454,9 @@
     // Tlačítko Kompenzace — jen manager, obsluha kompenzaci vytvořit nesmí
     const compBtn = document.getElementById('btn-comp')
     if (compBtn) compBtn.style.display = isStaff ? 'none' : ''
+    // Tlačítko Přidat voucher (osobní prodej) — jen obsluha, manažer vouchery nepřidává
+    const offlineBtn = document.querySelector('.btn-add-offline')
+    if (offlineBtn) offlineBtn.style.display = isStaff ? '' : 'none'
     // Pokud je staff omylem na záložce statistik, přepni ho na vouchery
     if (isStaff && currentTab === 'stats') switchTab('vouchers')
     // Badge s rolí v nav liště
@@ -1554,7 +1559,10 @@
         const created = dt.toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
         const createdTime = dt.toLocaleTimeString('cs', { hour: '2-digit', minute: '2-digit' })
         const expires = new Date(v.expires_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        const badge = badgeMap[v.status] || { cls: '', label: v.status }
+        // Kompenzace není zaplacená — účetně jde o voucher zdarma, badge to musí říct
+        const badge = (v.source === 'comp' && v.status === 'paid')
+          ? { cls: 'badge-comp', label: 'Kompenzace' }
+          : badgeMap[v.status] || { cls: '', label: v.status }
         const amountClass = v.amount === 500 ? 'amount-500' : 'amount-1000'
         const amountStr = v.amount === 1000 ? '1 000 Kč' : '500 Kč'
         const vs = v.variable_symbol || ''
@@ -1602,7 +1610,7 @@
             <td data-label="Hodnota"><span class="${amountClass}">${amountStr}</span></td>
             <td data-label="Zákazník">
               ${v.customer_name ? `<p style="font-size:15px;font-weight:600;color:var(--dark);margin:0 0 2px;">${v.customer_name}</p>` : ''}
-              <p class="email-cell" style="margin:0;">${v.source === 'offline' ? '<span style="color:#c0b8b0;">— osobní prodej</span>' : v.email}${v.source === 'comp' ? ' <span class="source-tag source-comp" style="font-size:11px;padding:3px 8px;margin-left:6px;">Kompenzace</span>' : ''}</p>
+              <p class="email-cell" style="margin:0;">${v.source === 'offline' ? '<span style="color:#c0b8b0;">— osobní prodej</span>' : v.email}</p>
             </td>
             <td data-label="Stav"><span class="badge ${badge.cls}">${badge.label}</span></td>
             <td data-label="Objednáno" class="date-cell">${created} <strong style="font-weight:600;color:var(--dark);">${createdTime}</strong></td>
@@ -1772,7 +1780,9 @@
 
     // Seznam voucherů v objednávce
     const voucherListHtml = group.map(x => {
-      const b = badgeMap[x.status] || { cls: '', label: x.status }
+      const b = (x.source === 'comp' && x.status === 'paid')
+        ? { cls: 'badge-comp', label: 'Kompenzace' }
+        : badgeMap[x.status] || { cls: '', label: x.status }
       const amtStr = x.amount === 1000 ? '1 000 Kč' : (x.amount === 500 ? '500 Kč' : x.amount.toLocaleString('cs') + ' Kč')
       const redeemedAt = x.redeemed_at ? ' · uplatněno ' + new Date(x.redeemed_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''
       return `
@@ -1822,8 +1832,12 @@
       `}
       <div class="modal-section">
         <p class="modal-section-title">Časová osa</p>
+        ${v.source === 'comp' ? `
+        <div class="modal-row"><span class="modal-row-label">Vystaveno</span><span class="modal-row-value">${created}</span></div>
+        ` : `
         <div class="modal-row"><span class="modal-row-label">Objednáno</span><span class="modal-row-value">${created}</span></div>
         <div class="modal-row"><span class="modal-row-label">Zaplaceno</span><span class="modal-row-value">${paidAt}</span></div>
+        `}
       </div>
     `
     document.getElementById('modal-overlay').classList.add('visible')
@@ -2165,7 +2179,7 @@
       const compUnredeemed = compGroup.filter(v => v.status === 'paid').length
       const compValue = compGroup.reduce((s, v) => s + v.amount, 0)
       compRow = `
-        <tr style="background:#faf5ff;">
+        <tr style="background:#fdf0eb;">
           <td><span class="source-tag source-comp">Kompenzace</span></td>
           <td>—</td>
           <td>${compGroup.length}</td>
