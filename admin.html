@@ -388,6 +388,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 24px;
+      min-width: 0; /* grid jinak nedovolí kartě zmenšit se pod šířku canvasu — graf by přetékal */
     }
     .chart-card-title {
       font-size: 16px;
@@ -395,7 +396,7 @@
       color: var(--dark);
       margin-bottom: 20px;
     }
-    .chart-wrap { position: relative; height: 260px; }
+    .chart-wrap { position: relative; height: 260px; min-width: 0; overflow: hidden; }
 
     .breakdown-table th:not(:first-child),
     .breakdown-table td:not(:first-child) { text-align: right; }
@@ -447,7 +448,11 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
     }
+    /* Číslo vždy u spodní hrany — dlaždice s dvouřádkovým popiskem nerozhodí zarovnání */
+    .stat-card .stat-value { margin-top: auto; }
 
     .stat-label {
       font-size: 12px;
@@ -458,7 +463,7 @@
       margin-bottom: 8px;
     }
     .stat-value {
-      font-size: 30px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--dark);
       line-height: 1;
@@ -1297,7 +1302,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-label">Kompenzace</div>
-          <div class="stat-value comp" id="s-comp" style="font-size:22px;line-height:1.3;">—</div>
+          <div class="stat-value comp" id="s-comp">—</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Závazek (neuplatněné)</div>
@@ -2121,7 +2126,7 @@
 
     document.getElementById('s-count').textContent = count
     document.getElementById('s-revenue').textContent = revenue.toLocaleString('cs') + ' Kč'
-    document.getElementById('s-comp').textContent = comp.length + ' ks · ' + compValue.toLocaleString('cs') + ' Kč'
+    document.getElementById('s-comp').textContent = compValue.toLocaleString('cs') + ' Kč'
     document.getElementById('s-liability').textContent = liability.toLocaleString('cs') + ' Kč'
     document.getElementById('s-redeemed').textContent = redeemed.length
 
