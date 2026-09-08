@@ -1582,10 +1582,16 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 Zaplaceno
               </button>`
+          const deleteLink = currentRole === 'staff' ? '' : `
+              <span style="color:var(--border);">|</span>
+              <a href="#" onclick="deleteOrder('${vs}', '${v.id}', ${rowspan});return false;" style="font-size:14px;color:#dc2626;text-decoration:underline;text-underline-offset:3px;">Smazat</a>`
           const action = `
             <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
               ${dispatchBtn}
-              <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:14px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <a href="#" onclick="openDetail('${detailKey}');return false;" style="font-size:14px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Detail</a>
+                ${deleteLink}
+              </div>
             </div>`
           actionCell = `<td rowspan="${rowspan}" data-label="Akce" style="vertical-align:middle;border-left:1px solid #f3f4f6;">${action}</td>`
         } else if (v.status === 'pending_qr' && i > 0) {
@@ -1605,7 +1611,10 @@
             </div>
           </td>`
         } else {
-          actionCell = `<td data-label="Akce"><span class="action-done">—</span></td>`
+          // Ostatní nezaplacené stavy (staré 'pending' z GoPay) — admin je může smazat
+          const deleteLink = (currentRole !== 'staff' && v.status === 'pending') ? `
+            <a href="#" onclick="deleteOrder('', '${v.id}', 1);return false;" style="font-size:14px;color:#dc2626;text-decoration:underline;text-underline-offset:3px;">Smazat</a>` : ''
+          actionCell = `<td data-label="Akce">${deleteLink || '<span class="action-done">—</span>'}</td>`
         }
 
         html += `
@@ -1741,6 +1750,50 @@
           showToast('Chyba spojení. Zkuste to znovu.', 'error')
           btn.disabled = false
           btn.textContent = 'Uplatnit'
+        }
+      }
+    })
+  }
+
+  // Smazání nezaplacené objednávky — jen manager. Server maže výhradně
+  // vouchery ve stavu pending/pending_qr, zaplacené neprojdou ani omylem.
+  async function deleteOrder(vs, id, count) {
+    const label = count === 1 ? '1 voucher' : (count < 5 ? count + ' vouchery' : count + ' voucherů')
+    showConfirm({
+      title: 'Smazat nezaplacenou objednávku',
+      message: `Objednávka (${label}) bude trvale smazána. Zaplacené vouchery systém smazat nedovolí — mazání slouží k úklidu opuštěných objednávek.`,
+      meta: vs ? `VS: ${vs}` : undefined,
+      okLabel: 'Trvale smazat',
+      danger: true,
+      onOk: async () => {
+        try {
+          const res = await fetch('/api/vouchers', {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${password}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(vs ? { vs } : { id })
+          })
+          const data = await res.json().catch(() => ({}))
+          if (res.ok) {
+            // Zrcadlí serverové pravidlo: pryč jdou jen nezaplacené kusy objednávky
+            allVouchers = allVouchers.filter(v => {
+              const target = vs ? v.variable_symbol === vs : v.id === id
+              return !(target && ['pending', 'pending_qr'].includes(v.status))
+            })
+            updateStats()
+            renderTable()
+            if (currentTab === 'stats') renderStats()
+            showToast(`✓ Objednávka smazána (${data.deleted === 1 ? '1 voucher' : data.deleted < 5 ? data.deleted + ' vouchery' : data.deleted + ' voucherů'})`)
+          } else if (res.status === 404 || res.status === 400) {
+            showToast(data.error || 'Objednávku nelze smazat — obnovuji data.', 'error')
+            await loadVouchers()
+          } else {
+            showToast(`Chyba: ${data.error || 'mazání se nezdařilo'}`, 'error')
+          }
+        } catch (err) {
+          showToast('Chyba spojení. Zkuste to znovu.', 'error')
         }
       }
     })

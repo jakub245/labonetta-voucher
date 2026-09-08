@@ -66,5 +66,34 @@ export default async function handler(req, res) {
     return res.status(200).json(data)
   }
 
+  // DELETE /api/vouchers — smazání NEZAPLACENÉ objednávky (pouze admin).
+  // Řeší zmatené zákazníky, kteří založí objednávku vícekrát a nezaplatí ji.
+  // Zaplacené ani uplatněné vouchery smazat nelze — dvojitá pojistka níže.
+  if (req.method === 'DELETE') {
+    if (role !== 'admin') return res.status(403).json({ error: 'Mazat může jen manager' })
+
+    const { vs, id } = req.body
+    if (!vs && !id) return res.status(400).json({ error: 'Chybí variabilní symbol nebo id' })
+
+    // Načti cílové vouchery a ověř, že žádný není zaplacený/uplatněný
+    let query = supabase.from('vouchers').select('id, status')
+    query = vs ? query.eq('variable_symbol', vs) : query.eq('id', id)
+    const { data: targets, error: findError } = await query
+
+    if (findError) return res.status(500).json({ error: findError.message })
+    if (!targets?.length) return res.status(404).json({ error: 'Objednávka nenalezena' })
+    if (targets.some(t => !['pending', 'pending_qr'].includes(t.status))) {
+      return res.status(400).json({ error: 'Lze mazat jen nezaplacené objednávky' })
+    }
+
+    // Mazání navíc omezeno i stavem přímo v delete dotazu (kdyby mezitím někdo zaplatil)
+    let del = supabase.from('vouchers').delete().in('status', ['pending', 'pending_qr'])
+    del = vs ? del.eq('variable_symbol', vs) : del.eq('id', id)
+    const { data: deleted, error: delError } = await del.select('id')
+
+    if (delError) return res.status(500).json({ error: delError.message })
+    return res.status(200).json({ success: true, deleted: deleted.length })
+  }
+
   return res.status(405).json({ error: 'Method not allowed' })
 }
