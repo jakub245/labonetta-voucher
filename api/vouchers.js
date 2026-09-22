@@ -25,6 +25,7 @@ export default async function handler(req, res) {
     let query = supabase
       .from('vouchers')
       .select('*')
+      .neq('status', 'cancelled') // stornované (smazané) objednávky se nezobrazují
       .order('created_at', { ascending: false })
 
     // Obsluha (staff) vidí jen zaplacené a uplatněné — ne nezaplacené
@@ -75,8 +76,8 @@ export default async function handler(req, res) {
     const { vs, id } = req.body
     if (!vs && !id) return res.status(400).json({ error: 'Chybí variabilní symbol nebo id' })
 
-    // Načti cílové vouchery a ověř, že žádný není zaplacený/uplatněný
-    let query = supabase.from('vouchers').select('id, status')
+    // Načti cílové vouchery (bez už stornovaných) a ověř, že žádný není zaplacený/uplatněný
+    let query = supabase.from('vouchers').select('id, status').neq('status', 'cancelled')
     query = vs ? query.eq('variable_symbol', vs) : query.eq('id', id)
     const { data: targets, error: findError } = await query
 
@@ -86,12 +87,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Lze mazat jen nezaplacené objednávky' })
     }
 
-    // Mazání navíc omezeno i stavem přímo v delete dotazu (kdyby mezitím někdo zaplatil)
-    let del = supabase.from('vouchers').delete().in('status', ['pending', 'pending_qr'])
+    // „Smazání" = storno přes UPDATE, ne fyzický DELETE. Databázový klíč nemá
+    // právo mazat řádky a PostgREST v tom případě tiše smaže 0 řádků bez chyby
+    // — vouchery se pak po refreshi vracely. UPDATE práva má (redeem/dispatch).
+    // Stornované kusy z výpisu filtruje GET; v DB zůstávají pro audit.
+    // Stav je navíc omezen i přímo v update dotazu (kdyby mezitím někdo zaplatil).
+    let del = supabase
+      .from('vouchers')
+      .update({ status: 'cancelled' })
+      .in('status', ['pending', 'pending_qr'])
     del = vs ? del.eq('variable_symbol', vs) : del.eq('id', id)
     const { data: deleted, error: delError } = await del.select('id')
 
     if (delError) return res.status(500).json({ error: delError.message })
+    if (!deleted?.length) {
+      // Nic se nezměnilo — nesmíme hlásit úspěch, jinak UI ukáže smazáno a řádky se vrátí
+      return res.status(500).json({ error: 'Smazání se do databáze nepropsalo. Obnovte stránku a zkuste to znovu.' })
+    }
     return res.status(200).json({ success: true, deleted: deleted.length })
   }
 
