@@ -886,6 +886,10 @@
     .bank-item-meta { font-size: 13px; color: var(--mid); margin-top: 2px; overflow-wrap: anywhere; }
     .bank-item-amount { font-size: 18px; font-weight: 700; color: var(--dark); white-space: nowrap; }
     .bank-status[hidden], .bank-review[hidden] { display: none; }
+    .unpaid-review { border-color: #d97706; background: #fffbeb; }
+    .unpaid-review .bank-item-reason { color: var(--dark); }
+    .unpaid-more { font-size: 13px; color: var(--mid); margin: 10px 0 0; }
+    .unpaid-actions { margin-top: 12px; }
 
     .modal-section { margin-bottom: 24px; }
     .modal-section-title {
@@ -1222,6 +1226,13 @@
       <div id="bank-review-list"></div>
     </section>
 
+    <section class="bank-review unpaid-review" id="unpaid-review" hidden aria-labelledby="unpaid-title">
+      <h2 id="unpaid-title">Nezaplacené déle než hodinu</h2>
+      <p>Banka platbu zatím nenašla. Když zákazník zaplatí později, voucher se pošle sám, banku kontrolujeme každé ráno. Pokud si to zákazník rozmyslel, objednávku smažte.</p>
+      <div id="unpaid-list"></div>
+      <div class="unpaid-actions"><button class="btn-bank-check" onclick="showPendingInTable()">Zobrazit v seznamu</button></div>
+    </section>
+
     <!-- Stats -->
     <div class="stats">
       <div class="stat-card">
@@ -1482,6 +1493,7 @@
     document.getElementById('admin-date').textContent = `Aktualizováno: ${now}`
 
     updateStats()
+    renderUnpaid()
     renderTable()
     if (currentTab === 'stats') renderStats()
 
@@ -1615,6 +1627,48 @@
     })
   }
 
+  // Objednávky čekající na platbu déle než hodinu (počítá se z načteného seznamu, bez dotazů navíc)
+  function renderUnpaid() {
+    const section = document.getElementById('unpaid-review')
+    if (currentRole !== 'admin') { section.hidden = true; return }
+    const limit = Date.now() - 60 * 60 * 1000
+    const orders = new Map()
+    for (const v of allVouchers) {
+      if (v.status !== 'pending_qr' || !v.variable_symbol || new Date(v.created_at).getTime() > limit) continue
+      const o = orders.get(v.variable_symbol) || { vs: v.variable_symbol, name: v.customer_name, email: v.email, phone: v.customer_phone, created: v.created_at, total: 0, count: 0 }
+      o.total += Number(v.amount) || 0; o.count++
+      if (v.created_at < o.created) o.created = v.created_at
+      orders.set(v.variable_symbol, o)
+    }
+    const list = [...orders.values()].sort((a, b) => a.created < b.created ? 1 : -1)
+    section.hidden = list.length === 0
+    if (!list.length) return
+    document.getElementById('unpaid-title').textContent = `Nezaplacené déle než hodinu (${list.length})`
+    const ago = d => {
+      const h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000)
+      return h < 24 ? `před ${h} h` : `před ${Math.floor(h / 24)} d`
+    }
+    const shown = list.slice(0, 5)
+    document.getElementById('unpaid-list').innerHTML = shown.map(o => `<div class="bank-item">
+        <div class="bank-item-main">
+          <div class="bank-item-reason">${esc(o.name || 'Bez jména')}</div>
+          <div class="bank-item-meta">${[
+            o.email, o.phone,
+            `objednáno ${new Date(o.created).toLocaleString('cs', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })} (${ago(o.created)})`,
+            `VS ${o.vs}`, `${o.count} ks`
+          ].filter(Boolean).map(esc).join(' · ')}</div>
+        </div>
+        <div class="bank-item-amount">${Number(o.total).toLocaleString('cs')} Kč</div>
+      </div>`).join('') +
+      (list.length > shown.length ? `<p class="unpaid-more">a další ${list.length - shown.length}</p>` : '')
+  }
+
+  function showPendingInTable() {
+    setFilter('pending_qr', document.querySelector('.filter-btn[onclick*="pending_qr"]'))
+    const table = document.querySelector('.voucher-table-main') || document.getElementById('search-input')
+    table?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
+  }
+
   function esc(s) {
     return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
   }
@@ -1641,6 +1695,7 @@
     if (isStaff) {
       document.getElementById('bank-status').hidden = true
       document.getElementById('bank-review').hidden = true
+      document.getElementById('unpaid-review').hidden = true
     }
     // Pokud je staff omylem na záložce statistik, přepni ho na vouchery
     if (isStaff && currentTab === 'stats') switchTab('vouchers')

@@ -1,4 +1,6 @@
 -- Automatická kontrola plateb na pozadí — JEN když nějaká objednávka čeká na zaplacení.
+-- POZOR: časování (20 min + upozornění po hodině) upravuje supabase-migration-unpaid.sql,
+-- spustit po tomto souboru.
 --
 -- Supabase se každé 2 minuty podívá, jestli existuje nezaplacená QR objednávka
 -- z posledních 3 dnů (jeden drobný dotaz do tabulky vouchers). Když žádná není,
@@ -22,7 +24,7 @@ create extension if not exists pg_cron;
 create extension if not exists pg_net;
 
 -- Tajný klíč uložený ve Vaultu (není vidět v definici cron úlohy)
-select vault.create_secret('VLOZ_CRON_SECRET', 'labonetta_cron_secret', 'CRON_SECRET pro /api/bank-sync');
+select vault.create_secret('', 'labonetta_cron_secret', 'CRON_SECRET pro /api/bank-sync');
 
 select cron.schedule(
   'labonetta-bank-sync',

@@ -1463,9 +1463,9 @@
   function watchPayment(vs, email, count) {
     clearTimeout(paymentWatch)
     const startedAt = Date.now()
-    const MAX_MS = 30 * 60 * 1000
+    const MAX_MS = 20 * 60 * 1000   // stejně jako hlídání banky na serveru
     const tick = async () => {
-      if (Date.now() - startedAt > MAX_MS) return
+      if (Date.now() - startedAt > MAX_MS) return showStillWaiting()
       try {
         const res = await fetch(`/api/order-status?vs=${encodeURIComponent(vs)}`, { cache: 'no-store' })
         if (res.ok) {
@@ -1478,6 +1478,15 @@
       paymentWatch = setTimeout(tick, document.hidden ? 30000 : 8000)
     }
     paymentWatch = setTimeout(tick, 8000)
+  }
+
+  // Po 20 minutách stránka přestane čekat — platba (např. běžný převod) může dorazit později
+  function showStillWaiting() {
+    const box = document.getElementById('qr-waiting')
+    box.querySelector('.qr-waiting-dot').style.animation = 'none'
+    box.querySelector('span').innerHTML =
+      'Platbu jsme zatím nezaznamenali. Běžný převod může trvat i\u00a0několik hodin. ' +
+      'Jakmile platba dorazí, voucher vám pošleme e\u2011mailem. Stránku můžete zavřít.'
   }
 
   function showPaid(email, count = 1) {
