@@ -1,7 +1,6 @@
-import supabase from '../lib/supabase.js'
-import { generateVoucherPdf } from '../lib/pdf.js'
-import { sendVoucherEmail } from '../lib/mailer.js'
+import { fulfillQrOrder } from '../lib/fulfill.js'
 
+// Ruční potvrzení QR platby managerem v adminu.
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
@@ -14,50 +13,18 @@ export default async function handler(req, res) {
   const { vs } = req.body // variabilní symbol
   if (!vs) return res.status(400).json({ error: 'Chybí variabilní symbol' })
 
-  // Načti všechny vouchery s tímto VS
-  const { data: vouchers, error } = await supabase
-    .from('vouchers')
-    .select('*')
-    .eq('variable_symbol', vs)
-    .eq('status', 'pending_qr')
+  const result = await fulfillQrOrder(vs)
 
-  if (error || !vouchers?.length) {
-    return res.status(404).json({ error: 'Objednávka nenalezena nebo již odeslána' })
-  }
-
-  const email = vouchers[0].email
-
-  try {
-    // Generuj PDF pro každý voucher
-    const attachments = []
-    for (const voucher of vouchers) {
-      const pdfBuffer = await generateVoucherPdf(voucher.amount, voucher.code)
-      const amountStr = voucher.amount === 1000 ? '1000' : '500'
-      attachments.push({
-        filename: `voucher-labonetta-${amountStr}kc-${voucher.code}.pdf`,
-        content: pdfBuffer.toString('base64'),
-        code: voucher.code,
-        amount: voucher.amount
-      })
-    }
-
-    // Pošli email
-    await sendVoucherEmail({ to: email, vouchers, attachments })
-
-    // Aktualizuj stav na paid
-    await supabase
-      .from('vouchers')
-      .update({ status: 'paid', paid_at: new Date().toISOString() })
-      .eq('variable_symbol', vs)
-
+  if (result.ok) {
     return res.status(200).json({
       success: true,
-      sent_to: email,
-      vouchers: vouchers.map(v => ({ code: v.code, amount: v.amount }))
+      sent_to: result.email,
+      vouchers: result.vouchers.map(v => ({ code: v.code, amount: v.amount }))
     })
-
-  } catch (err) {
-    console.error('dispatch error:', err)
-    return res.status(500).json({ error: err.message })
   }
+  if (result.reason === 'not_pending') {
+    return res.status(404).json({ error: 'Objednávka nenalezena nebo již odeslána' })
+  }
+  console.error('dispatch error:', result)
+  return res.status(500).json({ error: result.error || 'Odeslání selhalo' })
 }

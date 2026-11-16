@@ -1,0 +1,5 @@
+# Interní soubory, které nemají být veřejně na webu
+*.sql
+*.md
+tests/
+scripts/

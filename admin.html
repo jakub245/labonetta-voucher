@@ -18,7 +18,7 @@
       --terra-bg:  #fdf0eb;
       --dark:      #1a1a1a;
       --mid:       #4a4a4a;
-      --gray:      #6b7280;
+      --gray:      #5b6170;
       --light:     #f3f4f6;
       --border:    #e5e7eb;
       --white:     #ffffff;
@@ -494,7 +494,7 @@
       border-color: var(--teal);
       box-shadow: 0 0 0 3px rgba(27,127,114,0.1);
     }
-    .search-input::placeholder { color: #c0b8b0; }
+    .search-input::placeholder { color: #767676; }
     .search-icon {
       position: absolute;
       left: 14px;
@@ -619,7 +619,7 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .badge-paid     { background: var(--teal-bg); color: var(--teal); }
+    .badge-paid     { background: var(--teal-bg); color: var(--teal-dark); }
     .badge-paid::before { background: var(--teal); }
     .badge-pending  { background: var(--terra-bg); color: var(--terra); }
     .badge-pending::before { background: var(--terra); }
@@ -683,7 +683,7 @@
     .btn-dispatch:disabled { background: #d1d5db; border-color: #d1d5db; cursor: not-allowed; }
     .action-done {
       font-size: 14px;
-      color: #9ca3af;
+      color: var(--gray);
     }
 
     .btn-detail {
@@ -855,7 +855,10 @@
       z-index: 700;
       opacity: 0;
       transition: all 0.25s;
-      white-space: nowrap;
+      white-space: normal;
+      max-width: calc(100vw - 32px);
+      width: max-content;
+      text-align: center;
     }
     .toast.visible {
       opacity: 1;
@@ -863,6 +866,26 @@
     }
     .toast.success { background: var(--teal); }
     .toast.error { background: #dc2626; }
+    @media (prefers-reduced-motion: reduce) { .toast { transition: opacity 0.01s; } }
+
+    /* ── Platby z banky (ČSOB) ── */
+    .bank-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; margin: -8px 0 20px; font-size: 13px; color: var(--gray); }
+    .bank-status .bank-err { color: #b91c1c; font-weight: 600; }
+    .btn-bank-check { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--mid); font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; min-height: 34px; cursor: pointer; }
+    .btn-bank-check:hover { border-color: var(--dark); color: var(--dark); }
+    .btn-bank-check:disabled, .btn-bank-check[aria-disabled="true"] { opacity: .6; cursor: wait; }
+    #bank-status-text strong { white-space: nowrap; }
+    #bank-review-title:focus { outline: none; }
+    .bank-review { border: 1.5px solid var(--terra); background: var(--terra-bg); border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; }
+    .bank-review h2 { font-size: 16px; font-weight: 700; color: var(--dark); margin: 0 0 4px; }
+    .bank-review > p { font-size: 13px; color: var(--mid); margin: 0 0 14px; }
+    .bank-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; gap: 12px 20px; align-items: center; flex-wrap: wrap; }
+    .bank-item + .bank-item { margin-top: 8px; }
+    .bank-item-main { flex: 1 1 260px; min-width: 0; }
+    .bank-item-reason { font-size: 14px; font-weight: 700; color: #9a3412; }
+    .bank-item-meta { font-size: 13px; color: var(--mid); margin-top: 2px; overflow-wrap: anywhere; }
+    .bank-item-amount { font-size: 18px; font-weight: 700; color: var(--dark); white-space: nowrap; }
+    .bank-status[hidden], .bank-review[hidden] { display: none; }
 
     .modal-section { margin-bottom: 24px; }
     .modal-section-title {
@@ -939,7 +962,7 @@
     .empty-state {
       text-align: center;
       padding: 64px 24px;
-      color: #9ca3af;
+      color: var(--gray);
     }
     .empty-state svg { width: 40px; height: 40px; stroke: #d1d5db; fill: none; stroke-width: 1.5; margin-bottom: 16px; }
     .empty-state p { font-size: 14px; }
@@ -947,7 +970,7 @@
     .loading-state {
       text-align: center;
       padding: 48px;
-      color: #9ca3af;
+      color: var(--gray);
       font-size: 14px;
     }
 
@@ -958,6 +981,12 @@
 
     @media (max-width: 768px) {
       .admin-nav { padding: 0 20px; }
+    }
+    @media (max-width: 640px) {
+      .admin-nav { height: auto; min-height: 68px; padding: 10px 16px; flex-wrap: wrap; gap: 10px; }
+      .admin-nav-right { flex-wrap: wrap; gap: 8px; }
+    }
+    @media (max-width: 768px) {
       .admin-main { padding: 24px 16px 48px; }
       .stats, .stats-5 { grid-template-columns: 1fr 1fr; }
     }
@@ -1020,7 +1049,7 @@
   <div class="modal" id="modal">
     <div class="modal-header">
       <span class="modal-title" id="modal-title">Detail objednávky</span>
-      <button class="modal-close" onclick="closeModalDirect()">
+      <button class="modal-close" onclick="closeModalDirect()" aria-label="Zavřít">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -1033,7 +1062,7 @@
   <div class="modal" style="max-width:460px;">
     <div class="modal-header">
       <span class="modal-title">Přidat voucher — osobní prodej</span>
-      <button class="modal-close" onclick="closeOfflineModalDirect()">
+      <button class="modal-close" onclick="closeOfflineModalDirect()" aria-label="Zavřít">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -1086,7 +1115,7 @@
   <div class="modal" style="max-width:460px;">
     <div class="modal-header">
       <span class="modal-title">Kompenzace — omluvný voucher</span>
-      <button class="modal-close" onclick="closeCompModalDirect()">
+      <button class="modal-close" onclick="closeCompModalDirect()" aria-label="Zavřít">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -1149,7 +1178,7 @@
     <div class="admin-nav-brand">
       <div class="admin-nav-dot"></div>
       <span class="admin-nav-title">Vouchery · Labonetta</span>
-      <span id="role-badge" style="display:none;align-items:center;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:600;background:var(--teal-bg);color:var(--teal);margin-left:4px;">Manager</span>
+      <span id="role-badge" style="display:none;align-items:center;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:600;background:var(--teal-bg);color:var(--teal-dark);margin-left:4px;">Manager</span>
     </div>
     <div class="admin-nav-right">
       <button class="btn-add-offline" onclick="openOfflineModal()">
@@ -1174,13 +1203,24 @@
     <p class="admin-page-sub" id="admin-date">Načítám data…</p>
 
     <!-- Přepínač záložek -->
-    <div class="tab-switch">
-      <button class="tab-btn active" id="tab-vouchers" onclick="switchTab('vouchers')">Vouchery</button>
-      <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')">Statistiky</button>
+    <div class="tab-switch" role="tablist" aria-label="Sekce">
+      <button class="tab-btn active" id="tab-vouchers" role="tab" aria-selected="true" aria-controls="panel-vouchers" onclick="switchTab('vouchers')">Vouchery</button>
+      <button class="tab-btn" id="tab-stats" role="tab" aria-selected="false" aria-controls="panel-stats" onclick="switchTab('stats')">Statistiky</button>
     </div>
 
     <!-- PANEL: VOUCHERY -->
     <div class="tab-panel active" id="panel-vouchers">
+
+    <!-- Platby z banky — jen manager -->
+    <div class="bank-status" id="bank-status" hidden>
+      <span id="bank-status-text"></span>
+      <button class="btn-bank-check" id="btn-bank-check" onclick="checkBankNow()">Zkontrolovat platby</button>
+    </div>
+    <section class="bank-review" id="bank-review" hidden aria-labelledby="bank-review-title">
+      <h2 id="bank-review-title" tabindex="-1">Platby k vyřešení</h2>
+      <p>Tyto platby přišly na účet, ale nepodařilo se je spárovat s objednávkou. Vyřešte je ručně, třeba odešlete vouchery tlačítkem Zaplaceno nebo vraťte peníze, a pak je označte jako vyřešené.</p>
+      <div id="bank-review-list"></div>
+    </section>
 
     <!-- Stats -->
     <div class="stats">
@@ -1207,8 +1247,8 @@
       <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input class="search-input" id="search-input" type="text" placeholder="Hledat voucher — kód, jméno, email…" oninput="handleSearch(this.value)">
-      <button class="search-clear" id="search-clear" onclick="clearSearch()">
+      <input class="search-input" id="search-input" type="search" aria-label="Hledat voucher" placeholder="Hledat voucher — kód, jméno, email…" oninput="handleSearch(this.value)">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Vymazat hledání">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -1216,10 +1256,10 @@
     <!-- Table header -->
     <div class="table-header">
       <div class="filters">
-        <button class="filter-btn active" onclick="setFilter('all', this)">Vše</button>
-        <button class="filter-btn" onclick="setFilter('paid', this)">Zaplacené</button>
-        <button class="filter-btn" onclick="setFilter('pending_qr', this)">Čeká na platbu</button>
-        <button class="filter-btn" onclick="setFilter('redeemed', this)">Uplatněné</button>
+        <button class="filter-btn active" aria-pressed="true" onclick="setFilter('all', this)">Vše</button>
+        <button class="filter-btn" aria-pressed="false" onclick="setFilter('paid', this)">Zaplacené</button>
+        <button class="filter-btn" aria-pressed="false" onclick="setFilter('pending_qr', this)">Čeká na platbu</button>
+        <button class="filter-btn" aria-pressed="false" onclick="setFilter('redeemed', this)">Uplatněné</button>
       </div>
       <span class="table-count" id="table-count"></span>
     </div>
@@ -1403,7 +1443,9 @@
     applyRole()
   }
 
-  async function loadVouchers() {
+  let lastLoadAt = 0
+  async function loadVouchers(opts = {}) {
+    lastLoadAt = Date.now()
     const res = await fetch('/api/vouchers', {
       method: 'GET',
       cache: 'no-store',
@@ -1442,6 +1484,139 @@
     updateStats()
     renderTable()
     if (currentTab === 'stats') renderStats()
+
+    if (currentRole === 'admin' && !opts.skipBank) refreshBank()
+  }
+
+  // ── Platby z banky (ČSOB Business Connector) ──
+  const BANK_REASONS = {
+    amount_mismatch: 'Nesedí částka',
+    already_paid:    'Objednávka už byla zaplacená (dvojí platba?)',
+    order_cancelled: 'Platba za smazanou objednávku',
+    unknown_vs:      'Neznámý variabilní symbol',
+    email_failed:    'Zaplaceno, ale e-mail s vouchery se nepodařilo odeslat',
+    processing:      'Zpracování se přerušilo'
+  }
+
+  async function refreshBank(force = false) {
+    if (currentRole !== 'admin') return
+    let paidNow = 0
+    try {
+      // Spáruje nové platby (server sám hlídá, aby se banka nevolala moc často)
+      const r = await fetch('/api/bank-sync', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${password}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ force })
+      })
+      const s = await r.json().catch(() => ({}))
+      paidNow = s.paid || 0
+      if (force) {
+        if (!r.ok) showToast(`Kontrola banky selhala: ${s.error || r.status}`, 'error')
+        else if (s.skipped) showToast('Banka byla zkontrolována před chvílí. Další kontrola je možná nejdřív za minutu.', 'info')
+        else showToast(paidNow ? `Spárováno plateb: ${paidNow}` : 'Žádné nové platby')
+      }
+    } catch (e) { /* banka nedostupná — stav ukáže bank-payments */ }
+
+    try {
+      const res = await fetch('/api/bank-payments', { cache: 'no-store', headers: { 'Authorization': `Bearer ${password}` } })
+      if (res.ok) renderBank(await res.json())
+    } catch (e) { /* ignorovat */ }
+
+    if (paidNow) loadVouchers({ skipBank: true })
+  }
+
+  // Tlačítko zůstává fokusovatelné (aria-disabled místo disabled), aby se fokus neztratil.
+  // Po kontrole se na 60 s zablokuje — banka víc nedovolí.
+  let bankCooldown = null
+  async function checkBankNow() {
+    const btn = document.getElementById('btn-bank-check')
+    if (btn.getAttribute('aria-disabled') === 'true') return
+    btn.setAttribute('aria-disabled', 'true')
+    btn.setAttribute('aria-busy', 'true')
+    btn.textContent = 'Kontroluji…'
+    await refreshBank(true)
+    btn.removeAttribute('aria-busy')
+    let left = 60
+    clearInterval(bankCooldown)
+    const tick = () => {
+      if (left <= 0) {
+        clearInterval(bankCooldown)
+        btn.removeAttribute('aria-disabled')
+        btn.textContent = 'Zkontrolovat platby'
+        return
+      }
+      btn.textContent = `Znovu za ${left} s`
+      left--
+    }
+    tick()
+    bankCooldown = setInterval(tick, 1000)
+  }
+
+  function renderBank(data) {
+    const statusEl = document.getElementById('bank-status')
+    const review = document.getElementById('bank-review')
+    if (!data || data.not_ready || !data.sync) { statusEl.hidden = true; review.hidden = true; return }
+
+    const t = data.sync.last_success_at
+      ? new Date(data.sync.last_success_at).toLocaleString('cs', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })
+      : 'zatím nikdy'
+    document.getElementById('bank-status-text').innerHTML =
+      `Platby z banky naposledy zkontrolovány: <strong>${esc(t)}</strong>` +
+      (data.sync.last_error ? ` · <span class="bank-err">Chyba: ${esc(data.sync.last_error)}</span>` : '')
+    statusEl.hidden = false
+
+    const list = data.payments || []
+    review.hidden = list.length === 0
+    document.getElementById('bank-review-title').textContent = `Platby k vyřešení (${list.length})`
+    document.getElementById('bank-review-list').innerHTML = list.map(p => {
+      const diff = p.result === 'amount_mismatch' && p.expected_amount != null ? Number(p.amount) - Number(p.expected_amount) : null
+      const meta = [
+        p.booked_on ? new Date(p.booked_on).toLocaleDateString('cs') : null,
+        p.vs ? `VS ${p.vs}` : 'bez VS',
+        p.expected_amount != null ? `objednávka ${Number(p.expected_amount).toLocaleString('cs')} Kč` : null,
+        diff ? (diff < 0 ? `chybí ${Math.abs(diff).toLocaleString('cs')} Kč` : `přeplaceno o ${diff.toLocaleString('cs')} Kč`) : null,
+        p.counter_name || p.counter_account,
+        p.message ? `„${p.message}“` : null,
+        p.error
+      ].filter(Boolean).map(esc).join(' · ')
+      const rid = `bank-item-${Number(p.id)}`
+      return `<div class="bank-item">
+        <div class="bank-item-main" id="${rid}">
+          <div class="bank-item-reason">${esc(BANK_REASONS[p.result] || p.result)}</div>
+          <div class="bank-item-meta">${meta}</div>
+        </div>
+        <div class="bank-item-amount">${Number(p.amount).toLocaleString('cs')} ${esc(p.currency || 'Kč').replace('CZK', 'Kč')}</div>
+        <button class="btn-bank-check" aria-describedby="${rid}" onclick="resolveBankPayment(${Number(p.id)}, this)">Označit jako vyřešené</button>
+      </div>`
+    }).join('')
+  }
+
+  function resolveBankPayment(id, btn) {
+    showConfirm({
+      title: 'Označit platbu jako vyřešenou',
+      message: 'Platba zmizí z tohoto seznamu. Na objednávky ani vouchery to nemá vliv.',
+      okLabel: 'Vyřešeno',
+      onOk: async () => {
+        btn.disabled = true
+        const res = await fetch('/api/bank-payments', {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${password}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        })
+        if (res.ok) {
+          showToast('Označeno jako vyřešené')
+          await refreshBank()
+          // Položka zmizela — fokus na nadpis seznamu, nebo na kontrolu plateb, když je seznam prázdný
+          const title = document.getElementById('bank-review-title')
+          ;(document.getElementById('bank-review').hidden ? document.getElementById('btn-bank-check') : title).focus()
+        }
+        else { btn.disabled = false; showToast('Nepodařilo se uložit', 'error') }
+      }
+    })
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
   }
 
   // Skryje/zobrazí prvky podle role. Staff = obsluha (jen prodej + uplatnění).
@@ -1462,6 +1637,11 @@
     // Tlačítko Přidat voucher (osobní prodej) — jen obsluha, manažer vouchery nepřidává
     const offlineBtn = document.querySelector('.btn-add-offline')
     if (offlineBtn) offlineBtn.style.display = isStaff ? '' : 'none'
+    // Platby z banky vidí jen manager
+    if (isStaff) {
+      document.getElementById('bank-status').hidden = true
+      document.getElementById('bank-review').hidden = true
+    }
     // Pokud je staff omylem na záložce statistik, přepni ho na vouchery
     if (isStaff && currentTab === 'stats') switchTab('vouchers')
     // Badge s rolí v nav liště
@@ -1472,9 +1652,14 @@
     }
   }
 
+  // Automatické obnovení seznamu (a kontrola plateb v bance) každé 2 minuty
+  // a hned po návratu na záložku, pokud od posledního načtení uběhlo víc než 30 s.
   setInterval(() => {
-    if (password) loadVouchers()
+    if (password && !document.hidden) loadVouchers()
   }, 2 * 60 * 1000)
+  document.addEventListener('visibilitychange', () => {
+    if (password && !document.hidden && Date.now() - lastLoadAt > 30 * 1000) loadVouchers()
+  })
 
   function updateStats() {
     const paid = allVouchers.filter(v => v.status === 'paid' || v.status === 'redeemed')
@@ -1492,8 +1677,9 @@
 
   function setFilter(filter, btn) {
     currentFilter = filter
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+    document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false') })
     btn.classList.add('active')
+    btn.setAttribute('aria-pressed', 'true')
     renderTable()
   }
 
@@ -2069,6 +2255,8 @@
     currentTab = tab
     document.getElementById('tab-vouchers').classList.toggle('active', tab === 'vouchers')
     document.getElementById('tab-stats').classList.toggle('active', tab === 'stats')
+    document.getElementById('tab-vouchers').setAttribute('aria-selected', String(tab === 'vouchers'))
+    document.getElementById('tab-stats').setAttribute('aria-selected', String(tab === 'stats'))
     document.getElementById('panel-vouchers').classList.toggle('active', tab === 'vouchers')
     document.getElementById('panel-stats').classList.toggle('active', tab === 'stats')
     if (tab === 'stats') renderStats()
@@ -2358,7 +2546,56 @@
 </div>
 
 <!-- Toast -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+  (function accessibleDialogs() {
+    const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    const dialogs = [
+      { id: 'confirm-overlay', close: () => document.getElementById('confirm-cancel').click(), initial: '#confirm-cancel' },
+      { id: 'modal-overlay',   close: () => closeModalDirect() },
+      { id: 'offline-overlay', close: () => closeOfflineModalDirect() },
+      { id: 'comp-overlay',    close: () => closeCompModalDirect() }
+    ]
+    let active = null
+    const focusables = box => [...box.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null)
+
+    for (const d of dialogs) {
+      const overlay = document.getElementById(d.id)
+      if (!overlay) continue
+      const box = overlay.firstElementChild
+      box.setAttribute('role', 'dialog')
+      box.setAttribute('aria-modal', 'true')
+      box.setAttribute('tabindex', '-1')
+      const title = box.querySelector('.modal-title, .confirm-title')
+      if (title) { if (!title.id) title.id = `${d.id}-title`; box.setAttribute('aria-labelledby', title.id) }
+      if (d.id === 'confirm-overlay') box.setAttribute('aria-describedby', 'confirm-message')
+      d.box = box
+      new MutationObserver(() => {
+        const open = overlay.classList.contains('visible')
+        if (open && active !== d) {
+          d.opener = document.activeElement
+          active = d
+          requestAnimationFrame(() => ((d.initial && box.querySelector(d.initial)) || focusables(box)[0] || box).focus())
+        } else if (!open && active === d) {
+          active = null
+          const o = d.opener
+          if (o && o.isConnected && o.offsetParent !== null) o.focus()
+        }
+      }).observe(overlay, { attributes: true, attributeFilter: ['class'] })
+    }
+
+    document.addEventListener('keydown', e => {
+      if (!active) return
+      if (e.key === 'Escape') { e.preventDefault(); active.close(); return }
+      if (e.key !== 'Tab') return
+      const els = focusables(active.box)
+      if (!els.length) { e.preventDefault(); return }
+      const first = els[0], last = els[els.length - 1]
+      if (e.shiftKey && (document.activeElement === first || !active.box.contains(document.activeElement))) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && (document.activeElement === last || !active.box.contains(document.activeElement))) { e.preventDefault(); first.focus() }
+    })
+  })()
+</script>
 
 </body>
 </html>

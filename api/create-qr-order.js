@@ -74,6 +74,7 @@ export default async function handler(req, res) {
   })
 
   // Potvrzovaci mail zakaznikovi (s QR a platebnimi udaji) - nesmi shodit objednavku
+  let confirmationSent = false
   try {
     await sendOrderConfirmation({
       to: email,
@@ -84,6 +85,7 @@ export default async function handler(req, res) {
       recipient: RECIPIENT,
       qr_data_url: qrDataUrl
     })
+    confirmationSent = true
   } catch (confirmErr) {
     console.error('order confirmation error:', confirmErr)
   }
@@ -112,7 +114,8 @@ export default async function handler(req, res) {
     bank_account: BANK_ACCOUNT,
     recipient: RECIPIENT,
     qr_data_url: qrDataUrl,
-    vouchers: vouchers.map(v => ({ code: v.code, amount: v.amount }))
+    confirmation_sent: confirmationSent
+    // Kódy voucherů se před zaplacením do prohlížeče neposílají
   })
 }
 

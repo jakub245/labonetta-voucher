@@ -1,5 +1,11 @@
 {
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "redirects": [
+    { "source": "/lib/:path*", "destination": "/", "permanent": false }
+  ],
+  "crons": [
+    { "path": "/api/bank-sync", "schedule": "0 6 * * *" }
   ]
 }
