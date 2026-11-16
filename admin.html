@@ -1498,24 +1498,24 @@
     processing:      'Zpracování se přerušilo'
   }
 
-  async function refreshBank(force = false) {
+  // Admin banku sám nekontroluje — to dělá Supabase (jen když čeká objednávka),
+  // stránka s QR kódem a denní cron. Tady se jen zobrazí stav a platby k vyřešení;
+  // do banky se jde jen tlačítkem „Zkontrolovat platby" (checkNow = true).
+  async function refreshBank(checkNow = false) {
     if (currentRole !== 'admin') return
     let paidNow = 0
-    try {
-      // Spáruje nové platby (server sám hlídá, aby se banka nevolala moc často)
+    if (checkNow) try {
       const r = await fetch('/api/bank-sync', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${password}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ force })
+        body: JSON.stringify({ force: true })
       })
       const s = await r.json().catch(() => ({}))
       paidNow = s.paid || 0
-      if (force) {
-        if (!r.ok) showToast(`Kontrola banky selhala: ${s.error || r.status}`, 'error')
-        else if (s.skipped) showToast('Banka byla zkontrolována před chvílí. Další kontrola je možná nejdřív za minutu.', 'info')
-        else showToast(paidNow ? `Spárováno plateb: ${paidNow}` : 'Žádné nové platby')
-      }
-    } catch (e) { /* banka nedostupná — stav ukáže bank-payments */ }
+      if (!r.ok) showToast(`Kontrola banky selhala: ${s.error || r.status}`, 'error')
+      else if (s.skipped) showToast('Banka byla zkontrolována před chvílí. Další kontrola je možná nejdřív za minutu.', 'info')
+      else showToast(paidNow ? `Spárováno plateb: ${paidNow}` : 'Žádné nové platby')
+    } catch (e) { showToast('Kontrola banky selhala', 'error') }
 
     try {
       const res = await fetch('/api/bank-payments', { cache: 'no-store', headers: { 'Authorization': `Bearer ${password}` } })
@@ -1652,7 +1652,7 @@
     }
   }
 
-  // Automatické obnovení seznamu (a kontrola plateb v bance) každé 2 minuty
+  // Automatické obnovení seznamu každé 2 minuty (jen čte data, banku nevolá)
   // a hned po návratu na záložku, pokud od posledního načtení uběhlo víc než 30 s.
   setInterval(() => {
     if (password && !document.hidden) loadVouchers()
