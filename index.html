@@ -102,8 +102,9 @@
     .topnav a { padding: 10px 14px !important; border-radius: 999px; font-size: 14px !important; font-weight: 600 !important; color: #fff !important; text-shadow: 0 1px 6px rgba(0,0,0,.45); transition: background .15s; }
     .topnav a:hover { background: rgba(0,0,0,.25); text-decoration: none !important; }
     .topnav a[aria-current="page"] { background: rgba(255,255,255,.16); }
-    .topnav .nav-back { display: none; }
-    @media (max-width: 960px) { .topnav a { display: none !important; } .topnav .nav-back { display: inline-flex !important; } }
+    /* telefon a tablet: jako na labonetta.cz zůstanou jen samostatné stránky (Pizza do firmy, Voucher) */
+    @media (max-width: 960px) { .topnav a:not(.nav-page) { display: none !important; } }
+    @media (max-width: 400px) { .topnav a.nav-page { padding: 9px 11px !important; font-size: 13px !important; } }
     @media (max-width: 600px) { .topbar-logo { width: 70px; height: 70px; } .topbar .topbar-logo img { width: 58px; height: 58px; } }
 
     .hero-grid {
@@ -357,6 +358,10 @@
 
     footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 22px var(--gutter); background: var(--teal-ink); font-size: 13px; color: var(--mint); }
     footer nav { display: flex; gap: 18px; }
+    footer .footer-legal { flex-basis: 100%; font-size: 12px; line-height: 1.6; opacity: .85; }
+    footer .footer-legal a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+    .form-privacy { margin-top: 0; text-align: center; }
+    .form-privacy a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
     footer a { text-decoration: none; }
     footer a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 
@@ -619,10 +624,6 @@
     /* stejné místo pro posuvník jako na rozcestníku, aby menu neposkočilo o jeho šířku */
     html { scrollbar-gutter: stable; }
 
-    /* ── HLAVIČKA: logo | Labonetta.cz (menu nového webu přijde po jeho spuštění) ── */
-    .topbar-home { display: flex; align-items: center; gap: 14px; }
-    .topbar a.home-link { gap: 0; font-size: 15px; font-weight: 600; letter-spacing: .01em; color: #fff; }
-    .home-link::before { content: ''; flex: none; width: 1.5px; height: 22px; margin-right: 14px; background: currentColor; opacity: .45; }
 
     /* ── PODMÍNKY POD TLAČÍTKEM: platnost, uplatnění, doručení ── */
     .facts { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 5px; font-size: 13px; line-height: 1.4; text-align: left; color: var(--mint); }
@@ -714,34 +715,28 @@
 
 <section class="hero" aria-labelledby="hero-title">
   <header class="topbar">
-    <div class="topbar-home">
-      <a class="topbar-logo" href="https://www.labonetta.cz/" data-hub tabindex="-1" aria-hidden="true"><img src="assets/logo.svg" alt="" width="56" height="56"></a>
-      <a class="home-link" href="https://www.labonetta.cz/" data-hub>Labonetta.cz</a>
-    </div>
-    <!-- Menu nového webu: vrátit (odkomentovat), až poběží nový labonetta.cz — dnes by odkazy vedly na stránky, které na současném webu nejsou.
+    <a class="topbar-logo" href="https://labonetta.cz/" data-hub aria-label="Labonetta – úvod"><img src="assets/logo.svg" alt="" width="56" height="56"></a>
+    <!-- stejné menu jako na labonetta.cz -->
     <nav class="topnav" aria-label="Hlavní">
-      <a href="https://www.labonetta.cz/" data-hub><svg class="nav-home" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>Úvod</a>
-      <a href="https://www.labonetta.cz/#pobocky" data-hub>Pobočky</a>
-      <a href="https://www.labonetta.cz/#rozvoz" data-hub>Kam vozíme</a>
-      <span class="nav-sep" aria-hidden="true"></span><a class="nav-page" href="https://www.labonetta.cz/pizza-do-firmy/" data-hub>Pizza do firmy</a>
+      <a href="https://labonetta.cz/" data-hub><svg class="nav-home" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>Úvod</a>
+      <a href="https://labonetta.cz/#pobocky" data-hub>Pobočky</a>
+      <a href="https://labonetta.cz/#rozvoz" data-hub>Kam vozíme</a>
+      <span class="nav-sep" aria-hidden="true"></span><a class="nav-page" href="https://labonetta.cz/pizza-do-firmy/" data-hub>Pizza do firmy</a>
       <a class="nav-page" href="./" aria-current="page">Voucher</a>
-      <a class="nav-back" href="https://www.labonetta.cz/" data-hub>← Hlavní web</a>
     </nav>
-    -->
   </header>
   <script>
     // náhled: odkazy na rozcestník vedou na lokální kopii (localhost:4176)
-    // menu: dolů schovat, nahoru vysunout jako skleněnou lištu
-    ;(() => { const bar = document.querySelector('.topbar'), hero = bar.parentElement, narrow = matchMedia('(max-width: 960px)'); let last = scrollY
-      // telefon a tablet: lišta se nepřichytává (je v ní jen logo a odkaz, žádná informace navíc) → odjede se stránkou
-      const f = () => { const y = scrollY, d = y - last, stuck = y > 140 && !narrow.matches
+    // menu: dolů schovat, nahoru vysunout jako skleněnou lištu (stejně jako na labonetta.cz, i na telefonu)
+    ;(() => { const bar = document.querySelector('.topbar'), hero = bar.parentElement; let last = scrollY
+      const f = () => { const y = scrollY, d = y - last, stuck = y > 140
         // přichycená lišta vypadne z rozložení → stejně vysoké místo za ni podržíme, jinak obsah poskočí nahoru
         if (stuck && !bar.classList.contains('is-stuck')) hero.style.setProperty('--bar-h', bar.offsetHeight + 'px')
         bar.classList.toggle('is-stuck', stuck)
         if (y <= 140) bar.classList.remove('is-hidden'); else if (d > 6) bar.classList.add('is-hidden'); else if (d < -6) bar.classList.remove('is-hidden')
         if (Math.abs(d) > 6 || y <= 140) last = y }
       addEventListener('scroll', f, { passive: true }); bar.addEventListener('focusin', () => bar.classList.remove('is-hidden')); f() })()
-    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) document.querySelectorAll('[data-hub]').forEach(a => { a.href = a.getAttribute('href').replace('https://www.labonetta.cz/', 'http://localhost:4176/') })
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) document.querySelectorAll('[data-hub]').forEach(a => { a.href = a.getAttribute('href').replace('https://labonetta.cz/', 'http://localhost:4176/') })
   </script>
 
   <div class="hero-grid">
@@ -802,6 +797,7 @@
             <li><strong>Platí 1&nbsp;rok</strong> od zakoupení, bez dalších podmínek.</li>
             <li><strong>Uplatníte osobně</strong> na Proseku i&nbsp;v&nbsp;Kobylisích, stačí ukázat voucher obsluze.</li>
             <li><strong>Přijde e&#8209;mailem</strong> jako PDF hned po zaplacení QR kódem.</li>
+            <li><strong>Prodává</strong> Labonetta s.r.o., IČO&nbsp;14200350 · <a href="https://labonetta.cz/ochrana-osobnich-udaju/#voucher">Ochrana osobních údajů</a></li>
           </ul>
         </div>
         <script>/* informace k voucherům: na počítači bublina (najetí myší / kliknutí), na mobilu se rozbalí pod odkazem */
@@ -830,6 +826,7 @@
 <footer>
   <span>Labonetta · pizza jako z&nbsp;Neapole</span>
   <nav aria-label="Pobočky"><a href="https://prosek.labonetta.cz">Prosek</a><a href="https://kobylisy.labonetta.cz">Kobylisy</a></nav>
+  <p class="footer-legal">Vouchery prodává Labonetta s.r.o., IČO 14200350, DIČ CZ14200350, Litoměřická 879/3, 190&nbsp;00 Praha&nbsp;9, zapsaná v&nbsp;obchodním rejstříku u&nbsp;Městského soudu v&nbsp;Praze, sp.&nbsp;zn. C&nbsp;361943. · <a href="https://labonetta.cz/ochrana-osobnich-udaju/#voucher">Ochrana osobních údajů</a></p>
 </footer>
 
 <div class="sticky-buy" id="sticky-buy" aria-hidden="true">
@@ -882,6 +879,7 @@
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           <span class="spinner" aria-hidden="true"></span>
         </button>
+        <p class="field-hint form-privacy">Údaje použijeme jen k&nbsp;vyřízení objednávky a&nbsp;zaslání voucheru. <a href="https://labonetta.cz/ochrana-osobnich-udaju/#voucher">Ochrana osobních údajů</a></p>
       </form>
     </div>
 
