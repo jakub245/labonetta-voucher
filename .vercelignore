@@ -3,3 +3,6 @@
 *.md
 tests/
 scripts/
+
+# originál fotky (4 MB) – na web jdou jen zmenšené verze hero-prosciutto-*
+assets/hero-new.jpg

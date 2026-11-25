@@ -4,1405 +4,1082 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dárkový voucher · Labonetta</title>
+  <meta name="description" content="Dárkový voucher do Labonetty na neapolskou pizzu, předkrmy i víno. Platí na celou útratu na Proseku i v Kobylisích, přijde e-mailem jako PDF.">
+  <meta name="theme-color" content="#096a5f">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="cs_CZ">
+  <meta property="og:title" content="Darujte kus Neapole · Labonetta">
+  <meta property="og:description" content="Dárkový voucher do Labonetty na Prosek i do Kobylis. Platí na celou útratu, přijde e-mailem jako PDF.">
+  <meta property="og:url" content="https://voucher.labonetta.cz/">
+  <meta property="og:image" content="https://voucher.labonetta.cz/assets/photo-pizzas.jpg">
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>document.documentElement.classList.add('js'); if (/[?&]v=sklo\b/.test(location.search)) document.documentElement.dataset.look = 'glass'</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --teal:        #1B7F72;
-      --teal-dark:   #12574d;
-      --teal-light:  #e8f5f3;
-      --terra:       #C0623A;
-      --terra-light: #fdf0eb;
-      --cream:       #ffffff;
-      --cream-dark:  #EDE8E1;
-      --dark:        #1a1a1a;
-      --mid:         #4a4a4a;
-      --light-text:  #6b6b6b;
-      --border:      #e0d8d0;
-      --white:       #ffffff;
+      --teal:       #096a5f;
+      --teal-deep:  #064e46;
+      --teal-ink:   #053f39;
+      --mint:       #bfe6d8;   /* světle zelená pro text na zelené */
+      --terra:      #bb5532;   /* tah štětcem z Figmy */
+      --terra-ink:  #a84d28;
+      --cream:      #f6efe4;
+      --cream-2:    #ece2d2;
+      --ink:        #1c1a17;
+      --muted:      #5b554d;
+      --error:      #b3261e;
+      --display:    'Anton', 'Impact', sans-serif;
+      --gutter:     clamp(16px, 4.5vw, 64px);
+      --ease-out:   cubic-bezier(.2, .9, .3, 1);
+      --ease-pop:   cubic-bezier(.3, 1.5, .5, 1);
     }
 
-    html { scroll-behavior: smooth; }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    html, body { overflow-x: clip; }
     body {
-      font-family: 'Bai Jamjuree', sans-serif;
-      background: #ffffff;
-      color: var(--dark);
-      min-height: 100vh;
-      font-size: 16px;
-      line-height: 1.5;
+      font-family: 'Archivo', system-ui, sans-serif;
+      font-size: 16px; line-height: 1.55;
+      background: var(--teal); color: #fff;
+      -webkit-font-smoothing: antialiased;
     }
-
-    /* ── SKIP LINK (accessibility) ── */
-    .skip-link {
-      position: absolute;
-      top: -100px;
-      left: 16px;
-      background: var(--teal);
-      color: white;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      z-index: 9999;
-      transition: top 0.2s;
-    }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; }
+    button { font: inherit; color: inherit; }
+    .num { font-variant-numeric: tabular-nums; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    .skip-link { position: absolute; top: -100px; left: 16px; z-index: 999; background: #fff; color: var(--teal-ink); padding: 10px 16px; border-radius: 8px; font-weight: 600; text-decoration: none; }
     .skip-link:focus { top: 16px; }
+    :focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .on-light :focus-visible, dialog :focus-visible { outline-color: var(--teal); }
+    [tabindex="-1"]:focus { outline: none; }
 
-    /* ── NAVBAR ── */
-    nav {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      background: transparent;
-      padding: 20px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* ── TAH ŠTĚTCEM (vektory z Figmy) ── */
+    /* Nadpis je samostatná vrstva: tahy (z-index -1) leží pod textem všech řádků */
+    h1, .h2, .sheet-title { position: relative; isolation: isolate; }
+    .paint { position: relative; display: inline-block; color: #fff; padding: 0 .14em; }
+    .paint::before, .paint::after { content: ''; position: absolute; z-index: -1; pointer-events: none; }
+    /* štětec z Figmy */
+    .paint::before {
+      inset: -.24em -.26em -.16em -.22em;
+      background: var(--paint, var(--terra));
+      -webkit-mask: var(--brush, url(assets/brush/brush-1.svg)) center / 100% 100% no-repeat;
+              mask: var(--brush, url(assets/brush/brush-1.svg)) center / 100% 100% no-repeat;
+      transform: translate(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 4px)) rotate(calc(var(--tilt, -2deg) + var(--mx, 0) * .6deg));
     }
+    /* plná barva přímo pod písmeny — text je vždy čitelný i v mezerách suchého štětce */
+    .paint::after {
+      inset: .06em .02em .04em .04em;
+      background: var(--paint, var(--terra));
+      transform: translate(calc(var(--mx, 0) * 3px), calc(var(--my, 0) * 2px)) rotate(calc(var(--tilt, -2deg) * .5));
+    }
+    .paint.b2 { --brush: url(assets/brush/brush-2.svg); --tilt: 1.5deg; }
+    .paint.b3 { --brush: url(assets/brush/brush-3.svg); --tilt: -1deg; }
+    .paint.teal { --paint: var(--teal); }
+    /* „namalování“ zleva doprava */
+    .js .paint::before, .js .paint::after { clip-path: inset(0 100% 0 0); }
+    .js .paint.in::before, .js .paint.in::after { animation: paint .6s var(--ease-out) forwards; animation-delay: var(--paint-delay, 0s); }
+    @keyframes paint { to { clip-path: inset(0 0 0 0); } }
 
-    .nav-logo {
-      height: 52px;
-      width: auto;
-      display: block;
-    }
-
-    .nav-back {
-      font-size: 13px;
-      font-weight: 500;
-      color: white;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-      text-decoration: none;
-      letter-spacing: 0.3px;
-      padding: 8px 0;
-      transition: color 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-back:hover { color: white; }
-    .nav-back:focus-visible {
-      outline: 2px solid white;
-      outline-offset: 3px;
-      border-radius: 2px;
-    }
 
     /* ── HERO ── */
-    .hero {
-      position: relative;
-      height: 100svh;
-      min-height: 560px;
-      max-height: 840px;
-      overflow: hidden;
-    }
+    .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; padding: 20px var(--gutter) 0; }
+    .topbar { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .topbar img { width: 56px; height: 56px; }
+    .topbar a { display: inline-flex; align-items: center; gap: 6px; padding: 10px 0; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--mint); }
+    .topbar a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+    /* hlavička jako na rozcestníku: logo jako nálepka nakřivo + menu */
+    .topbar-logo { display: grid !important; place-items: center; width: 92px; height: 92px; padding: 0 !important; border-radius: 50%; background: #fbf7ef;
+      box-shadow: 0 2px 0 rgba(0,0,0,.12), 0 14px 22px -12px rgba(0,0,0,.6); rotate: -8deg; transition: rotate .25s var(--ease-out); text-shadow: none !important; }
+    .topbar-logo:hover { rotate: 6deg; text-decoration: none !important; }
+    .topbar .topbar-logo img { width: 76px; height: 76px; }
+    .topnav { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .topnav a { padding: 10px 14px !important; border-radius: 999px; font-size: 14px !important; font-weight: 600 !important; color: #fff !important; text-shadow: 0 1px 6px rgba(0,0,0,.45); transition: background .15s; }
+    .topnav a:hover { background: rgba(0,0,0,.25); text-decoration: none !important; }
+    .topnav a[aria-current="page"] { background: rgba(255,255,255,.16); }
+    .topnav .nav-back { display: none; }
+    @media (max-width: 960px) { .topnav a { display: none !important; } .topnav .nav-back { display: inline-flex !important; } }
+    @media (max-width: 600px) { .topbar-logo { width: 70px; height: 70px; } .topbar .topbar-logo img { width: 58px; height: 58px; } }
 
-    .hero-img {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      object-position: center 25%;
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(26,26,26,0.2) 0%,
-        rgba(26,26,26,0.4) 40%,
-        rgba(26,26,26,0.78) 100%
-      );
-    }
-
-    /* Hero content — flush to viewport edge with padding */
-    .hero-content {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 0 48px 80px;
-    }
-
-    .hero-eyebrow {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      display: inline-block;
-      width: 28px; height: 2px;
-      background: var(--terra);
-      flex-shrink: 0;
-    }
-
-    .hero h1 {
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: clamp(38px, 5.5vw, 68px);
-      font-weight: 700;
-      color: white;
-      line-height: 1.08;
-      margin-bottom: 28px;
-      max-width: 600px;
-      letter-spacing: -0.3px;
-    }
-    .hero h1 em {
-      font-style: italic;
-      font-weight: 300;
-      color: white;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--terra);
-      color: white;
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 16px 32px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s;
-      min-height: 52px;
-      touch-action: manipulation;
-      letter-spacing: 0.3px;
-    }
-    .hero-cta:hover { background: #a8522f; }
-    .hero-cta:focus-visible { outline: 3px solid white; outline-offset: 3px; }
-
-    /* ── VOUCHER SECTION ── */
-    .section {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 72px 48px 56px;
-    }
-
-    .section-header {
-      margin-bottom: 40px;
-    }
-    .section-eyebrow {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--terra);
-      margin-bottom: 10px;
-    }
-    .section-title {
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: clamp(28px, 3.5vw, 40px);
-      font-weight: 700;
-      color: var(--dark);
-      line-height: 1.15;
-    }
-    .section-sub {
-      font-size: 16px;
-      color: var(--light-text);
-      margin-top: 8px;
-      line-height: 1.6;
-    }
-
-    /* ── TILES ── */
-    .tiles {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 0;
-    }
-
-    .tile {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s;
-      cursor: pointer;
-      position: relative;
-    }
-    .tile:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.10);
-      border-color: #d1d5db;
-    }
-    .tile.in-cart {
-      border-color: var(--teal);
-      box-shadow: 0 0 0 2px var(--teal);
-    }
-
-    .tile-img-wrap { overflow: hidden; position: relative; }
-    .tile-img {
-      width: 100%;
-      aspect-ratio: 2 / 1;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.4s ease;
-    }
-    .tile:hover .tile-img { transform: scale(1.03); }
-
-    /* In-cart badge — pill, glass, neutral */
-    .tile-badge {
-      position: absolute;
-      top: 12px; right: 12px;
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color: var(--dark);
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 100px;
-      display: none;
-      letter-spacing: 0.3px;
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    .tile.in-cart .tile-badge { display: block; }
-
-    .tile-body {
-      padding: 24px 24px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .tile-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--terra);
-      margin-bottom: 6px;
-    }
-
-    .tile-amount {
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 36px;
-      font-weight: 900;
-      color: var(--dark);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .tile.in-cart .tile-amount { color: var(--teal); }
-
-    .tile-desc {
-      font-size: 14px;
-      color: var(--light-text);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    /* Add / qty controls */
-    .tile-actions { display: flex; align-items: stretch; gap: 0; }
-
-    .btn-add {
+    .hero-grid {
       flex: 1;
-      padding: 13px 20px;
-      background: var(--teal);
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      border: none;
-      border-radius: 8px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.2s;
-      min-height: 46px;
-      touch-action: manipulation;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      align-items: center; gap: clamp(32px, 5vw, 96px);
+      max-width: 1440px; width: 100%; margin: 0 auto;
+      padding: clamp(24px, 4vh, 48px) 0 clamp(48px, 8vh, 96px);
     }
-    .btn-add:hover { background: var(--teal-dark); }
-    .btn-add:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
-    .btn-add svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; flex-shrink: 0; }
-
-    .tile.in-cart .btn-add { display: none; }
-
-    .qty-controls {
-      display: none;
-      align-items: stretch;
-      width: 100%;
-      border: 1.5px solid var(--teal);
-      border-radius: 8px;
-      overflow: hidden;
-      background: white;
+    .hero-copy { position: relative; }
+    h1 {
+      font-family: var(--display); font-weight: 400;
+      text-transform: uppercase;
+      font-size: clamp(56px, min(8.4vw, 14vh), 150px);
+      line-height: .95; letter-spacing: .005em;
     }
-    .tile.in-cart .qty-controls { display: flex; }
+    h1 .line { display: block; }
+    .js h1 .line { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s var(--ease-out); }
+    .js h1.in .line { opacity: 1; transform: none; }
+    .js h1.in .line:nth-child(2) { transition-delay: .1s; }
+    .js h1.in .line:nth-child(3) { transition-delay: .2s; }
+    h1 .paint { --paint-delay: .45s; margin: .04em 0 .06em -.04em; }
 
-    .qty-btn {
-      width: 46px;
-      background: none;
-      border: none;
-      font-size: 18px;
-      font-weight: 400;
+
+    .hero-sub { margin-top: 26px; max-width: 30em; font-size: clamp(16px, 1.3vw, 19px); color: var(--mint); }
+    .hero-sub a { color: #fff; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+    .js .fade { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s var(--ease-out); transition-delay: var(--d, 0s); }
+    .js .fade.in { opacity: 1; transform: none; }
+
+    /* Voucher jako předmět */
+    .buy { display: flex; flex-direction: column; align-items: flex-start; gap: 26px; }
+    .stack { position: relative; width: min(100%, 460px); aspect-ratio: 1.75 / 1; perspective: 900px; }
+
+    .ticket, .ticket-back {
+      position: absolute; inset: 0;
+      border-radius: 20px;
+      --notch: radial-gradient(circle at 0 50%, transparent 15px, #000 15.5px) left / 51% 100% no-repeat,
+               radial-gradient(circle at 100% 50%, transparent 15px, #000 15.5px) right / 51% 100% no-repeat;
+      -webkit-mask: var(--notch); mask: var(--notch);
+    }
+    .ticket-back { background: var(--cream-2); transition: transform .3s var(--ease-out), opacity .3s ease; opacity: 0; }
+    .stack[data-count="2"] .tb1, .stack[data-count="3"] .tb1, .stack[data-count="4"] .tb1 { opacity: 1; transform: rotate(5deg) translate(10px, 8px); }
+    .stack[data-count="3"] .tb2, .stack[data-count="4"] .tb2 { opacity: .85; transform: rotate(10deg) translate(22px, 18px); }
+    .ticket {
+      position: absolute;
+      background: var(--cream); color: var(--teal-ink);
+      transform: rotate(-3deg) rotateY(calc(var(--mx, 0) * 7deg)) rotateX(calc(var(--my, 0) * -6deg)) translate(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 4px));
+      box-shadow: calc(var(--mx, 0) * -14px) calc(30px + var(--my, 0) * -8px) 60px -20px rgba(0,0,0,.45);
+      display: grid; grid-template-rows: auto 1fr auto;
+      padding: 7% 9%;
+    }
+    .js .ticket { opacity: 0; transition: opacity .6s ease .1s; }
+    .js .buy.in .ticket { opacity: 1; }
+    .ticket-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    .ticket-top img { width: 42px; height: 42px; }
+    .ticket-tag { position: absolute; left: 47%; top: 9.5%; font-family: var(--display); font-size: clamp(15px, 1.5vw, 20px); text-transform: uppercase; transform: rotate(-4deg); isolation: isolate; }
+    .ticket-tag .paint { --paint-delay: .9s; }
+    .ticket-amount {
+      align-self: center; justify-self: start;
+      font-family: var(--display); font-size: clamp(52px, 7vw, 92px); line-height: 1;
+      color: var(--teal); white-space: nowrap;
+    }
+    .ticket-amount small { font-size: .55em; margin-left: .12em; }
+    .ticket-amount.empty { color: #8f877b; font-size: clamp(30px, 3.4vw, 44px); }
+    .ticket-bottom {
+      display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      padding-top: 12px; border-top: 2px dashed rgba(5,63,57,.3);
+      font-size: 13px; font-weight: 600;
+    }
+    .ticket-count {
+      position: absolute; top: -14px; right: -10px; z-index: 2;
+      min-width: 48px; height: 48px; padding: 0 10px; border-radius: 999px;
+      display: grid; place-items: center;
+      background: var(--terra); color: #fff;
+      font-family: var(--display); font-size: 21px;
+      transform: rotate(8deg);
+    }
+    .ticket-count[hidden] { display: none; }
+    .ticket-count.mix { top: -20px; right: -12px; height: auto; padding: 8px 13px; border-radius: 16px; gap: 2px; font-size: 17px; line-height: 1; white-space: nowrap; transform: rotate(6deg); }
+
+    .controls { position: relative; width: min(100%, 460px); }
+    .qty-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(191,230,216,.3);
+    }
+    .qty-row:first-child { border-top: 1px solid rgba(191,230,216,.3); }
+    .qty-label { font-family: var(--display); font-size: 28px; letter-spacing: .01em; white-space: nowrap; }
+    .qty-label small { font-family: 'Archivo', sans-serif; font-size: 13px; font-weight: 500; color: var(--mint); margin-left: 8px; letter-spacing: 0; }
+    .stepper { display: inline-flex; align-items: center; gap: 4px; }
+    .step-btn {
+      width: 44px; height: 44px; border-radius: 999px;
+      border: 1.5px solid var(--mint); background: transparent;
+      font-size: 22px; line-height: 1; cursor: pointer; touch-action: manipulation;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .step-btn:hover:not(:disabled):not([aria-disabled="true"]) { background: #fff; color: var(--teal-ink); border-color: #fff; }
+    .step-btn:disabled, .step-btn[aria-disabled="true"] { opacity: .35; cursor: not-allowed; }
+    .step-val { min-width: 36px; text-align: center; font-family: var(--display); font-size: 26px; }
+
+    .cta {
+      position: relative;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      width: 100%; min-height: 64px; margin-top: 20px; padding: 0 12px 0 28px;
+      background: #fff; color: var(--teal-ink);
+      border: 0; border-radius: 999px; cursor: pointer; touch-action: manipulation;
+      font-size: 16px; font-weight: 700;
+      transition: background .15s;
+    }
+    .cta:hover { background: var(--mint); }
+    .cta-total { display: inline-flex; align-items: center; gap: 12px; }
+    .cta-total > span:first-child { font-family: var(--display); font-weight: 400; font-size: 22px; }
+    .cta-arrow { width: 44px; height: 44px; border-radius: 999px; background: var(--terra); color: #fff; display: grid; place-items: center; transition: transform .2s var(--ease-out); }
+    .cta:hover .cta-arrow { transform: translateX(3px); }
+    .cta-arrow svg { width: 18px; height: 18px; }
+    .hint { margin-top: 12px; font-weight: 600; text-align: center; }
+    .hint:empty { display: none; }
+    .facts { margin-top: 16px; font-size: 13px; text-align: center; color: var(--mint); }
+
+
+    /* ── VELKÁ FOTKA V ÚVODU (pravá polovina až do krajů) ── */
+    .hero-photo { display: block; position: absolute; z-index: 0; top: 0; right: 0; bottom: 0; left: 58%; overflow: hidden; background: #1d1917; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%;
+      transform: scale(1.06) translate(calc(var(--mx, 0) * -10px), calc(var(--my, 0) * -8px)); }
+    .hero-photo::after { content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(5,63,57,.5), rgba(5,63,57,0) 22%), linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,0) 14%); }
+    .js .hero-photo { opacity: 0; transition: opacity .9s ease; }
+    .js .buy.in .hero-photo { opacity: 1; }
+    .topbar a { color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,.55); }
+    .buy > .stack, .buy > .controls { position: relative; z-index: 1; margin-left: clamp(-110px, -7vw, -30px); }
+    .buy > .stack, .buy > .controls { width: min(100%, 420px); }
+    .stack { filter: drop-shadow(0 26px 30px rgba(0,0,0,.4)); }
+    .ticket { box-shadow: none; }
+    .controls {
+      padding: 18px 24px 16px; border-radius: 22px;
+      background: var(--teal-ink);
+      box-shadow: 0 30px 60px -30px rgba(0,0,0,.65);
+    }
+    .qty-row:first-child { border-top: 0; }
+    .facts { margin-top: 12px; }
+
+    /* ── VARIANTA SKLO (?v=sklo) ── */
+    [data-look="glass"] .stack { filter: none; }
+    [data-look="glass"] .ticket {
+      background: rgba(255,255,255,.13); color: #fff;
+      -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.3);
+    }
+    [data-look="glass"] .ticket-amount { color: #fff; }
+    [data-look="glass"] .ticket-amount.empty { color: var(--mint); }
+    [data-look="glass"] .ticket-bottom { border-top-color: rgba(255,255,255,.4); }
+    [data-look="glass"] .ticket-back {
+      background: rgba(255,255,255,.08);
+      -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+    }
+    [data-look="glass"] .controls {
+      background: rgba(4,36,32,.42);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3); backdrop-filter: blur(20px) saturate(1.3);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 30px 60px -30px rgba(0,0,0,.6);
+    }
+
+    @media (min-width: 961px) and (max-width: 1240px) {
+      .buy > .stack, .buy > .controls { margin-left: -20px; }
+      .hero-sub { max-width: 24em; }
+    }
+    @media (max-width: 960px) {
+      .hero { --photo-show: clamp(200px, 42vw, 380px); }   /* kolik fotky je vidět nad vstupenkou */
+      .hero .buy { position: relative; align-items: stretch; padding-top: var(--photo-show); }
+      .buy > .stack, .buy > .controls { width: min(100%, 460px); }
+      .hero-photo { top: 0; bottom: auto; left: calc(-1 * var(--gutter)); right: calc(-1 * var(--gutter)); height: calc(var(--photo-show) + min(100vw - 2 * var(--gutter), 460px) / 3.5); }
+      .hero-photo img { object-position: center 22%; }
+      .hero-photo::after { background: linear-gradient(rgba(9,106,95,.35), rgba(9,106,95,0) 25%, rgba(9,106,95,0) 75%, rgba(9,106,95,.7)); }
+      .buy > .stack, .buy > .controls { margin-left: auto; margin-right: auto; }
+      .controls { padding: 0; background: none; box-shadow: none; }
+      [data-look="glass"] .controls { background: none; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+      .qty-row:first-child { border-top: 1px solid rgba(191,230,216,.3); }
+      .topbar a { color: var(--mint); text-shadow: none; }
+    }
+    @media (max-width: 600px) {
+      .hero .buy { padding-top: 96px; gap: 18px; }
+      .hero .hero-grid { gap: 18px; }
+      .hero h1 { font-size: clamp(46px, 13.6vw, 70px); }
+      .hero .qty-row { padding: 4px 0; }
+      .hero-photo { height: calc(96px + (100vw - 2 * var(--gutter) - 16px) / 4); }
+    }
+
+    /* ── PÁS S NÁPISY ── */
+    .tapes { position: relative; z-index: 2; margin: -26px 0 -26px; }
+    .marquee { overflow: hidden; padding: 14px 0; margin: 0 -2vw; background: var(--terra); color: #fff; transform: rotate(-1.2deg); }
+    .marquee-track { display: flex; align-items: center; width: max-content; animation: slide 40s linear infinite; font-size: clamp(24px, 2.8vw, 38px); }
+    .marquee-track span { font-family: var(--display); text-transform: uppercase; white-space: nowrap; line-height: 1; padding-top: .06em; }
+    .heart { flex: none; width: 1.2em; height: 1.2em; margin: 0 .5em; color: var(--cream); overflow: visible; }
+    .heart use { fill: none; stroke: currentColor; stroke-width: 13; stroke-linecap: round; stroke-linejoin: round; }
+    @keyframes slide { to { transform: translateX(-50%); } }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+
+    /* ── SVĚTLÉ SEKCE ── */
+    .on-light { position: relative; background: var(--cream); color: var(--ink); }
+    .section { position: relative; padding: clamp(96px, 11vw, 150px) var(--gutter) clamp(72px, 9vw, 130px); }
+    .wrap { max-width: 1440px; margin: 0 auto; position: relative; }
+    .h2 {
+      font-family: var(--display); font-weight: 400; text-transform: uppercase;
+      font-size: clamp(44px, 6.4vw, 104px); line-height: 1;
       color: var(--teal);
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      touch-action: manipulation;
     }
-    .qty-btn:hover { background: var(--teal-light); }
-    .qty-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+    .h2 .line { display: block; }
+    .h2 .paint { margin-top: .14em; }
 
-    .qty-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: var(--teal-light);
-      border-left: 1px solid rgba(27,127,114,0.2);
-      border-right: 1px solid rgba(27,127,114,0.2);
-    }
-    .qty-num {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--teal-dark);
-      line-height: 1;
-    }
-    .qty-label-text {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--teal-dark);
-    }
+    .gifts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 2.6vw, 40px); margin-top: clamp(44px, 5vw, 80px); list-style: none; }
+    .gift { position: relative; }
+    .gift:nth-child(2) { margin-top: clamp(32px, 6vw, 96px); }
+    .gift-photo { position: relative; transform: translate(calc(var(--mx, 0) * var(--px, 0px)), calc(var(--my, 0) * var(--px, 0px))) rotate(var(--r, 0deg)); transition: rotate .5s var(--ease-out); }
+    .gift:nth-child(1) .gift-photo { --r: -2.2deg; --px: 6px; }
+    .gift:nth-child(2) .gift-photo { --r: 1.6deg; --px: -8px; }
+    .gift:nth-child(3) .gift-photo { --r: -1.1deg; --px: 5px; }
+    .gift-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; box-shadow: 0 22px 40px -24px rgba(0,0,0,.55); }
+    .gift h3 { margin-top: 20px; font-family: var(--display); font-weight: 400; font-size: clamp(26px, 2.4vw, 34px); text-transform: uppercase; color: var(--teal); line-height: 1.05; }
+    .gift p { margin-top: 6px; color: var(--muted); max-width: 26em; text-wrap: pretty; }
+    .js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .8s var(--ease-out); transition-delay: var(--d, 0s); }
+    .js .reveal.in { opacity: 1; transform: none; }
 
-    /* ── STICKY BAR ── */
-    .sticky-bar {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      z-index: 300;
-      background: var(--white);
-      border-top: 1px solid var(--border);
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
-      display: none;
-    }
-    .sticky-bar.visible { display: block; }
+    .how { padding-top: 0; }
+    .how .wrap { border-top: 2px solid var(--teal); padding-top: clamp(40px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(32px, 5vw, 80px); }
+    .steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); counter-reset: s; }
+    .steps li { position: relative; counter-increment: s; }
+    .steps li::before { content: counter(s); display: block; font-family: var(--display); font-size: clamp(72px, 7vw, 112px); line-height: .9; color: var(--terra); }
+    .steps h3 { margin-top: 12px; font-size: 19px; font-weight: 700; }
+    .steps p { margin-top: 4px; color: var(--muted); text-wrap: pretty; }
 
-    .sticky-bar-inner {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 14px 48px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
+    /* ── POBOČKY ── */
+    .places { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 82vh; }
+    .places-photo { position: relative; overflow: hidden; min-height: 46vh; }
+    .places-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.05) translate(calc(var(--mx, 0) * 8px), calc(var(--my, 0) * 6px)); }
+    .places-body { padding: clamp(64px, 8vw, 120px) var(--gutter); display: flex; flex-direction: column; justify-content: center; }
+    .places .h2 { color: #fff; }
+    .branches { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 44px; }
+    .branch h3 { font-family: var(--display); font-weight: 400; font-size: clamp(32px, 3vw, 44px); text-transform: uppercase; line-height: 1; }
+    .branch address { font-style: normal; margin-top: 10px; color: var(--mint); }
+    .branch-links { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 10px; }
+    .branch-links a { padding: 6px 0; font-size: 14px; font-weight: 600; text-underline-offset: 4px; }
+    .places-note { margin-top: 36px; color: var(--mint); max-width: 28em; }
+    .again {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 32px; min-height: 52px; padding: 0 24px;
+      background: #fff; color: var(--teal-ink); border-radius: 999px;
+      font-weight: 700; text-decoration: none;
+      transition: background .15s;
     }
+    .again:hover { background: var(--mint); }
 
-    .sticky-items {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex: 1;
-      overflow: hidden;
-    }
+    footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 22px var(--gutter); background: var(--teal-ink); font-size: 13px; color: var(--mint); }
+    footer nav { display: flex; gap: 18px; }
+    footer a { text-decoration: none; }
+    footer a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 
-    .sticky-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
+    /* ── OBJEDNÁVKA (panel) ── */
+    dialog.sheet {
+      margin: 0 0 0 auto; padding: 0; border: 0;
+      width: min(520px, 100vw); max-width: 100vw;
+      height: 100dvh; max-height: 100dvh;
+      background: var(--cream); color: var(--ink);
+      overflow-y: auto;
     }
-    .sticky-thumb {
-      width: 48px; height: 26px;
-      object-fit: cover;
-      border-radius: 4px;
-      border: 1px solid var(--border);
+    dialog.sheet[open] { animation: sheet-in .32s var(--ease-out); }
+    @keyframes sheet-in { from { transform: translateX(40px); opacity: 0; } }
+    dialog.sheet::backdrop { background: rgba(5,30,27,.6); }
+    .sheet-head {
+      position: sticky; top: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 14px 18px 14px 28px; background: var(--cream);
+      border-bottom: 1px solid var(--cream-2);
     }
-    .sticky-item-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--dark);
-      white-space: nowrap;
-    }
-    .sticky-item-qty {
-      font-size: 12px;
-      color: var(--light-text);
-    }
+    .sheet-head p { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--terra-ink); }
+    .icon-btn { width: 44px; height: 44px; border-radius: 999px; border: 0; background: var(--cream-2); cursor: pointer; display: grid; place-items: center; }
+    .icon-btn:hover { background: #e0d4c1; }
+    .sheet-body { padding: 28px 28px 40px; }
+    .sheet-title { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 46px; line-height: 1.02; color: var(--teal); }
+    .sheet-title .paint { --paint-delay: .15s; }
+    .sheet-sub { margin-top: 12px; color: var(--muted); }
+    .step[hidden] { display: none; }
 
-    .sticky-sep {
-      width: 1px; height: 28px;
-      background: var(--border);
-      flex-shrink: 0;
-    }
+    .summary { margin-top: 22px; padding: 14px 18px; background: #fff; border-radius: 14px; }
+    .summary-line { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; font-size: 15px; }
+    .summary-line span:first-child { color: var(--muted); }
+    .summary-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; padding-top: 10px; border-top: 1px dashed #c9bda9; font-weight: 700; }
+    .summary-total span:last-child { font-family: var(--display); font-weight: 400; font-size: 26px; color: var(--teal); }
 
-    .sticky-total-wrap { text-align: right; flex-shrink: 0; }
-    .sticky-total-label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--light-text);
-      margin-bottom: 1px;
+    .form { display: grid; gap: 16px; margin-top: 24px; }
+    .field label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; }
+    .field .opt-note { margin-left: 6px; font-weight: 400; color: var(--muted); }
+    .field input {
+      width: 100%; min-height: 52px; padding: 12px 16px;
+      border: 1.5px solid #8a8278; border-radius: 12px; background: #fff;
+      font: inherit; font-size: 16px; color: var(--ink);
+      -webkit-appearance: none; appearance: none;
     }
-    .sticky-total-amount {
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--dark);
-    }
-
-    .btn-checkout {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 28px;
-      background: var(--terra);
-      color: white;
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s;
-      min-height: 48px;
-      white-space: nowrap;
-      touch-action: manipulation;
-      flex-shrink: 0;
-    }
-    .btn-checkout:hover { background: #a8522f; }
-    .btn-checkout:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; }
-    .btn-checkout svg {
-      width: 16px; height: 16px;
-      stroke: white; fill: none;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-      flex-shrink: 0;
-      transition: transform 0.2s;
-    }
-    .btn-checkout:hover svg { transform: translateX(3px); }
-
-    /* ── CHECKOUT SECTION ── */
-    .checkout-section {
-      display: none;
-      background: #f3f4f6;
-      border-top: 1px solid var(--border);
-    }
-    .checkout-section.visible { display: block; }
-
-    .checkout-inner {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 56px 48px 64px;
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 32px;
-      align-items: start;
-    }
-
-    /* Form */
-    .checkout-form {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px;
-    }
-    .form-title {
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 6px;
-    }
-    .form-sub {
-      font-size: 14px;
-      color: var(--light-text);
-      line-height: 1.6;
-      margin-bottom: 28px;
-    }
-
-    .field-group { margin-bottom: 20px; }
-
-    .field-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 8px;
-    }
-
-    input[type="email"],
-    input[type="text"],
-    input[type="tel"] {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid #8a8580;
-      border-radius: 8px;
-      font-size: 15px;
-      font-family: inherit;
-      color: var(--dark);
-      background: #f9fafb;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-      -webkit-appearance: none;
-    }
-    input[type="email"]:focus,
-    input[type="text"]:focus,
-    input[type="tel"]:focus {
-      border-color: var(--teal);
-      background: white;
-      box-shadow: 0 0 0 3px rgba(27,127,114,0.1);
-    }
-    input.error { border-color: #c0392b; }
-    input::placeholder { color: #767676; }
-
-    .field-hint {
-      font-size: 13px;
-      color: var(--light-text);
-      margin-top: 6px;
-      line-height: 1.5;
-    }
-    .error-msg {
-      font-size: 13px;
-      color: #c0392b;
-      font-weight: 500;
-      margin-top: 6px;
-      display: none;
-      align-items: center;
-      gap: 6px;
-    }
+    .field input::placeholder { color: #736c63; }
+    .field input:focus { outline: 2px solid var(--teal); outline-offset: 2px; border-color: var(--teal); box-shadow: none; }
+    .field input.error { border-color: var(--error); }
+    .field-hint { margin-top: 6px; font-size: 13px; color: var(--muted); }
+    .error-msg { display: none; align-items: center; gap: 6px; margin-top: 6px; font-size: 13px; font-weight: 600; color: var(--error); }
     .error-msg.visible { display: flex; }
 
     .btn-pay {
-      width: 100%;
-      padding: 15px 24px;
-      background: var(--teal);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 50px;
-      touch-action: manipulation;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; min-height: 58px; margin-top: 8px;
+      background: var(--teal); color: #fff; border: 0; border-radius: 999px;
+      font-size: 16px; font-weight: 700; cursor: pointer; touch-action: manipulation;
+      transition: background .15s;
     }
-    .btn-pay:hover:not(:disabled) { background: var(--teal-dark); }
-    .btn-pay:disabled { background: #a0bfbb; cursor: not-allowed; }
-    .btn-pay:focus-visible { outline: 3px solid var(--teal-dark); outline-offset: 3px; }
-    .btn-pay svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
-
-    .spinner {
-      display: none;
-      width: 17px; height: 17px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    .btn-pay.loading .btn-label { display: none; }
-    .btn-pay.loading .btn-arrow { display: none; }
+    .btn-pay:hover:not(:disabled) { background: var(--teal-deep); }
+    .btn-pay:disabled { opacity: .6; cursor: not-allowed; }
+    .btn-pay svg { width: 18px; height: 18px; }
+    .spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    .btn-pay.loading .btn-label, .btn-pay.loading .btn-arrow { display: none; }
     .btn-pay.loading .spinner { display: block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Summary */
-    .checkout-summary {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-    }
-
-    .summary-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--light-text);
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .summary-row {
-      display: grid;
-      grid-template-columns: 56px 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .summary-thumb {
-      width: 56px; height: 28px;
-      object-fit: cover;
-      border: 1px solid var(--border);
-    }
-    .summary-name {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--dark);
-    }
-    .summary-qty {
-      font-size: 13px;
-      color: var(--light-text);
-      margin-top: 2px;
-    }
-    .summary-price {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--dark);
-      white-space: nowrap;
-      font-family: 'Bai Jamjuree', sans-serif;
-    }
-
-    .summary-total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 16px;
-      margin-top: 4px;
-    }
-    .summary-total-label {
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--light-text);
-    }
-    .summary-total-amount {
-      font-family: 'Bai Jamjuree', sans-serif;
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--dark);
-    }
-
-    .btn-change-cart {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 16px;
-      padding: 10px 0;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--teal);
-      background: none;
-      border: none;
-      font-family: inherit;
-      cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .btn-change-cart:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
-
-    /* ── INFO SECTION ── */
-    .info-section {
-      background: var(--white);
-      border-top: 1px solid var(--border);
-    }
-
-    .info-inner {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 48px 48px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-    }
-
-    .info-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 0 32px 0 0;
-      border-right: 1px solid var(--border);
-    }
-    .info-item:first-child { padding-left: 0; }
-    .info-item:last-child  { border-right: none; padding-right: 0; padding-left: 32px; }
-    .info-item:nth-child(2) { padding-left: 32px; }
-
-    .info-icon-wrap {
-      width: 40px; height: 40px;
-      background: var(--teal-light);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .info-icon-wrap svg {
-      width: 18px; height: 18px;
-      stroke: var(--teal);
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .info-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--dark);
-      line-height: 1.3;
-      margin-bottom: 4px;
-    }
-
-    .info-desc {
-      font-size: 13px;
-      color: var(--mid);
-      line-height: 1.6;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--dark);
-      padding: 24px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .footer-brand {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-    }
-    .footer-links {
-      display: flex;
-      gap: 20px;
-    }
-    .footer-links a {
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: white; }
-
-    /* ── QR PLATBA ── */
-    .qr-section {
-      display: none;
-      background: #f3f4f6;
-      border-top: 1px solid var(--border);
-    }
-    .qr-section.visible { display: block; }
-
-    .qr-inner {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 64px 48px 80px;
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 40px;
-      align-items: start;
-    }
-
-    .qr-main {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 40px 40px;
-    }
-
-    .qr-title { font-size: 24px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-    .qr-sub   { font-size: 14px; color: var(--light-text); line-height: 1.6; margin-bottom: 16px; font-weight: 300; }
-
-    .qr-code-wrap {
-      display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 32px;
-    }
-    .qr-code-img {
-      width: 220px; height: 220px; border-radius: 12px;
-      border: 1px solid var(--border); padding: 12px; background: white;
-    }
-    .qr-hint { font-size: 13px; color: var(--light-text); text-align: center; }
-
-    .qr-details {
-      background: #f9fafb; border: 1px solid var(--border);
-      border-radius: 10px; padding: 20px 24px; margin-bottom: 24px;
-    }
-    .qr-detail-row {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      padding: 8px 0; border-bottom: 1px solid var(--border); gap: 4px 16px;
-    }
-    .qr-detail-row:last-child { border-bottom: none; }
-    .qr-detail-label { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #6b7280; }
-    .qr-detail-value { font-size: 14px; font-weight: 600; color: var(--dark); text-align: right; font-family: monospace; letter-spacing: 0.5px; min-width: 0; overflow-wrap: anywhere; }
-    @media (max-width: 400px) {
-      .qr-detail-row { flex-direction: column; align-items: flex-start; }
-      .qr-detail-value { text-align: left; letter-spacing: 0; }
-    }
-    .qr-note {
-      display: flex; align-items: center; gap: 8px; background: var(--teal-light); border-radius: 12px;
-      padding: 10px 14px; margin-bottom: 24px; font-size: 13px; color: var(--teal-dark); font-weight: 500;
-    }
-    .qr-note svg { flex-shrink: 0; }
+    .qr-note { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 10px 14px; border-radius: 10px; background: #e4f1ee; color: var(--teal-ink); font-size: 14px; font-weight: 500; }
     .qr-note[hidden] { display: none; }
-    .qr-detail-value.amount { font-size: 18px; font-weight: 700; color: var(--teal); font-family: 'Bai Jamjuree', sans-serif; }
-
-    .qr-waiting {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--teal-light); border-radius: 8px;
-      padding: 14px 18px; font-size: 14px; color: var(--teal-dark); font-weight: 500;
-    }
-    .qr-waiting-dot {
-      width: 8px; height: 8px; background: var(--teal); border-radius: 50%;
-      flex-shrink: 0; animation: qr-pulse 1.5s ease-in-out infinite;
-    }
-    @keyframes qr-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    @media (prefers-reduced-motion: reduce) { .qr-waiting-dot { animation: none; } }
-
-    .qr-paid {
-      display: none; align-items: flex-start; gap: 12px;
-      background: #e8f5f3; border: 1px solid #1B7F72; border-radius: 8px;
-      padding: 16px 18px; font-size: 15px; color: #12574d; line-height: 1.5;
-    }
+    .qr-card { margin-top: 20px; padding: 20px; background: #fff; border-radius: 18px; display: grid; justify-items: center; gap: 16px; }
+    .qr-img { width: 210px; height: 210px; }
+    .qr-details { width: 100%; }
+    .qr-row { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 2px 12px; padding: 8px 0; border-top: 1px solid var(--cream-2); }
+    .qr-label { font-size: 13px; color: var(--muted); }
+    .qr-value { font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .qr-value.amount { font-family: var(--display); font-weight: 400; font-size: 24px; color: var(--teal); }
+    .qr-waiting { display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; padding: 14px 16px; border-radius: 12px; background: #e4f1ee; color: var(--teal-ink); font-size: 14px; }
+    .qr-waiting-dot { width: 8px; height: 8px; margin-top: 7px; flex-shrink: 0; border-radius: 50%; background: var(--teal); animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .3; } }
+    .qr-paid { display: none; gap: 12px; align-items: flex-start; margin-top: 22px; padding: 18px; border-radius: 16px; background: var(--teal); color: #fff; line-height: 1.55; }
     .qr-paid.visible { display: flex; }
     .qr-paid svg { flex-shrink: 0; margin-top: 2px; }
-    .qr-paid strong { display: block; font-size: 16px; margin-bottom: 2px; }
+    .qr-paid strong { display: block; font-size: 17px; margin-bottom: 2px; }
     .qr-paid > div { min-width: 0; overflow-wrap: anywhere; }
-    .qr-title { scroll-margin-top: 16px; }
-    .qr-section.is-paid .qr-code-wrap, .qr-section.is-paid .qr-details,
-    .qr-section.is-paid .qr-note, .qr-section.is-paid .qr-sub { display: none; }
-    .qr-section.is-paid .checkout-summary { order: 1; }
-    body.has-sticky { padding-bottom: 96px; }
-    @media (max-width: 400px) { .sticky-item > div { display: none; } }
+    .is-paid .qr-card, .is-paid .qr-note, .is-paid .sheet-sub, .is-paid .qr-waiting { display: none !important; }
+
+    .pending {
+      position: fixed; left: 50%; bottom: 16px; z-index: 50; transform: translateX(-50%);
+      display: inline-flex; align-items: center; gap: 10px;
+      min-height: 52px; padding: 0 22px;
+      background: #fff; color: var(--teal-ink); border: 0; border-radius: 999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+      font-weight: 700; cursor: pointer;
+    }
+    .pending[hidden] { display: none; }
+
+    .sticky-buy { display: none; }
+    @media (max-width: 960px) {
+      .sticky-buy {
+        position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 40;
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        padding: 8px 8px 8px 20px; border-radius: 999px;
+        background: var(--teal-ink); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+        transform: translateY(140%); transition: transform .35s var(--ease-out);
+      }
+      .sticky-buy.show { transform: none; }
+      footer { padding-bottom: 96px; }
+      .sticky-total { font-family: var(--display); font-size: 22px; }
+      .sticky-btn { min-height: 48px; padding: 0 22px; border: 0; border-radius: 999px; background: #fff; color: var(--teal-ink); font-weight: 700; cursor: pointer; }
+    }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 800px) {
-      nav { padding: 16px 24px; }
-      .hero { min-height: 480px; max-height: 640px; }
-      .hero-content { padding: 0 24px 56px; }
-      .hero h1 { font-size: clamp(32px, 8vw, 48px); margin-bottom: 20px; }
-      .hero-eyebrow { margin-bottom: 12px; }
-      .section { padding: 48px 20px 36px; }
-      .tiles { grid-template-columns: 1fr; gap: 16px; }
-      .sticky-bar-inner { padding: 12px 20px; flex-wrap: wrap; }
-      .checkout-inner { grid-template-columns: minmax(0, 1fr); padding: 40px 20px; gap: 32px; }
-      .qr-inner { grid-template-columns: minmax(0, 1fr); padding: 40px 20px; gap: 32px; }
-      .checkout-summary { order: -1; }
-      .info-inner { grid-template-columns: 1fr; padding: 40px 20px; gap: 24px; }
-      .info-item { border-right: none !important; padding: 0 !important; flex-direction: row; align-items: flex-start; gap: 14px; }
-      .info-icon-wrap { flex-shrink: 0; }
-      footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+    @media (min-width: 961px) and (max-height: 780px) {
+      .buy { gap: 20px; }
+      .stack { width: min(100%, 420px); }
+    }
+    @media (max-width: 360px) { .qty-label small { display: none; } }
+
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-top: 16px; }
+      .buy { align-items: stretch; padding-top: 70px; }
+      .stack, .controls { margin: 0 auto; }
+      .gifts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .gift:nth-child(2) { margin-top: 0; }
+      .gift:nth-child(3) { grid-column: 1 / -1; }
+      .gift:nth-child(3) .gift-photo img { aspect-ratio: 16 / 9; }
+      .how .wrap { grid-template-columns: minmax(0, 1fr); }
+      .places { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .hero { padding-top: 14px; }
+      .topbar img { width: 48px; height: 48px; }
+      h1 { font-size: clamp(50px, 15vw, 76px); }
+      .hero-sub { margin-top: 18px; }
+      .hero-grid { gap: 26px; padding-top: 10px; padding-bottom: 64px; }
+      .buy { padding-top: 0; gap: 22px; }
+      .stack { width: calc(100% - 16px); aspect-ratio: 2 / 1; }
+      .ticket-tag { display: none; }
+      .ticket { padding: 6% 8%; }
+      .ticket-top img { width: 34px; height: 34px; }
+      .ticket-top { font-size: 11px; }
+      .ticket-bottom { font-size: 12px; }
+      .qty-row { padding: 6px 0; }
+      .cta { margin-top: 16px; }
+      .gifts { grid-template-columns: minmax(0, 1fr); }
+      .gift:nth-child(3) .gift-photo img { aspect-ratio: 4 / 5; }
+      .steps { grid-template-columns: minmax(0, 1fr); }
+      .steps li { display: grid; grid-template-columns: 64px minmax(0, 1fr); }
+      .steps li::before { grid-row: span 2; font-size: 64px; }
+      .steps h3 { margin-top: 4px; }
+      .branches { grid-template-columns: minmax(0, 1fr); }
+      .sheet-body { padding: 24px 20px 36px; }
+      .sheet-head { padding-left: 20px; }
+      .sheet-title { font-size: 40px; }
     }
 
-    @media (max-width: 430px) {
-      .hero { min-height: 420px; }
-      .hero-content { padding: 0 20px 48px; }
-      .sticky-sep { display: none; }
-      .sticky-items { gap: 10px; }
-      .sticky-thumb { display: none; }
-    }
-
-    /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+      .js h1 .line, .js .fade, .js .reveal, .js .ticket, .js .hero-photo { opacity: 1 !important; }
+      .js h1 .line, .js .fade, .js .reveal { transform: none !important; }
+      .js .paint::before, .js .paint::after { clip-path: none !important; }
+      .marquee-track { flex-wrap: wrap; width: auto; justify-content: center; }
+      .marquee-track .dup { display: none; }
+    }
+
+    /* ════════ SJEDNOCENÍ S ROZCESTNÍKEM labonetta.cz ════════ */
+    /* úvod (zelené pozadí): dva skutečné tahy štětcem přes sebe, bez plné výplně pod nimi */
+    h1 .paint::before, h1 .paint::after { inset: -.16em -.34em -.1em -.28em; background: var(--terra); }
+    h1 .paint::before {
+      -webkit-mask: url(assets/brush/brush-1.svg) left top / 100% 66% no-repeat;
+              mask: url(assets/brush/brush-1.svg) left top / 100% 66% no-repeat; }
+    h1 .paint::after {
+      -webkit-mask: url(assets/brush/brush-3.svg) left .14em bottom / 96% 66% no-repeat;
+              mask: url(assets/brush/brush-3.svg) left .14em bottom / 96% 66% no-repeat;
+      transform: translate(calc(var(--mx, 0) * 4px), calc(var(--my, 0) * 3px)) rotate(calc(1.2deg + var(--mx, 0) * .4deg)); }
+    /* nadpisy sekcí na zeleném pozadí: stejné dva tahy jako v úvodu */
+    .h2 .paint::before, .h2 .paint::after { inset: -.18em -.3em -.12em -.26em; background: var(--paint, var(--terra));
+      transform: translate(calc(var(--mx, 0) * 4px), calc(var(--my, 0) * 3px)) rotate(calc(var(--tilt, -1.5deg) + var(--mx, 0) * .4deg)); }
+    .h2 .paint::before { -webkit-mask: url(assets/brush/brush-1.svg) left top / 100% 60% no-repeat; mask: url(assets/brush/brush-1.svg) left top / 100% 60% no-repeat; }
+    .h2 .paint::after { -webkit-mask: url(assets/brush/brush-3.svg) left .14em bottom / 96% 60% no-repeat; mask: url(assets/brush/brush-3.svg) left .14em bottom / 96% 60% no-repeat; }
+    /* světlé pozadí (sekce i okno nákupu): předpočítaný hustý tah jako obrázek, aby bílé písmo bylo čitelné */
+    .on-light .h2 .paint::before, .sheet-title .paint::before {
+      inset: -.18em -.3em -.12em -.26em; -webkit-mask: none; mask: none;
+      background: url(assets/brush/tah-zeleny-kratky-2.png) center / 100% 100% no-repeat;
+      transform: translate(calc(var(--mx, 0) * 4px), calc(var(--my, 0) * 3px)) rotate(calc(var(--tilt, -1.5deg) + var(--mx, 0) * .4deg)); }
+    .sheet-title .paint::before { background-image: url(assets/brush/tah-oranzovy-kratky-2.png); }
+    .on-light .h2 .paint::after, .sheet-title .paint::after { display: none; }
+    /* vstupenka bez podtrženého nápisu, stejně jako na rozcestníku */
+    .ticket-tag { display: none; }
+
+    /* tlačítka: hlavní akce = oranžová pilulka s bílým textem a obyčejnou šipkou */
+    .cta, .btn-pay, .sticky-btn { background: var(--terra); color: #fff; }
+    .cta:hover, .btn-pay:hover:not(:disabled), .sticky-btn:hover { background: var(--terra-ink); }
+    .cta-arrow { width: auto; height: auto; background: none; color: inherit; border-radius: 0; }
+    .again { background: var(--terra) !important; color: #fff !important; }
+    .again:hover { background: var(--terra-ink) !important; }
+
+    /* menu nad světlou fotkou: tmavý podklad pod odkazy, ať je text čitelný (kontrast) */
+    @media (min-width: 961px) {
+      .topbar:not(.is-stuck) .topnav { padding: 4px; border-radius: 999px; background: rgba(5,63,57,.78); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+      .topbar:not(.is-stuck) .topnav a { text-shadow: none; }
+    }
+    /* mobil a tablet: pás s nápisy nesmí zakrýt patičku */
+    @media (max-width: 960px) { .tapes { margin-bottom: 0; } footer { padding-top: 46px; } }
+
+    /* počítač: stránka přesně na výšku okna, bez posouvání (pás s nápisy přilepený dole) */
+    @media (min-width: 961px) and (min-height: 680px) {
+      html, body { height: 100%; overflow: hidden; }
+      .hero { height: 100svh; min-height: 0; padding-bottom: 0; }
+      .tapes { position: fixed; left: 0; right: 0; bottom: 14px; z-index: 4; margin: 0; }
+      footer { display: none; }
+    }
+    @media (min-width: 961px) and (max-height: 780px) { .tapes { display: none; } }
+    /* nižší obrazovky: menší vstupenka, aby se celý výběr vešel bez posouvání */
+    @media (min-width: 961px) and (max-height: 820px) {
+      .buy { gap: 16px; }
+      .buy > .stack { width: min(100%, 340px); }
+      .cta { min-height: 56px; margin-top: 14px; }
+    }
+    /* „Darujte kus Neapole“ nemá diakritiku, řádky můžou být natěsno */
+    h1 { line-height: .95; }
+    .topnav a { display: inline-flex; align-items: center; gap: 6px; }
+    .nav-home { width: 16px; height: 16px; flex: none; }
+    /* tah štětcem je při animaci i po ní vždy pod textem nadpisu */
+    h1 .line, .h2 .line { position: relative; z-index: 2; }
+    h1 .line:has(.paint), .h2 .line:has(.paint) { z-index: 1; }
+    /* menu: samostatné stránky oddělené čarou a s obrysem (jako na rozcestníku) */
+    .topnav { align-items: center; }
+    .nav-sep { width: 1px; height: 22px; margin: 0 6px; background: rgba(255,255,255,.35); }
+    .topnav a.nav-page { border: 1.5px solid rgba(255,255,255,.45); }
+    .topnav a.nav-page:hover { border-color: #fff; }
+    @media (max-width: 960px) { .nav-sep { display: none; } }
+    /* při posouvání (telefon) se menu přichytí nahoru jako skleněná lišta */
+    .topbar.is-stuck { position: fixed; z-index: 60; top: 12px; left: 50%; translate: -50% 0; width: min(calc(100% - 24px), 1120px);
+      padding: 8px 14px 8px 10px; border-radius: 999px; background: rgba(5,63,57,.78);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,.14); box-shadow: 0 12px 30px -14px rgba(0,0,0,.55); animation: bar-in .3s var(--ease-out); }
+    .topbar.is-stuck .topbar-logo { width: 46px; height: 46px; rotate: 0deg; box-shadow: none; }
+    .topbar.is-stuck .topbar .topbar-logo img, .topbar.is-stuck .topbar-logo img { width: 40px; height: 40px; }
+    @keyframes bar-in { from { translate: -50% -130%; } }
+    /* menu při posouvání: stejné místo i velikost, jen podbarvení sklem přes celou šířku */
+    .topbar.is-stuck { top: 0; left: 0; right: 0; translate: none; width: auto; padding: 14px var(--gutter); border-radius: 0; border: 0;
+      border-bottom: 1px solid rgba(255,255,255,.14); background: rgba(5,63,57,.74); animation: none; }
+    .topbar.is-stuck .topbar-logo { width: 70px; height: 70px; rotate: -8deg; }
+    .topbar.is-stuck .topbar-logo img { width: 58px; height: 58px; }
+    /* přichycené menu užší: menší bílé logo bez bílé nálepky */
+    .topbar.is-stuck { padding-top: 8px; padding-bottom: 8px; }
+    .topbar.is-stuck .topbar-logo { width: 46px !important; height: 46px !important; rotate: 0deg; box-shadow: none; background: url(assets/logo-bile.svg) center / contain no-repeat; }
+    .topbar.is-stuck .topbar-logo img { opacity: 0; }
+    .topbar.is-stuck { transition: transform .3s var(--ease-out); }
+    .topbar.is-stuck.is-hidden { transform: translateY(-110%); }
+    .hero:has(> .topbar.is-stuck) > .hero-grid { margin-top: var(--bar-h, 0px); }   /* místo po přichycené liště, ať obsah neposkočí */
+    /* CTA po najetí: lehce se nadzvedne, dostane stín a šipka popojede doprava */
+    .cta, .btn-pay, .sticky-btn { transition: background .15s, transform .25s var(--ease-out), box-shadow .25s; }
+    .cta:hover, .btn-pay:hover:not(:disabled), .sticky-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(187,85,50,.7); }
+    .cta:hover .cta-arrow { transform: translateX(5px); }
+    .btn-pay .btn-arrow { transition: transform .25s var(--ease-out); }
+    .btn-pay:hover:not(:disabled) .btn-arrow { transform: translateX(5px); }
+    .cta:active, .btn-pay:active, .sticky-btn:active { transform: translateY(0); box-shadow: none; }
+    /* stejné místo pro posuvník jako na rozcestníku, aby menu neposkočilo o jeho šířku */
+    html { scrollbar-gutter: stable; }
+
+    /* ── HLAVIČKA: logo | Labonetta.cz (menu nového webu přijde po jeho spuštění) ── */
+    .topbar-home { display: flex; align-items: center; gap: 14px; }
+    .topbar a.home-link { gap: 0; font-size: 15px; font-weight: 600; letter-spacing: .01em; color: #fff; }
+    .home-link::before { content: ''; flex: none; width: 1.5px; height: 22px; margin-right: 14px; background: currentColor; opacity: .45; }
+
+    /* ── PODMÍNKY POD TLAČÍTKEM: platnost, uplatnění, doručení ── */
+    .facts { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 5px; font-size: 13px; line-height: 1.4; text-align: left; color: var(--mint); }
+    .facts li { position: relative; padding-left: 16px; }
+    .facts li::before { content: ''; position: absolute; left: 2px; top: .5em; width: 6px; height: 6px; border-radius: 50%; background: var(--mint); }
+    .facts strong { font-weight: 600; color: #fff; }
+    /* schované pod odkazem „Informace k voucherům" */
+    .info { position: relative; margin-top: 12px; text-align: center; }
+    .info-btn { display: inline-flex; align-items: center; gap: 7px; padding: 6px 4px; border: 0; background: none; cursor: pointer;
+      font: inherit; font-size: 13px; font-weight: 500; color: var(--mint);
+      text-decoration: underline dotted; text-decoration-thickness: 1px; text-underline-offset: 4px; transition: color .15s; }
+    .info-btn:hover, .info.open .info-btn { color: #fff; }
+    .info-ico { width: 16px; height: 16px; flex: none; }
+    .info .facts { margin: 0; }
+    /* mobil a tablet: rozbalí se pod odkazem */
+    .info-panel { display: none; padding-top: 8px; }
+    .info.open .info-panel { display: grid; animation: info-in .25s var(--ease-out); }
+    @keyframes info-in { from { opacity: 0; transform: translateY(-4px); } }
+    /* počítač: světlá bublina nad odkazem (dolů by zajela pod pás s nápisy) */
+    @media (min-width: 961px) {
+      .info-panel { display: grid; position: absolute; z-index: 5; left: 50%; bottom: calc(100% + 8px); width: 340px; padding: 16px 18px;
+        border-radius: 16px; background: var(--cream); color: var(--muted); box-shadow: 0 22px 44px -18px rgba(0,0,0,.6);
+        opacity: 0; visibility: hidden; translate: -50% 6px; transition: opacity .18s, translate .2s var(--ease-out), visibility 0s .2s; }
+      .info-panel::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; background: var(--cream); translate: -50% 0; rotate: 45deg; }
+      .info-panel::before { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 14px; }   /* most pro myš mezi odkazem a bublinou */
+      .info.open .info-panel { opacity: 1; visibility: visible; translate: -50% 0; transition-delay: 0s; animation: none; }
+      .info-panel li::before { background: var(--terra); }
+      .info-panel strong { color: var(--teal-ink); }
+    }
+    @media (min-width: 961px) and (hover: hover) {
+      .info:hover .info-panel { opacity: 1; visibility: visible; translate: -50% 0; transition-delay: 0s; }
+      .info:hover .info-btn { color: #fff; }
+    }
+
+    /* ── MOBIL A TABLET: rozestupy ── */
+    @media (max-width: 960px) {
+      /* úvod se nenatahuje na výšku okna — na vysokých displejích jinak vznikaly prázdné pruhy */
+      .hero { min-height: 0; }
+      .hero .hero-grid { flex: none; align-content: start; }
+      /* nadpis: volnější řádky, tah štětcem nesahá do řádku nad ním ani k okraji displeje */
+      .hero h1 { line-height: 1; }
+      .hero h1 .paint { margin-top: .12em; }
+      .hero h1 .paint::before, .hero h1 .paint::after { inset: -.1em -.3em -.08em -.12em; }
+      /* patička bez rezervy pro spodní lištu (lišta se u patičky schová) */
+      footer { padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
+    }
+    /* telefon: fotka má dostat místo, tlačítko klidně až pod první obrazovkou */
+    @media (max-width: 600px) {
+      .hero .hero-grid { gap: 26px; padding-top: 26px; padding-bottom: 56px; }   /* logo × nadpis, nadpis × fotka */
+      .hero h1 .line:nth-child(-n+2) { display: inline-block; }                   /* „Darujte kus" na jeden řádek */
+      .hero .hero-sub { display: none; }                                           /* obsah je v informacích pod tlačítkem */
+      .hero { --photo-show: 66vw; }                                            /* fotka nad vstupenkou: ruce s trhaným kouskem */
+      .hero .buy { padding-top: var(--photo-show); gap: 28px; }                    /* vstupenka × řádky */
+      .hero-photo { height: calc(var(--photo-show) + (100vw - 2 * var(--gutter) - 16px) / 4); }
+      .hero-photo img { object-position: center top; }
+      /* nadpis přes celou šířku, tah štětcem nesahá do řádku nad ním ani k okraji displeje */
+      .hero h1 { font-size: clamp(44px, 15vw, 70px); }
+      .hero .qty-row { padding: 9px 0; }
+      .hero .cta { margin-top: 20px; }
+      .hero .info { margin-top: 12px; }
+      footer { padding-top: 40px; }
+    }
+    /* počítač s výškou okna do 900 px: menší vstupenka, ať karta s výběrem nezajede pod pás s nápisy */
+    @media (min-width: 961px) and (min-height: 821px) and (max-height: 900px) {
+      .buy > .stack { width: min(100%, 360px); }
+      .buy { gap: 20px; }
     }
   </style>
 </head>
 <body>
 
-<a class="skip-link" href="#vouchers">Přejít na obsah</a>
+<a class="skip-link" href="#buy">Přejít na nákup voucheru</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="rough" x="-25%" y="-25%" width="150%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="15"/></filter>
+    <filter id="rough2" x="-25%" y="-25%" width="150%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".12" numOctaves="2" seed="2"/><feDisplacementMap in="SourceGraphic" scale="12"/></filter>
+    <!-- a: plné, naplácnuté -->
+    <symbol id="heart-a" viewBox="0 0 100 100"><g filter="url(#rough)"><path style="fill:currentColor" d="M50 88 C27 70 8 53 11 31 C14 13 37 9 48 28 C58 9 86 11 89 32 C92 55 68 72 50 88 Z"/></g></symbol>
+    <!-- b: dvakrát obtažené, nedotažené -->
+    <symbol id="heart-b" viewBox="0 0 100 100"><g filter="url(#rough2)"><path d="M47 89 C22 70 5 47 14 25 C22 8 43 13 48 33 C53 11 81 5 87 26 C95 50 70 73 52 90"/><path style="stroke-width:7" d="M44 80 C26 64 14 46 20 30 C26 18 40 22 44 36"/></g></symbol>
+    <!-- c: obrys a čmáranice uvnitř -->
+    <symbol id="heart-c" viewBox="0 0 100 100"><g filter="url(#rough)"><path d="M50 86 C26 67 8 48 15 27 C21 11 42 13 49 31 C56 13 80 8 86 28 C92 48 70 67 50 86"/><path style="stroke-width:9" d="M26 36 L68 30 L30 50 L66 48 L40 64 L58 64"/></g></symbol>
+    <!-- d: jedním tahem s přetahem -->
+    <symbol id="heart-d" viewBox="0 0 100 100"><g filter="url(#rough2)"><path d="M54 86 C21 62 6 41 18 23 C30 9 48 18 50 36 C55 16 78 8 86 26 C94 46 74 67 50 86 C37 78 22 66 16 50"/></g></symbol>
+  </defs>
+</svg>
 
-<!-- NAVBAR -->
-<header>
-<nav aria-label="Hlavní navigace">
-  <img class="nav-logo" src="assets/logo.svg" alt="Labonetta">
-  <a class="nav-back" href="https://prosek.labonetta.cz" aria-label="Zpět na web Labonetta">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-    Zpět na web
-  </a>
-</nav>
-</header>
+<main>
 
-<main id="main">
-
-<!-- HERO -->
-<section class="hero" aria-label="Labonetta interiér">
-  <img class="hero-img" src="assets/hero-interior.jpg" alt="Interiér restaurace Labonetta s neonovým nápisem a srdíčkovými dekoracemi">
-  <div class="hero-overlay" aria-hidden="true"></div>
-  <div class="hero-content">
-    <p class="hero-eyebrow" aria-hidden="true">Dárkový voucher · Labonetta</p>
-    <h1>Darujte zážitek<br><em>jako z&nbsp;Neapole</em></h1>
-    <button
-      class="hero-cta"
-      onclick="scrollToEl(document.getElementById('vouchers'))"
-    >
-      Vybrat voucher
-      <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </button>
-  </div>
-</section>
-
-<!-- VOUCHER SECTION -->
-<section class="section" id="vouchers" aria-labelledby="vouchers-title">
-  <div class="section-header">
-    <p class="section-eyebrow" aria-hidden="true">Dárkové poukazy</p>
-    <h2 class="section-title" id="vouchers-title" tabindex="-1">Vyberte voucher</h2>
-    <p class="section-sub">Voucher platí osobně na veškerou útratu na <a href="https://prosek.labonetta.cz" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Proseku</a> i&nbsp;<a href="https://kobylisy.labonetta.cz" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline;text-underline-offset:3px;">Kobylisích</a>.</p>
-  </div>
-
-  <div class="tiles" role="list">
-
-    <article class="tile" id="tile-500" role="listitem">
-      <div class="tile-img-wrap">
-        <img class="tile-img" src="assets/voucher-preview-500.jpg" alt="Náhled voucheru v hodnotě 500 Kč">
-        <span class="tile-badge" id="badge-500"></span>
-      </div>
-      <div class="tile-body">
-        <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
-        <p class="tile-amount">500 Kč</p>
-        <p class="tile-desc">Platí osobně na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
-        <div class="tile-actions">
-          <button
-            class="btn-add"
-            onclick="addToCart(500)"
-            aria-label="Přidat do košíku voucher 500 Kč"
-          >
-            Přidat do košíku
-            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </button>
-          <div class="qty-controls" role="group" aria-label="Množství voucheru 500 Kč">
-            <button class="qty-btn" onclick="changeQty(500,-1)" aria-label="Odebrat jeden voucher 500 Kč">−</button>
-            <div class="qty-info">
-              <span class="qty-num" id="qty-500">1</span>
-              <span class="qty-label-text">ks</span>
-            </div>
-            <button class="qty-btn" onclick="changeQty(500,+1)" aria-label="Přidat jeden voucher 500 Kč">+</button>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="tile" id="tile-1000" role="listitem">
-      <div class="tile-img-wrap">
-        <img class="tile-img" src="assets/voucher-preview-1000.jpg" alt="Náhled voucheru v hodnotě 1 000 Kč">
-        <span class="tile-badge" id="badge-1000"></span>
-      </div>
-      <div class="tile-body">
-        <p class="tile-label" aria-hidden="true">Voucher · Labonetta</p>
-        <p class="tile-amount">1 000 Kč</p>
-        <p class="tile-desc">Platí osobně na veškerou útratu<br>Platnost 1 rok od zakoupení</p>
-        <div class="tile-actions">
-          <button
-            class="btn-add"
-            onclick="addToCart(1000)"
-            aria-label="Přidat do košíku voucher 1 000 Kč"
-          >
-            Přidat do košíku
-            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </button>
-          <div class="qty-controls" role="group" aria-label="Množství voucheru 1 000 Kč">
-            <button class="qty-btn" onclick="changeQty(1000,-1)" aria-label="Odebrat jeden voucher 1 000 Kč">−</button>
-            <div class="qty-info">
-              <span class="qty-num" id="qty-1000">1</span>
-              <span class="qty-label-text">ks</span>
-            </div>
-            <button class="qty-btn" onclick="changeQty(1000,+1)" aria-label="Přidat jeden voucher 1 000 Kč">+</button>
-          </div>
-        </div>
-      </div>
-    </article>
-
-  </div>
-</section>
-
-<!-- STICKY BAR -->
-<p class="sr-only" id="cart-status" role="status"></p>
-<div class="sticky-bar" id="sticky-bar" role="region" aria-label="Košík">
-  <div class="sticky-bar-inner">
-    <div class="sticky-items" id="sticky-items"></div>
-    <div class="sticky-sep" aria-hidden="true"></div>
-    <div class="sticky-total-wrap">
-      <p class="sticky-total-label">Celkem</p>
-      <p class="sticky-total-amount" id="sticky-total">0 Kč</p>
+<section class="hero" aria-labelledby="hero-title">
+  <header class="topbar">
+    <div class="topbar-home">
+      <a class="topbar-logo" href="https://www.labonetta.cz/" data-hub tabindex="-1" aria-hidden="true"><img src="assets/logo.svg" alt="" width="56" height="56"></a>
+      <a class="home-link" href="https://www.labonetta.cz/" data-hub>Labonetta.cz</a>
     </div>
-    <button class="btn-checkout" onclick="openCheckout()" aria-label="Pokračovat k dokončení objednávky">
-      Pokračovat
-      <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </button>
+    <!-- Menu nového webu: vrátit (odkomentovat), až poběží nový labonetta.cz — dnes by odkazy vedly na stránky, které na současném webu nejsou.
+    <nav class="topnav" aria-label="Hlavní">
+      <a href="https://www.labonetta.cz/" data-hub><svg class="nav-home" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>Úvod</a>
+      <a href="https://www.labonetta.cz/#pobocky" data-hub>Pobočky</a>
+      <a href="https://www.labonetta.cz/#rozvoz" data-hub>Kam vozíme</a>
+      <span class="nav-sep" aria-hidden="true"></span><a class="nav-page" href="https://www.labonetta.cz/pizza-do-firmy/" data-hub>Pizza do firmy</a>
+      <a class="nav-page" href="./" aria-current="page">Voucher</a>
+      <a class="nav-back" href="https://www.labonetta.cz/" data-hub>← Hlavní web</a>
+    </nav>
+    -->
+  </header>
+  <script>
+    // náhled: odkazy na rozcestník vedou na lokální kopii (localhost:4176)
+    // menu: dolů schovat, nahoru vysunout jako skleněnou lištu
+    ;(() => { const bar = document.querySelector('.topbar'), hero = bar.parentElement, narrow = matchMedia('(max-width: 960px)'); let last = scrollY
+      // telefon a tablet: lišta se nepřichytává (je v ní jen logo a odkaz, žádná informace navíc) → odjede se stránkou
+      const f = () => { const y = scrollY, d = y - last, stuck = y > 140 && !narrow.matches
+        // přichycená lišta vypadne z rozložení → stejně vysoké místo za ni podržíme, jinak obsah poskočí nahoru
+        if (stuck && !bar.classList.contains('is-stuck')) hero.style.setProperty('--bar-h', bar.offsetHeight + 'px')
+        bar.classList.toggle('is-stuck', stuck)
+        if (y <= 140) bar.classList.remove('is-hidden'); else if (d > 6) bar.classList.add('is-hidden'); else if (d < -6) bar.classList.remove('is-hidden')
+        if (Math.abs(d) > 6 || y <= 140) last = y }
+      addEventListener('scroll', f, { passive: true }); bar.addEventListener('focusin', () => bar.classList.remove('is-hidden')); f() })()
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) document.querySelectorAll('[data-hub]').forEach(a => { a.href = a.getAttribute('href').replace('https://www.labonetta.cz/', 'http://localhost:4176/') })
+  </script>
+
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <h1 id="hero-title" class="watch">
+        <span class="line">Darujte</span>
+        <span class="line">kus</span>
+        <span class="line"><span class="paint watch">Neapole</span></span>
+      </h1>
+      <p class="hero-sub fade watch" style="--d:.55s">Dárkový voucher do Labonetty. Platí osobně na celou útratu na&nbsp;<a href="https://prosek.labonetta.cz">Proseku</a> i&nbsp;v&nbsp;<a href="https://kobylisy.labonetta.cz">Kobylisích</a>, takže si obdarovaný sám vybere, kam vyrazí.</p>
+    </div>
+
+    <div class="buy watch" id="buy" tabindex="-1">
+      <picture class="hero-photo" aria-hidden="true"><source media="(max-width: 960px)" srcset="assets/hero-mobil-800.webp 800w, assets/hero-mobil-1600.webp 1600w" sizes="100vw" type="image/webp" width="800" height="800"><source media="(max-width: 960px)" srcset="assets/hero-mobil.jpg" width="800" height="800"><source srcset="assets/hero-prosciutto-800.webp 800w, assets/hero-prosciutto-1200.webp 1200w, assets/hero-prosciutto-1600.webp 1600w, assets/hero-prosciutto-2400.webp 2400w" sizes="50vw" type="image/webp"><img src="assets/hero-prosciutto.jpg" sizes="50vw" alt="" width="1600" height="2399" fetchpriority="high"></picture>
+      <script>/* jen pro srovnání v demu: ?foto=pizzy|krajeni|margherita|interier|bar */
+        (function () { const m = location.search.match(/[?&]foto=(pizzy|krajeni|margherita|interier|bar)/); if (!m) return
+          const img = document.currentScript.previousElementSibling.querySelector('img'); img.removeAttribute('srcset'); img.src = 'assets/hero-' + m[1] + '.jpg' })()</script>
+
+      <div class="stack" id="stack" data-count="1" aria-hidden="true">
+        <div class="ticket-back tb2"></div>
+        <div class="ticket-back tb1"></div>
+        <div class="ticket" id="ticket">
+          <div class="ticket-top"><span>Dárkový voucher</span><img src="assets/logo.svg" alt="" width="42" height="42"></div>
+          <p class="ticket-tag"><span class="paint in">Jdeme na pizzu</span></p>
+          <p class="ticket-amount" id="ticket-amount">1&nbsp;000<small>Kč</small></p>
+          <div class="ticket-bottom"><span>Prosek &amp; Kobylisy</span><span>Platí 1&nbsp;rok</span></div>
+        </div>
+        <span class="ticket-count" id="ticket-count" hidden></span>
+      </div>
+
+      <div class="controls">
+
+        <div class="qty-row" id="row-500">
+          <span class="qty-label" id="lbl-500">500 Kč <small>voucher</small></span>
+          <div class="stepper" role="group" aria-labelledby="lbl-500">
+            <button class="step-btn" type="button" onclick="changeQty(500,-1)" aria-label="Odebrat voucher 500 Kč">−</button>
+            <span class="step-val num" id="qty-500">0</span>
+            <button class="step-btn" type="button" onclick="changeQty(500,+1)" aria-label="Přidat voucher 500 Kč">+</button>
+          </div>
+        </div>
+        <div class="qty-row" id="row-1000">
+          <span class="qty-label" id="lbl-1000">1&nbsp;000 Kč <small>voucher</small></span>
+          <div class="stepper" role="group" aria-labelledby="lbl-1000">
+            <button class="step-btn" type="button" onclick="changeQty(1000,-1)" aria-label="Odebrat voucher 1 000 Kč">−</button>
+            <span class="step-val num" id="qty-1000">1</span>
+            <button class="step-btn" type="button" onclick="changeQty(1000,+1)" aria-label="Přidat voucher 1 000 Kč">+</button>
+          </div>
+        </div>
+
+        <button class="cta" type="button" id="btn-continue" onclick="openCheckout()">
+          <span id="cta-label">Koupit voucher</span>
+          <span class="cta-total"><span class="num" id="cart-total">1 000 Kč</span><span class="cta-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></span>
+        </button>
+        <p class="hint" id="pick-hint" role="alert"></p>
+        <div class="info" id="info">
+          <button class="info-btn" type="button" aria-expanded="false" aria-controls="info-panel"><svg class="info-ico" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.6" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="9" x2="10" y2="14.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="5.9" r="1.15" fill="currentColor"/></svg>Informace k voucherům</button>
+          <ul class="facts info-panel" id="info-panel">
+            <li><strong>Platí 1&nbsp;rok</strong> od zakoupení, bez dalších podmínek.</li>
+            <li><strong>Uplatníte osobně</strong> na Proseku i&nbsp;v&nbsp;Kobylisích, stačí ukázat voucher obsluze.</li>
+            <li><strong>Přijde e&#8209;mailem</strong> jako PDF hned po zaplacení QR kódem.</li>
+          </ul>
+        </div>
+        <script>/* informace k voucherům: na počítači bublina (najetí myší / kliknutí), na mobilu se rozbalí pod odkazem */
+          (function () { const box = document.getElementById('info'), btn = box.querySelector('.info-btn'), wide = matchMedia('(min-width: 961px)')
+            const set = v => { box.classList.toggle('open', v); btn.setAttribute('aria-expanded', v) }
+            btn.addEventListener('click', () => set(!box.classList.contains('open')))
+            document.addEventListener('click', e => { if (wide.matches && !box.contains(e.target)) set(false) })
+            document.addEventListener('keydown', e => { if (e.key === 'Escape' && wide.matches) set(false) }) })()</script>
+        <p class="sr-only" id="cart-status" role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tapes" aria-hidden="true">
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>Ciao bella</span><svg class="heart" viewBox="0 0 100 100" style="rotate:-8deg"><use href="#heart-a"/></svg><span>Pizza sempre</span><svg class="heart" viewBox="0 0 100 100" style="rotate:6deg"><use href="#heart-b"/></svg><span>Mamma mia!</span><svg class="heart" viewBox="0 0 100 100" style="rotate:-3deg"><use href="#heart-c"/></svg><span>Che bella cosa</span><svg class="heart" viewBox="0 0 100 100" style="rotate:10deg"><use href="#heart-d"/></svg><span>Amore, pizza e Labonetta</span><svg class="heart" viewBox="0 0 100 100" style="rotate:-12deg"><use href="#heart-a"/></svg><span>Madonna santa</span><svg class="heart" viewBox="0 0 100 100" style="rotate:4deg"><use href="#heart-b"/></svg>
+      <span class="dup">Ciao bella</span><svg class="heart dup" viewBox="0 0 100 100" style="rotate:-8deg"><use href="#heart-a"/></svg><span class="dup">Pizza sempre</span><svg class="heart dup" viewBox="0 0 100 100" style="rotate:6deg"><use href="#heart-b"/></svg><span class="dup">Mamma mia!</span><svg class="heart dup" viewBox="0 0 100 100" style="rotate:-3deg"><use href="#heart-c"/></svg><span class="dup">Che bella cosa</span><svg class="heart dup" viewBox="0 0 100 100" style="rotate:10deg"><use href="#heart-d"/></svg><span class="dup">Amore, pizza e Labonetta</span><svg class="heart dup" viewBox="0 0 100 100" style="rotate:-12deg"><use href="#heart-a"/></svg><span class="dup">Madonna santa</span><svg class="heart dup" viewBox="0 0 100 100" style="rotate:4deg"><use href="#heart-b"/></svg>
+    </div>
   </div>
 </div>
 
-<!-- CHECKOUT SECTION -->
-<section class="checkout-section" id="checkout-section" aria-labelledby="checkout-title">
-  <div class="checkout-inner">
+</main>
 
-    <div class="checkout-form">
-      <h2 class="form-title" id="checkout-title">Dokončit objednávku</h2>
-      <p class="form-sub">Po zaplacení QR kódem vám voucher zašleme na e-mail.</p>
+<footer>
+  <span>Labonetta · pizza jako z&nbsp;Neapole</span>
+  <nav aria-label="Pobočky"><a href="https://prosek.labonetta.cz">Prosek</a><a href="https://kobylisy.labonetta.cz">Kobylisy</a></nav>
+</footer>
 
-      <div class="field-group">
-        <label class="field-label" for="customer-name">Jméno a příjmení</label>
-        <input
-          type="text"
-          id="customer-name"
-          name="name"
-          placeholder="Jan Novák"
-          autocomplete="name"
-          aria-describedby="name-error"
-        >
-        <p class="error-msg" id="name-error" role="alert">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Zadejte prosím jméno.
-        </p>
-      </div>
+<div class="sticky-buy" id="sticky-buy" aria-hidden="true">
+  <span class="sticky-total num" id="sticky-total">1 000 Kč</span>
+  <button type="button" class="sticky-btn" id="sticky-btn" tabindex="-1" onclick="backToBuy()">Koupit voucher</button>
+</div>
 
-      <div class="field-group">
-        <label class="field-label" for="email">E-mail</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="vas@email.cz"
-          autocomplete="email"
-          aria-describedby="email-hint email-error"
-        >
-        <p class="field-hint" id="email-hint">Na tento e-mail pošleme voucher, jakmile k&nbsp;nám dorazí platba.</p>
-        <p class="error-msg" id="email-error" role="alert">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Zadejte prosím platný e-mail.
-        </p>
-      </div>
+<button class="pending" id="pending" type="button" onclick="reopenOrder()" hidden>
+  <span class="qr-waiting-dot" aria-hidden="true" style="margin:0"></span>
+  Objednávka čeká na platbu
+</button>
 
-      <div class="field-group">
-        <label class="field-label" for="customer-phone">
-          Telefon
-          <span style="font-size:11px;font-weight:400;color:var(--light-text);margin-left:6px;text-transform:none;letter-spacing:0;">nepovinné</span>
-        </label>
-        <input
-          type="tel"
-          id="customer-phone"
-          name="phone"
-          placeholder="+420 123 456 789"
-          autocomplete="tel"
-        >
-      </div>
-
-      <button class="btn-pay" id="btn-pay" onclick="handleQrPay()" aria-live="polite">
-        <span class="btn-label">Zobrazit QR platbu</span>
-        <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        <span class="spinner" aria-hidden="true"></span>
-      </button>
-    </div>
-
-    <div class="checkout-summary" aria-label="Přehled objednávky">
-      <p class="summary-title">Přehled objednávky</p>
-      <div id="summary-rows"></div>
-      <div class="summary-total-row">
-        <span class="summary-total-label">Celkem</span>
-        <span class="summary-total-amount" id="summary-total">0 Kč</span>
-      </div>
-      <button class="btn-change-cart" onclick="closeCheckout()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-        Upravit košík
-      </button>
-    </div>
-
+<!-- OBJEDNÁVKA -->
+<dialog class="sheet" id="sheet" aria-labelledby="sheet-label">
+  <div class="sheet-head">
+    <p id="sheet-label">Objednávka voucheru</p>
+    <button class="icon-btn" type="button" onclick="closeSheet()" aria-label="Zavřít">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
   </div>
-</section>
 
-<!-- QR PLATBA SEKCE -->
-<section class="qr-section" id="qr-section">
-  <div class="qr-inner">
-    <div class="qr-main">
-      <h2 class="qr-title" id="qr-title" tabindex="-1">Naskenujte QR kód</h2>
-      <p class="qr-sub" style="margin-bottom:16px;">Otevřete bankovní aplikaci a&nbsp;naskenujte kód. Platební údaje jsou předvyplněné.</p>
+  <div class="sheet-body">
+    <div class="step" id="step-form">
+      <h2 class="sheet-title" id="checkout-title" tabindex="-1">Kam ho <span class="paint">pošleme?</span></h2>
+      <p class="sheet-sub">Po zaplacení vám voucher přijde na e&#8209;mail. Dál ho můžete vytisknout nebo přeposlat.</p>
 
+      <div class="summary" role="group" aria-label="Přehled objednávky">
+        <div id="summary-rows"></div>
+        <div class="summary-total"><span>Celkem</span><span class="num" id="summary-total">0 Kč</span></div>
+      </div>
+
+      <form class="form" onsubmit="event.preventDefault(); handleQrPay()" novalidate>
+        <div class="field">
+          <label for="customer-name">Jméno a příjmení</label>
+          <input type="text" id="customer-name" name="name" placeholder="Jan Novák" autocomplete="name" >
+          <p class="error-msg" id="name-error" role="alert">Zadejte prosím jméno.</p>
+        </div>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="vas@email.cz" autocomplete="email" aria-describedby="email-hint">
+          <p class="field-hint" id="email-hint">Sem pošleme voucher, jakmile k&nbsp;nám dorazí platba.</p>
+          <p class="error-msg" id="email-error" role="alert">Zadejte prosím platný e-mail.</p>
+        </div>
+        <div class="field">
+          <label for="customer-phone">Telefon<span class="opt-note">nepovinné</span></label>
+          <input type="tel" id="customer-phone" name="phone" placeholder="+420 123 456 789" autocomplete="tel">
+        </div>
+        <button class="btn-pay" type="submit" id="btn-pay" aria-live="polite">
+          <span class="btn-label">Zobrazit QR platbu</span>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+    </div>
+
+    <div class="step" id="step-qr" hidden>
+      <h2 class="sheet-title" id="qr-title" tabindex="-1">Naskenujte <span class="paint b2">QR kód</span></h2>
+      <p class="sheet-sub">Otevřete bankovní aplikaci a&nbsp;naskenujte kód. Platební údaje se vyplní samy.</p>
       <p class="qr-note" id="qr-note" hidden>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
         QR kód a&nbsp;platební údaje jsme vám poslali i&nbsp;e&#8209;mailem.
       </p>
-      <div class="qr-code-wrap">
-        <img class="qr-code-img" id="qr-img" src="" alt="QR kód pro platbu">
-        <p class="qr-hint">QR kód pro bankovní aplikaci · CZK</p>
-      </div>
-      <div class="qr-details">
-        <div class="qr-detail-row">
-          <span class="qr-detail-label">Částka</span>
-          <span class="qr-detail-value amount" id="qr-amount">—</span>
-        </div>
-        <div class="qr-detail-row">
-          <span class="qr-detail-label">Číslo účtu</span>
-          <span class="qr-detail-value" id="qr-account">—</span>
-        </div>
-        <div class="qr-detail-row">
-          <span class="qr-detail-label">Variabilní symbol</span>
-          <span class="qr-detail-value" id="qr-vs">—</span>
-        </div>
-        <div class="qr-detail-row">
-          <span class="qr-detail-label">Zpráva</span>
-          <span class="qr-detail-value">Voucher Labonetta</span>
+      <div class="qr-card">
+        <img class="qr-img" id="qr-img" src="data:," alt="QR kód pro platbu v bankovní aplikaci" width="210" height="210">
+        <div class="qr-details">
+          <div class="qr-row"><span class="qr-label">Částka</span><span class="qr-value amount" id="qr-amount">—</span></div>
+          <div class="qr-row"><span class="qr-label">Číslo účtu</span><span class="qr-value" id="qr-account">—</span></div>
+          <div class="qr-row"><span class="qr-label">Variabilní symbol</span><span class="qr-value" id="qr-vs">—</span></div>
+          <div class="qr-row"><span class="qr-label">Zpráva</span><span class="qr-value">Voucher Labonetta</span></div>
         </div>
       </div>
       <div class="qr-waiting" id="qr-waiting">
         <div class="qr-waiting-dot" aria-hidden="true"></div>
-        <span>Čekáme na platbu. Jakmile dorazí, pošleme voucher na e&#8209;mail <strong id="qr-email"></strong>. Stránku můžete zavřít, voucher přijde i&nbsp;tak.</span>
+        <span>Čekáme na platbu. Jakmile dorazí, pošleme voucher na <strong id="qr-email"></strong>. Okno můžete zavřít, voucher přijde i&nbsp;tak.</span>
       </div>
       <p class="sr-only" id="qr-status" role="status"></p>
       <div class="qr-paid" id="qr-paid">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
         <div><strong>Platba přijata, děkujeme</strong><span id="qr-paid-text"></span></div>
       </div>
-    </div>
-
-    <div class="checkout-summary">
-      <p class="summary-title">Přehled objednávky</p>
-      <div id="qr-summary-rows"></div>
-      <div class="summary-total-row">
-        <span class="summary-total-label">Celkem</span>
-        <span class="summary-total-amount" id="qr-total">0 Kč</span>
+      <div class="summary" role="group" aria-label="Přehled objednávky">
+        <div id="qr-summary-rows"></div>
+        <div class="summary-total"><span>Celkem</span><span class="num" id="qr-total">0 Kč</span></div>
       </div>
     </div>
   </div>
-</section>
-
-<!-- INFO SECTION -->
-<section class="info-section" aria-label="Proč koupit voucher">
-  <div class="info-inner">
-
-    <div class="info-item">
-      <div class="info-icon-wrap" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-      </div>
-      <div>
-        <h3 class="info-title">Voucher zasíláme na e-mail</h3>
-        <p class="info-desc">Jakmile k&nbsp;nám dorazí platba, pošleme vám voucher automaticky jako přílohu e&#8209;mailu.</p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <div class="info-icon-wrap" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
-      <div>
-        <h3 class="info-title">Platnost 1 rok</h3>
-        <p class="info-desc">Voucher platí 1 rok od data zakoupení, bez dalších podmínek.</p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <div class="info-icon-wrap" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      </div>
-      <div>
-        <h3 class="info-title">Prosek & Kobylisy</h3>
-        <p class="info-desc">Uplatníte v&nbsp;našich pobočkách — stačí ukázat voucher z&nbsp;e&#8209;mailu obsluze.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-</main>
-
-<!-- FOOTER -->
-<footer role="contentinfo">
-  <span class="footer-brand">Labonetta</span>
-  <div class="footer-links">
-    <a href="https://prosek.labonetta.cz">Prosek</a>
-    <a href="https://kobylisy.labonetta.cz">Kobylisy</a>
-  </div>
-</footer>
+</dialog>
 
 <script>
-  const cart = { 500: 0, 1000: 0 }
+  const cart = { 500: 0, 1000: 1 }
+  const AMOUNTS = [500, 1000]
+  let lastAmount = 1000
+  let order = null   // { state: 'qr' | 'paid' } po vytvoření objednávky
 
-  function fmt(n) {
-    if (n >= 1000) return n.toLocaleString('cs') + ' Kč'
-    return n + ' Kč'
-  }
-
+  const fmt = n => n.toLocaleString('cs-CZ') + ' Kč'
+  const total = () => cart[500] * 500 + cart[1000] * 1000
+  const count = () => cart[500] + cart[1000]
+  const $ = id => document.getElementById(id)
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  function scrollToEl(el, block = 'start') {
-    el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block })
-  }
-  function announceCart(amount) {
-    document.getElementById('cart-status').textContent =
-      `Voucher ${fmt(amount)}: ${cart[amount]} ks v košíku. Celkem ${fmt(cart[500] * 500 + cart[1000] * 1000)}.`
-  }
 
-  function addToCart(amount) {
-    if (cart[amount] === 0) cart[amount] = 1
-    else cart[amount]++
-    updateCart()
-    announceCart(amount)
-    // Tlačítko „Přidat do košíku" zmizí — fokus přesuneme na „+" ve stejné dlaždici
-    document.querySelector(`#tile-${amount} .qty-btn[onclick*="+1"]`)?.focus()
-  }
+  // ── Animace při zobrazení: prvky s .watch dostanou .in, jakmile se objeví ──
+  const io = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+      }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' })
+    : null
+  document.querySelectorAll('.watch').forEach(el => io ? io.observe(el) : el.classList.add('in'))
 
   function changeQty(amount, delta) {
-    cart[amount] = Math.max(0, cart[amount] + delta)
-    const emptied = cart[amount] === 0
-    if (emptied) {
-      document.getElementById(`tile-${amount}`).classList.remove('in-cart')
-      if (cart[500] + cart[1000] === 0) closeCheckout({ keepFocus: true })
-    }
-    updateCart()
-    announceCart(amount)
-    // Ovládání množství zmizí — fokus vrátíme na „Přidat do košíku"
-    if (emptied) document.querySelector(`#tile-${amount} .btn-add`)?.focus()
+    cart[amount] = Math.max(0, Math.min(20, cart[amount] + delta))
+    if (delta > 0 || cart[amount] > 0) lastAmount = amount
+    else lastAmount = AMOUNTS.find(a => cart[a] > 0) || amount
+    updateCart(true)
+    $('cart-status').textContent = `Voucher ${fmt(amount)}: ${cart[amount]} ks. Celkem ${fmt(total())}.`
   }
 
-  function updateCart() {
-    const q500 = cart[500], q1000 = cart[1000]
-    const total = q500 * 500 + q1000 * 1000
-    const items = q500 + q1000
-
-    // Tiles
-    const t500 = document.getElementById('tile-500')
-    const t1000 = document.getElementById('tile-1000')
-    t500.classList.toggle('in-cart', q500 > 0)
-    t1000.classList.toggle('in-cart', q1000 > 0)
-    document.getElementById('qty-500').textContent = q500
-    document.getElementById('qty-1000').textContent = q1000
-
-    // Badges
-    const b500 = document.getElementById('badge-500')
-    const b1000 = document.getElementById('badge-1000')
-    b500.textContent = q500 > 0 ? `${q500} ks v košíku` : ''
-    b1000.textContent = q1000 > 0 ? `${q1000} ks v košíku` : ''
-
-    // Sticky bar
-    const bar = document.getElementById('sticky-bar')
-    bar.classList.toggle('visible', items > 0)
-    document.body.classList.toggle('has-sticky', bar.classList.contains('visible'))
-
-    // Sticky items
-    let html = ''
-    if (q500 > 0) {
-      html += `<div class="sticky-item">
-        <img class="sticky-thumb" src="assets/voucher-preview-500.jpg" alt="Voucher 500 Kč">
-        <div>
-          <p class="sticky-item-label">Voucher 500&nbsp;Kč</p>
-          <p class="sticky-item-qty">${q500} ks · ${fmt(q500 * 500)}</p>
-        </div>
-      </div>`
-      if (q1000 > 0) html += '<div class="sticky-sep" aria-hidden="true"></div>'
-    }
-    if (q1000 > 0) {
-      html += `<div class="sticky-item">
-        <img class="sticky-thumb" src="assets/voucher-preview-1000.jpg" alt="Voucher 1 000 Kč">
-        <div>
-          <p class="sticky-item-label">Voucher 1&nbsp;000&nbsp;Kč</p>
-          <p class="sticky-item-qty">${q1000} ks · ${fmt(q1000 * 1000)}</p>
-        </div>
-      </div>`
-    }
-    document.getElementById('sticky-items').innerHTML = html
-    document.getElementById('sticky-total').textContent = fmt(total)
-
-    // Summary
-    updateSummary()
+  function summaryHtml() {
+    return AMOUNTS.filter(a => cart[a] > 0).map(a =>
+      `<div class="summary-line"><span>${cart[a]}× voucher ${fmt(a)}</span><span class="num">${fmt(cart[a] * a)}</span></div>`
+    ).join('')
   }
 
-  function updateSummary() {
-    const q500 = cart[500], q1000 = cart[1000]
-    const total = q500 * 500 + q1000 * 1000
-    let rows = ''
-    if (q500 > 0) rows += `
-      <div class="summary-row">
-        <img class="summary-thumb" src="assets/voucher-preview-500.jpg" alt="">
-        <div><p class="summary-name">Voucher 500&nbsp;Kč</p><p class="summary-qty">${q500} ks</p></div>
-        <p class="summary-price">${fmt(q500 * 500)}</p>
-      </div>`
-    if (q1000 > 0) rows += `
-      <div class="summary-row">
-        <img class="summary-thumb" src="assets/voucher-preview-1000.jpg" alt="">
-        <div><p class="summary-name">Voucher 1&nbsp;000&nbsp;Kč</p><p class="summary-qty">${q1000} ks</p></div>
-        <p class="summary-price">${fmt(q1000 * 1000)}</p>
-      </div>`
-    document.getElementById('summary-rows').innerHTML = rows
-    document.getElementById('summary-total').textContent = fmt(total)
+  function updateCart(animate) {
+    for (const a of AMOUNTS) {
+      $(`qty-${a}`).textContent = cart[a]
+      if (!order) $(`row-${a}`).querySelector('.step-btn').setAttribute('aria-disabled', String(cart[a] === 0))
+    }
+    // Voucher ukazuje naposledy vybranou hodnotu, počet kusů jako balíček za ním
+    const amt = $('ticket-amount')
+    const n = count()
+    if (n === 0) {
+      amt.classList.add('empty'); amt.textContent = 'Vyberte hodnotu'
+    } else {
+      amt.classList.remove('empty')
+      amt.innerHTML = lastAmount.toLocaleString('cs-CZ') + '<small>Kč</small>'
+    }
+    $('stack').dataset.count = Math.min(n, 4)
+    // štítek: jedna hodnota → „3×“; mix hodnot → složení, ať „4× 500 Kč“ nevypadá jako 2 000 Kč
+    const badge = $('ticket-count')
+    const mix = AMOUNTS.every(a => cart[a] > 0)
+    badge.hidden = n < 2
+    badge.classList.toggle('mix', mix)
+    badge.innerHTML = mix ? AMOUNTS.map(a => `<span>${cart[a]}× ${a.toLocaleString('cs-CZ')}</span>`).join('') : `${n}×`
+    $('cart-total').textContent = fmt(total())
+    if (!order) $('cta-label').textContent = $('sticky-btn').textContent = n > 1 ? `Koupit ${n} ${n < 5 ? 'vouchery' : 'voucherů'}` : 'Koupit voucher'
+    $('sticky-total').textContent = fmt(total())
+    $('summary-rows').innerHTML = summaryHtml()
+    $('summary-total').textContent = fmt(total())
+    if (n > 0) $('pick-hint').textContent = ''
+  }
+
+  const sheet = $('sheet')
+  function showStep(name) {
+    $('step-form').hidden = name !== 'form'
+    $('step-qr').hidden = name !== 'qr'
+    // tah štětcem v nadpisu kroku se namaluje znovu
+    const p = $(`step-${name}`).querySelector('.paint')
+    if (p) { p.classList.remove('in'); void p.offsetWidth; p.classList.add('in') }
   }
 
   function openCheckout() {
-    const s = document.getElementById('checkout-section')
-    s.classList.add('visible')
-    updateSummary()
-    // Skryj sticky bar — v checkoutu není potřeba
-    document.getElementById('sticky-bar').classList.remove('visible')
-    document.body.classList.remove('has-sticky')
-    setTimeout(() => scrollToEl(s), 60)
-    setTimeout(() => document.getElementById('customer-name').focus(), 500)
+    if (order) return reopenOrder()
+    if (count() === 0) {
+      $('pick-hint').textContent = 'Vyberte aspoň jeden voucher.'
+      return
+    }
+    updateCart()
+    showStep('form')
+    sheet.showModal()
+    $('customer-name').focus()
   }
 
-  function closeCheckout({ keepFocus = false } = {}) {
-    const section = document.getElementById('checkout-section')
-    const wasOpen = section.classList.contains('visible')
-    section.classList.remove('visible')
-    // Zobraz sticky bar znovu — zákazník se vrátil ke košíku
-    if (cart[500] + cart[1000] > 0) {
-      document.getElementById('sticky-bar').classList.add('visible')
-      document.body.classList.add('has-sticky')
-    }
-    if (!wasOpen) return
-    scrollToEl(document.getElementById('vouchers'))
-    if (!keepFocus) document.getElementById('vouchers-title').focus({ preventScroll: true })
+  function reopenOrder() {
+    showStep('qr')
+    sheet.showModal()
+    $('qr-title').focus()
   }
+
+  function closeSheet() { sheet.close() }
+
+  // Mobilní lišta s nákupem: jen když je hlavní tlačítko mimo obrazovku a nic se neplatí
+  function backToBuy() {
+    $('buy').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' })
+    setTimeout(() => $('btn-continue').focus({ preventScroll: true }), 400)
+  }
+  if ('IntersectionObserver' in window) {
+    let ctaAbove = false, footerVisible = false
+    const syncSticky = () => $('sticky-buy').classList.toggle('show', ctaAbove && !footerVisible && !order)
+    new IntersectionObserver(([e]) => {
+      ctaAbove = !e.isIntersecting && e.boundingClientRect.top < 0
+      syncSticky()
+    }).observe($('btn-continue'))
+    // u patičky se lišta schová, ať nezakrývá odkazy (patička pak nepotřebuje prázdnou rezervu dole)
+    new IntersectionObserver(([e]) => { footerVisible = e.isIntersecting; syncSticky() }).observe(document.querySelector('footer'))
+  }
+
+  // Pohyb za myší — jen s myší a bez omezení animací. Plynule dotahujeme k cíli.
+  if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const root = document.documentElement
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0
+    const loop = () => {
+      cx += (tx - cx) * .08; cy += (ty - cy) * .08
+      root.style.setProperty('--mx', cx.toFixed(3)); root.style.setProperty('--my', cy.toFixed(3))
+      raf = (Math.abs(tx - cx) > .001 || Math.abs(ty - cy) > .001) ? requestAnimationFrame(loop) : 0
+    }
+    window.addEventListener('pointermove', e => {
+      tx = (e.clientX / innerWidth) * 2 - 1; ty = (e.clientY / innerHeight) * 2 - 1
+      if (!raf) raf = requestAnimationFrame(loop)
+    }, { passive: true })
+    document.addEventListener('pointerleave', () => { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(loop) })
+  }
+  sheet.addEventListener('click', e => { if (e.target === sheet) sheet.close() })   // klik na pozadí
+  sheet.addEventListener('close', () => {
+    $('pending').hidden = !(order && order.state === 'qr')
+    if (!order || order.state !== 'qr') $('btn-continue').focus()
+  })
 
   async function handleQrPay() {
     // Čteme hodnoty těsně před odesláním — autofill z Chromu nemusí triggerovat events
-    const nameInput  = document.getElementById('customer-name')
-    const emailInput = document.getElementById('email')
-    const phoneInput = document.getElementById('customer-phone')
-    const nameError  = document.getElementById('name-error')
-    const emailError = document.getElementById('email-error')
-    const btn        = document.getElementById('btn-pay')
-
-    // Malé zpoždění aby autofill stihl vyplnit hodnoty
+    const nameInput = $('customer-name'), emailInput = $('email'), phoneInput = $('customer-phone')
+    const btn = $('btn-pay')
+    if (btn.disabled) return
     await new Promise(r => setTimeout(r, 50))
 
-    const name  = nameInput.value.trim()
-    const email = emailInput.value.trim()
-    const phone = phoneInput.value.trim()
-
-    if (cart[500] + cart[1000] === 0) return
+    const name = nameInput.value.trim(), email = emailInput.value.trim(), phone = phoneInput.value.trim()
+    if (count() === 0) return
 
     let hasError = false
-    if (!name) {
-      nameInput.classList.add('error'); nameError.classList.add('visible'); nameInput.setAttribute('aria-invalid', 'true')
-      if (!hasError) { nameInput.focus(); hasError = true }
-    } else {
-      nameInput.classList.remove('error'); nameError.classList.remove('visible'); nameInput.removeAttribute('aria-invalid')
+    const setErr = (input, msg, bad) => {
+      input.classList.toggle('error', bad); msg.classList.toggle('visible', bad)
+      // popis chyby připojit k poli jen ve chvíli, kdy je chyba vidět
+      const ids = (input.getAttribute('aria-describedby') || '').split(' ').filter(x => x && x !== msg.id)
+      if (bad) ids.push(msg.id)
+      ids.length ? input.setAttribute('aria-describedby', ids.join(' ')) : input.removeAttribute('aria-describedby')
+      if (bad) { input.setAttribute('aria-invalid', 'true'); if (!hasError) { input.focus(); hasError = true } }
+      else input.removeAttribute('aria-invalid')
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      emailInput.classList.add('error'); emailError.classList.add('visible'); emailInput.setAttribute('aria-invalid', 'true')
-      if (!hasError) { emailInput.focus(); hasError = true }
-    } else {
-      emailInput.classList.remove('error'); emailError.classList.remove('visible'); emailInput.removeAttribute('aria-invalid')
-    }
+    setErr(nameInput, $('name-error'), !name)
+    setErr(emailInput, $('email-error'), !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     if (hasError) return
 
     btn.disabled = true
     btn.classList.add('loading')
-
     try {
       const res = await fetch('/api/create-qr-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
-          customer_name: name,
-          customer_phone: phone || null,
-          items: [
-            { amount: 500,  qty: cart[500] },
-            { amount: 1000, qty: cart[1000] }
-          ]
+          email, customer_name: name, customer_phone: phone || null,
+          items: [ { amount: 500, qty: cart[500] }, { amount: 1000, qty: cart[1000] } ]
         })
       })
       const data = await res.json()
@@ -1411,56 +1088,37 @@
         btn.disabled = false; btn.classList.remove('loading')
         return
       }
-      showQr(name, email, data)
+      showQr(email, data)
     } catch {
       alert('Nepodařilo se spojit se serverem.')
       btn.disabled = false; btn.classList.remove('loading')
     }
   }
 
-  function showQr(name, email, data) {
-    // Skryj checkout, zobraz QR sekci
-    document.getElementById('checkout-section').classList.remove('visible')
-    const qrSection = document.getElementById('qr-section')
-    qrSection.classList.add('visible')
-
-    // Vyplň QR údaje
-    document.getElementById('qr-img').src     = data.qr_data_url
-    document.getElementById('qr-amount').textContent  = fmt(data.total)
-    document.getElementById('qr-account').textContent = data.bank_account
-    document.getElementById('qr-vs').textContent      = data.vs
-    document.getElementById('qr-email').textContent   = email
-    document.getElementById('qr-note').hidden = !data.confirmation_sent
-
-    // Summary v QR sekci
-    let rows = ''
-    if (cart[500] > 0) rows += `
-      <div class="summary-row">
-        <img class="summary-thumb" src="assets/voucher-preview-500.jpg" alt="">
-        <div><p class="summary-name">Voucher 500&nbsp;Kč</p><p class="summary-qty">${cart[500]} ks</p></div>
-        <p class="summary-price">${fmt(cart[500]*500)}</p>
-      </div>`
-    if (cart[1000] > 0) rows += `
-      <div class="summary-row">
-        <img class="summary-thumb" src="assets/voucher-preview-1000.jpg" alt="">
-        <div><p class="summary-name">Voucher 1&nbsp;000&nbsp;Kč</p><p class="summary-qty">${cart[1000]} ks</p></div>
-        <p class="summary-price">${fmt(cart[1000]*1000)}</p>
-      </div>`
-    document.getElementById('qr-summary-rows').innerHTML = rows
-    document.getElementById('qr-total').textContent = fmt(data.total)
-
-    scrollToEl(qrSection)
-    document.getElementById('qr-title').focus({ preventScroll: true })
-    document.getElementById('sticky-bar').classList.remove('visible')
-    document.body.classList.remove('has-sticky')
-
-    watchPayment(data.vs, email, cart[500] + cart[1000])
+  function showQr(email, data) {
+    order = { state: 'qr' }
+    $('qr-img').src = data.qr_data_url
+    $('qr-amount').textContent = fmt(data.total)
+    $('qr-account').textContent = data.bank_account
+    $('qr-vs').textContent = data.vs
+    $('qr-email').textContent = email
+    $('qr-note').hidden = !data.confirmation_sent
+    $('qr-summary-rows').innerHTML = summaryHtml()
+    $('qr-total').textContent = fmt(data.total)
+    // Košík už nejde měnit — objednávka je vytvořená
+    document.querySelectorAll('.step-btn').forEach(b => b.disabled = true)
+    $('cta-label').textContent = 'Zobrazit platbu'
+    $('sticky-buy').classList.remove('show')
+    showStep('qr')
+    sheet.scrollTop = 0
+    $('qr-title').focus()
+    watchPayment(data.vs, email, count())
   }
 
   // Hlídání platby: ptáme se serveru na stav objednávky, a když platba dorazí
-  // (server ji spáruje s avízem z banky), přepneme stránku na „zaplaceno".
+  // (server ji spáruje s avízem z banky), přepneme na „zaplaceno".
   let paymentWatch = null
-  function watchPayment(vs, email, count) {
+  function watchPayment(vs, email, n) {
     clearTimeout(paymentWatch)
     const startedAt = Date.now()
     const MAX_MS = 20 * 60 * 1000   // stejně jako hlídání banky na serveru
@@ -1470,38 +1128,45 @@
         const res = await fetch(`/api/order-status?vs=${encodeURIComponent(vs)}`, { cache: 'no-store' })
         if (res.ok) {
           const { status } = await res.json()
-          if (status === 'paid') return showPaid(email, count)
+          if (status === 'paid') return showPaid(email, n)
           if (status === 'cancelled' || status === 'unknown') return
         }
       } catch (e) { /* výpadek sítě — zkusíme to znovu */ }
-      // Na skryté kartě se ptáme méně často
       paymentWatch = setTimeout(tick, document.hidden ? 30000 : 8000)
     }
     paymentWatch = setTimeout(tick, 8000)
   }
 
-  // Po 20 minutách stránka přestane čekat — platba (např. běžný převod) může dorazit později
+  // Po 20 minutách přestaneme čekat — platba (např. běžný převod) může dorazit později
   function showStillWaiting() {
-    const box = document.getElementById('qr-waiting')
+    const box = $('qr-waiting')
     box.querySelector('.qr-waiting-dot').style.animation = 'none'
-    box.querySelector('span').innerHTML =
-      'Platbu jsme zatím nezaznamenali. Běžný převod může trvat i\u00a0několik hodin. ' +
-      'Jakmile platba dorazí, voucher vám pošleme e\u2011mailem. Stránku můžete zavřít.'
+    box.querySelector('span').textContent =
+      'Platbu jsme zatím nezaznamenali. Běžný převod může trvat i několik hodin. ' +
+      'Jakmile platba dorazí, voucher vám pošleme e‑mailem. Stránku můžete zavřít.'
   }
 
-  function showPaid(email, count = 1) {
-    const many = count > 1
+  function showPaid(email, n = 1) {
+    order.state = 'paid'
+    const many = n > 1
     const text = `${many ? 'Vouchery jsme poslali' : 'Voucher jsme poslali'} na ${email}. ` +
-                 `Pokud ${many ? 'je' : 'ho'} nevidíte, mrkněte i\u00a0do spamu.`
-    const section = document.getElementById('qr-section')
-    section.classList.add('is-paid')   // schová QR kód a platební údaje, ať nikdo nezaplatí dvakrát
-    document.getElementById('qr-title').textContent = 'Hotovo'
-    document.getElementById('qr-waiting').style.display = 'none'
-    document.getElementById('qr-paid-text').textContent = text
-    document.getElementById('qr-paid').classList.add('visible')
-    document.getElementById('qr-status').textContent = `Platba přijata. ${text}`
-    scrollToEl(document.getElementById('qr-title'))
+                 `Pokud ${many ? 'je' : 'ho'} nevidíte, mrkněte i do spamu.`
+    $('step-qr').classList.add('is-paid')   // schová QR kód a platební údaje, ať nikdo nezaplatí dvakrát
+    $('qr-title').innerHTML = '<span class="paint in">Hotovo!</span>'
+    $('qr-paid-text').textContent = text
+    $('qr-paid').classList.add('visible')
+    $('qr-status').textContent = `Platba přijata. ${text}`
+    $('pending').hidden = true
+    $('cta-label').textContent = 'Zaplaceno, děkujeme'
+    if (!sheet.open) { sheet.showModal(); $('qr-title').focus() }
   }
+
+  // hodnota předvybraná odkazem z hlavního webu (?castka=500 / ?castka=1000)
+  ;(function () {
+    const m = location.search.match(/[?&]castka=(500|1000)\b/); if (!m) return
+    const a = Number(m[1]); cart[500] = 0; cart[1000] = 0; cart[a] = 1; lastAmount = a
+  })()
+  updateCart()
 </script>
 
 </body>
