@@ -561,8 +561,9 @@
 
     /* menu nad světlou fotkou: tmavý podklad pod odkazy, ať je text čitelný (kontrast) */
     @media (min-width: 961px) {
-      .topbar:not(.is-stuck) .topnav { padding: 4px; border-radius: 999px; background: rgba(5,63,57,.78); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-      .topbar:not(.is-stuck) .topnav a { text-shadow: none; }
+      .topbar:not(.is-stuck) .topnav { padding: 4px; border-radius: 999px; background: rgba(5,63,57,.4); border: 1px solid rgba(255,255,255,.18);
+        -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5); box-shadow: 0 10px 28px -16px rgba(0,0,0,.5); }
+      .topbar:not(.is-stuck) .topnav a { text-shadow: 0 1px 4px rgba(0,0,0,.35); }
     }
     /* mobil a tablet: pás s nápisy nesmí zakrýt patičku */
     @media (max-width: 960px) { .tapes { margin-bottom: 0; } footer { padding-top: 46px; } }
@@ -604,7 +605,8 @@
     @keyframes bar-in { from { translate: -50% -130%; } }
     /* menu při posouvání: stejné místo i velikost, jen podbarvení sklem přes celou šířku */
     .topbar.is-stuck { top: 0; left: 0; right: 0; translate: none; width: auto; padding: 14px var(--gutter); border-radius: 0; border: 0;
-      border-bottom: 1px solid rgba(255,255,255,.14); background: rgba(5,63,57,.74); animation: none; }
+      border-bottom: 1px solid rgba(255,255,255,.18); background: rgba(5,63,57,.55); animation: none;
+      -webkit-backdrop-filter: blur(20px) saturate(1.5); backdrop-filter: blur(20px) saturate(1.5); }
     .topbar.is-stuck .topbar-logo { width: 70px; height: 70px; rotate: -8deg; }
     .topbar.is-stuck .topbar-logo img { width: 58px; height: 58px; }
     /* přichycené menu užší: menší bílé logo bez bílé nálepky */
@@ -826,7 +828,7 @@
 <footer>
   <span>Labonetta · pizza jako z&nbsp;Neapole</span>
   <nav aria-label="Pobočky"><a href="https://prosek.labonetta.cz">Prosek</a><a href="https://kobylisy.labonetta.cz">Kobylisy</a></nav>
-  <p class="footer-legal">Vouchery prodává Labonetta s.r.o., IČO 14200350, DIČ CZ14200350, Litoměřická 879/3, 190&nbsp;00 Praha&nbsp;9, zapsaná v&nbsp;obchodním rejstříku u&nbsp;Městského soudu v&nbsp;Praze, sp.&nbsp;zn. C&nbsp;361943. · <a href="https://labonetta.cz/ochrana-osobnich-udaju/#voucher">Ochrana osobních údajů</a></p>
+  <p class="footer-legal">Prodává Labonetta s.r.o., IČO&nbsp;14200350 · <a href="https://labonetta.cz/ochrana-osobnich-udaju/#voucher">Ochrana osobních údajů</a></p>
 </footer>
 
 <div class="sticky-buy" id="sticky-buy" aria-hidden="true">
