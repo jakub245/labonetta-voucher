@@ -1,24 +1,12 @@
 import supabase from '../lib/supabase.js'
-
-// Ověří heslo/token a vrátí roli: 'admin' | 'staff' | null
-function getRole(req) {
-  const auth = req.headers.authorization?.replace('Bearer ', '')
-  if (!auth) return null
-  if (auth === process.env.ADMIN_PASSWORD) return 'admin'
-  // Obsluha se může přihlásit heslem NEBO tokenem (z odkazu na ploše tabletu)
-  if (process.env.STAFF_PASSWORD && auth === process.env.STAFF_PASSWORD) return 'staff'
-  if (process.env.STAFF_TOKEN && auth === process.env.STAFF_TOKEN) return 'staff'
-  return null
-}
+import { requireRole } from '../lib/auth.js'
 
 export default async function handler(req, res) {
   // Nikdy necachovat — odpověď závisí na roli (heslu/tokenu)
   res.setHeader('Cache-Control', 'no-store, max-age=0')
 
-  const role = getRole(req)
-  if (!role) {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+  const role = await requireRole(req, res, ['admin', 'staff'])
+  if (!role) return
 
   // GET /api/vouchers — list vouchers (role vrácena v těle odpovědi)
   if (req.method === 'GET') {

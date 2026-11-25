@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>Admin · Vouchery Labonetta</title>
   <link rel="icon" href="favicon.ico" sizes="32x32">
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
@@ -1469,8 +1470,11 @@
       }
     })
 
-    if (res.status === 401) {
-      localStorage.removeItem('admin_pw')
+    if (res.status === 401 || res.status === 429) {
+      if (res.status === 401) localStorage.removeItem('admin_pw') // při dočasném zámku uložené heslo nemazat
+      document.getElementById('login-error').textContent = res.status === 429
+        ? 'Příliš mnoho chybných pokusů. Zkuste to znovu za 15 minut.'
+        : 'Nesprávné heslo, zkuste to znovu.'
       document.getElementById('login-error').classList.add('visible')
       document.getElementById('admin-screen').style.display = 'none'
       document.getElementById('login-screen').style.display = 'flex'

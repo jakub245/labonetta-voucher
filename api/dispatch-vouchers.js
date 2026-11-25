@@ -1,14 +1,12 @@
 import { fulfillQrOrder } from '../lib/fulfill.js'
+import { requireRole } from '../lib/auth.js'
 
 // Ruční potvrzení QR platby managerem v adminu.
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   // Auth
-  const auth = req.headers.authorization?.replace('Bearer ', '')
-  if (auth !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+  if (!(await requireRole(req, res, ['admin']))) return
 
   const { vs } = req.body // variabilní symbol
   if (!vs) return res.status(400).json({ error: 'Chybí variabilní symbol' })

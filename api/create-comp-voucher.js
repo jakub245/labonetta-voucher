@@ -2,15 +2,13 @@ import supabase from '../lib/supabase.js'
 import { generateVoucherCode } from '../lib/codes.js'
 import { generateVoucherPdf } from '../lib/pdf.js'
 import { sendVoucherEmail } from '../lib/mailer.js'
+import { requireRole } from '../lib/auth.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   // Auth — pouze manager (admin heslo). Obsluha kompenzaci vytvořit nesmí.
-  const auth = req.headers.authorization?.replace('Bearer ', '')
-  if (!auth || auth !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+  if (!(await requireRole(req, res, ['admin']))) return
 
   const amount = Number(req.body.amount)
   if (![500, 1000].includes(amount)) {

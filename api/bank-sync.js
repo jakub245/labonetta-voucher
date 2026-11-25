@@ -1,5 +1,6 @@
 import { runBankSync, MIN_INTERVAL_SEC, AUTO_INTERVAL_SEC } from '../lib/bank-sync.js'
 import { notifyUnpaid } from '../lib/unpaid.js'
+import { requireRole } from '../lib/auth.js'
 
 // Spuštění párování plateb z banky.
 // - GET  z cronu (Supabase pg_cron při čekající objednávce, Vercel 1× denně),
@@ -8,13 +9,10 @@ import { notifyUnpaid } from '../lib/unpaid.js'
 // Po kontrole banky se ještě pošle upozornění na objednávky nezaplacené déle než hodinu.
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0')
-  const auth = req.headers.authorization?.replace('Bearer ', '').trim()
-  const cronSecret = process.env.CRON_SECRET?.trim()
-  const isCron = !!cronSecret && auth === cronSecret
-  const isAdmin = !!process.env.ADMIN_PASSWORD && auth === process.env.ADMIN_PASSWORD
-
   if (!['GET', 'POST'].includes(req.method)) return res.status(405).json({ error: 'Method not allowed' })
-  if (!isCron && !isAdmin) return res.status(401).json({ error: 'Unauthorized' })
+  const role = await requireRole(req, res, ['cron', 'admin'])
+  if (!role) return
+  const isCron = role === 'cron'
 
   const force = req.method === 'POST' && req.body?.force === true
   let summary

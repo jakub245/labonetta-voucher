@@ -1,15 +1,13 @@
 import supabase from '../lib/supabase.js'
 import { STATE_ID } from '../lib/bank-sync.js'
+import { requireRole } from '../lib/auth.js'
 
 // Platby z banky k ručnímu řešení (jen manager).
 // GET   → { payments: [...nevyřešené], sync: { last_success_at, last_error } }
 // PATCH → { id, note } označí platbu jako vyřešenou
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0')
-  const auth = req.headers.authorization?.replace('Bearer ', '')
-  if (!process.env.ADMIN_PASSWORD || auth !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+  if (!(await requireRole(req, res, ['admin']))) return
 
   if (req.method === 'GET') {
     const [{ data: payments, error }, { data: sync }] = await Promise.all([
