@@ -1864,11 +1864,11 @@
         html += `
           <tr style="${groupTop}">
             <td data-label="ID" style="font-family:monospace;font-size:14px;color:#9ca3af;font-weight:600;">#${shortId}</td>
-            <td data-label="Kód"><span class="code">${v.code}</span></td>
+            <td data-label="Kód"><span class="code">${esc(v.code)}</span></td>
             <td data-label="Hodnota"><span class="${amountClass}">${amountStr}</span></td>
             <td data-label="Zákazník">
-              ${v.customer_name ? `<p style="font-size:15px;font-weight:600;color:var(--dark);margin:0 0 2px;">${v.customer_name}</p>` : ''}
-              <p class="email-cell" style="margin:0;">${v.source === 'offline' ? '<span style="color:#c0b8b0;">— osobní prodej</span>' : v.email}</p>
+              ${v.customer_name ? `<p style="font-size:15px;font-weight:600;color:var(--dark);margin:0 0 2px;">${esc(v.customer_name)}</p>` : ''}
+              <p class="email-cell" style="margin:0;">${v.source === 'offline' ? '<span style="color:#c0b8b0;">— osobní prodej</span>' : esc(v.email)}</p>
             </td>
             <td data-label="Stav"><span class="badge ${badge.cls}">${badge.label}</span></td>
             <td data-label="Objednáno" class="date-cell">${created} <strong style="font-weight:600;color:var(--dark);">${createdTime}</strong></td>
@@ -1884,7 +1884,7 @@
     document.getElementById('confirm-message').textContent = message
     const metaEl = document.getElementById('confirm-meta')
     if (meta) {
-      metaEl.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#1B7F72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>${meta}`
+      metaEl.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#1B7F72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>${esc(meta)}`
       metaEl.style.display = 'flex'
     }
     else { metaEl.style.display = 'none' }
@@ -2089,7 +2089,7 @@
       const redeemedAt = x.redeemed_at ? ' · uplatněno ' + new Date(x.redeemed_at).toLocaleDateString('cs', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''
       return `
         <div class="voucher-list-item">
-          <span class="voucher-list-code">${x.code}</span>
+          <span class="voucher-list-code">${esc(x.code)}</span>
           <div class="voucher-list-right">
             <span class="badge ${b.cls}" style="font-size:10px;">${b.label}${redeemedAt}</span>
             <span class="voucher-list-amount">${amtStr}</span>
@@ -2108,7 +2108,7 @@
           <span class="modal-row-label">Celková hodnota</span>
           <span class="modal-row-value">${totalStr}</span>
         </div>
-        ${vs !== '—' ? `<div class="modal-row"><span class="modal-row-label">Variabilní symbol</span><span class="modal-row-value mono">${vs}</span></div>` : ''}
+        ${vs !== '—' ? `<div class="modal-row"><span class="modal-row-label">Variabilní symbol</span><span class="modal-row-value mono">${esc(vs)}</span></div>` : ''}
         <div class="modal-row"><span class="modal-row-label">Platí do</span><span class="modal-row-value">${expires}</span></div>
       </div>
       ${v.source === 'offline' ? `
@@ -2121,15 +2121,15 @@
       <div class="modal-section">
         <p class="modal-section-title">Původ</p>
         <div class="modal-row"><span class="modal-row-label">Typ</span><span class="source-tag source-comp">Kompenzace</span></div>
-        <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${v.email}</span></div>
+        <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${esc(v.email)}</span></div>
         <div class="modal-row"><span class="modal-row-label">Účtování</span><span class="modal-row-value" style="color:#9ca3af;font-weight:400;">mimo obrat</span></div>
       </div>
       ` : `
       <div class="modal-section">
         <p class="modal-section-title">Zákazník</p>
-        <div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name || '<span style="color:#9ca3af;font-weight:400;">neuvedeno</span>'}</span></div>
-        <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${v.email}</span></div>
-        ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${v.customer_phone}</span></div>` : `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value" style="color:#9ca3af;font-weight:400;">neuvedeno</span></div>`}
+        <div class="modal-row"><span class="modal-row-label">Jméno</span><span class="modal-row-value">${v.customer_name ? esc(v.customer_name) : '<span style="color:#9ca3af;font-weight:400;">neuvedeno</span>'}</span></div>
+        <div class="modal-row"><span class="modal-row-label">E-mail</span><span class="modal-row-value">${esc(v.email)}</span></div>
+        ${v.customer_phone ? `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value">${esc(v.customer_phone)}</span></div>` : `<div class="modal-row"><span class="modal-row-label">Telefon</span><span class="modal-row-value" style="color:#9ca3af;font-weight:400;">neuvedeno</span></div>`}
       </div>
       `}
       <div class="modal-section">

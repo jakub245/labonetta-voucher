@@ -361,6 +361,7 @@
     footer .footer-legal { flex-basis: 100%; font-size: 12px; line-height: 1.6; opacity: .85; }
     footer .footer-legal a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
     .form-privacy { margin-top: 0; text-align: center; }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
     .form-privacy a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
     footer a { text-decoration: none; }
     footer a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
@@ -872,6 +873,7 @@
           <p class="field-hint" id="email-hint">Sem pošleme voucher, jakmile k&nbsp;nám dorazí platba.</p>
           <p class="error-msg" id="email-error" role="alert">Zadejte prosím platný e-mail.</p>
         </div>
+        <div class="hp" aria-hidden="true"><label>Web <input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></label></div>
         <div class="field">
           <label for="customer-phone">Telefon<span class="opt-note">nepovinné</span></label>
           <input type="tel" id="customer-phone" name="phone" placeholder="+420 123 456 789" autocomplete="tel">
@@ -1078,7 +1080,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email, customer_name: name, customer_phone: phone || null,
+          email, customer_name: name, customer_phone: phone || null, website: $('website').value,
           items: [ { amount: 500, qty: cart[500] }, { amount: 1000, qty: cart[1000] } ]
         })
       })

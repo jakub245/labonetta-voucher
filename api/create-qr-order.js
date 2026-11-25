@@ -11,15 +11,56 @@ const ADMIN_NOTIFY_EMAIL = process.env.ADMIN_NOTIFY_EMAIL
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const email          = req.body.email
-  const items          = req.body.items
-  const customer_name  = req.body.customer_name  || null
-  const customer_phone = req.body.customer_phone || null
+  const body = req.body || {}
 
-  if (!email || !items) return res.status(400).json({ error: 'Chybí email nebo items' })
+  // Ochrana proti robotům: skryté pole, které člověk nevidí a nevyplní
+  if (body.website) return res.status(400).json({ error: 'Objednávku se nepodařilo odeslat.' })
 
-  const validItems = items.filter(i => i.qty > 0)
-  if (!validItems.length) return res.status(400).json({ error: 'Prázdná objednávka' })
+  // Vstupy od zákazníka – vše ověřit na serveru, prohlížeči se nevěří
+  const text = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
+  const email          = text(body.email, 254)
+  const customer_name  = text(body.customer_name, 120) || null
+  const customer_phone = text(body.customer_phone, 40) || null
+
+  if (!/^[^\s@<>"'()]+@[^\s@<>"'()]+\.[^\s@<>"'()]+$/.test(email)) {
+    return res.status(400).json({ error: 'Zadejte prosím platný e-mail.' })
+  }
+  if (!customer_name) return res.status(400).json({ error: 'Zadejte prosím jméno.' })
+  if (customer_phone && !/^[0-9+()\s./-]{6,40}$/.test(customer_phone)) {
+    return res.status(400).json({ error: 'Telefon obsahuje neplatné znaky.' })
+  }
+
+  // Jen nabízené hodnoty voucherů a rozumný počet kusů (částku nikdy nebrat z prohlížeče)
+  const ALLOWED_AMOUNTS = [500, 1000]
+  const MAX_VOUCHERS = 20
+  if (!Array.isArray(body.items)) return res.status(400).json({ error: 'Prázdná objednávka' })
+  const validItems = []
+  for (const i of body.items) {
+    const amount = Number(i?.amount)
+    const qty = Number(i?.qty)
+    if (qty === 0) continue
+    if (!ALLOWED_AMOUNTS.includes(amount) || !Number.isInteger(qty) || qty < 0) {
+      return res.status(400).json({ error: 'Neplatná položka objednávky' })
+    }
+    validItems.push({ amount, qty })
+  }
+  const voucherCount = validItems.reduce((n, i) => n + i.qty, 0)
+  if (!voucherCount) return res.status(400).json({ error: 'Prázdná objednávka' })
+  if (voucherCount > MAX_VOUCHERS) {
+    return res.status(400).json({ error: `Najednou lze objednat nejvýš ${MAX_VOUCHERS} voucherů. Pro větší množství nás prosím kontaktujte.` })
+  }
+
+  // Limit proti zahlcení: nejvýš 5 objednávek na jeden e-mail za hodinu a 60 nezaplacených voucherů za 10 minut celkem
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+  const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+  const [{ data: recentByEmail, error: rlErr1 }, { count: recentAll, error: rlErr2 }] = await Promise.all([
+    supabase.from('vouchers').select('variable_symbol').eq('email', email).gte('created_at', hourAgo),
+    supabase.from('vouchers').select('id', { count: 'exact', head: true }).eq('status', 'pending_qr').gte('created_at', tenMinAgo)
+  ])
+  if (rlErr1 || rlErr2) return res.status(500).json({ error: 'Objednávku se teď nepodařilo vytvořit, zkuste to prosím za chvíli.' })
+  if (new Set((recentByEmail || []).map(r => r.variable_symbol)).size >= 5 || (recentAll || 0) >= 60) {
+    return res.status(429).json({ error: 'Objednávek je teď příliš mnoho. Zkuste to prosím za chvíli, případně nás kontaktujte.' })
+  }
 
   const total = validItems.reduce((sum, i) => sum + i.amount * i.qty, 0)
   const vs = Date.now().toString().slice(-10)
